@@ -46,7 +46,7 @@
   <div class="hero-glow" aria-hidden="true"></div>
   <div class="wrap">
     <div class="hero-copy">
-      <a class="pill" href="#how"><span class="pill-tag">v0.0.1</span> Release builds: LLVM O3, name-free executables <span aria-hidden="true">→</span></a>
+      <a class="pill" href="#how"><span class="pill-tag">v0.0.1</span> Try us! <span aria-hidden="true">→</span></a>
       <h1>Write adventures as code.<br><span class="grad">Compile them into games.</span></h1>
       <p class="lead">advc is a compiler for narrative games: point &amp; click adventures, gamebooks, visual novels. Write scenes, dialogue and puzzles in <b>ADVL</b>, a small indentation-based language, and advc turns them into one native executable. No editor to fight. No engine to ship.</p>
       <div class="cta-row">
@@ -392,7 +392,7 @@ inside officewalk depth scaleDetective</pre>
     <div class="sec-head">
       <span class="kicker">// showcase</span>
       <h2>Built with advc.</h2>
-      <p>Two complete games written in ADVL, from the same compiler you install. Both live in this repository, ready to build.</p>
+      <p>Three complete games written in ADVL, compiled by the compiler you install. All three live in this repository, ready to build.</p>
     </div>
     <div class="show">
       <a class="show-card" href="https://github.com/advc-org/advc/tree/master/demos/king-relic">
@@ -413,6 +413,15 @@ inside officewalk depth scaleDetective</pre>
           <dl><div><dt>Engine features</dt><dd>verbs · talk · walkat · camera</dd></div><div><dt>Release</dt><dd>5.5 MB + 7.9 MB pak</dd></div></dl>
         </div>
       </a>
+      <a class="show-card" href="https://github.com/advc-org/advc/tree/master/demos/love-is-near">
+        <div class="show-media"><img src="media/genres/lifesimulator.webp" alt="Love is Near cover" loading="lazy"></div>
+        <div class="show-body">
+          <span class="tag">Life sim</span>
+          <h3>Love is Near</h3>
+          <p>A visual-novel life sim: days to plan, a meter that rises with the choices you make, chores, a job, and a mother who phones when you skip. Reorderable route cards decide what tomorrow looks like.</p>
+          <dl><div><dt>Engine features</dt><dd>route cards · planner · save · endings</dd></div><div><dt>Release</dt><dd>4.8 MB + 6.1 MB pak</dd></div></dl>
+        </div>
+      </a>
     </div>
     <h3 class="genre-h">Made for the whole adventure family</h3>
     <div class="genres">
@@ -426,24 +435,6 @@ inside officewalk depth scaleDetective</pre>
   </div>
 </section>
 
-<!-- ================= FAQ ================= -->
-<section class="sec" id="faq">
-  <div class="wrap faq-wrap">
-    <div class="sec-head left">
-      <span class="kicker">// faq</span>
-      <h2>Questions, answered.</h2>
-      <p>Anything else is in the <a href="docs/index.html">docs</a>.</p>
-    </div>
-    <div class="faq">
-      <details open><summary>What is ADVL?</summary><p>The language advc compiles. It is indentation-based and statement-oriented: <code>func</code>, <code>actor</code>, <code>anim</code>, <code>voice</code>, <code>ui</code> and friends at the top level, commands inside them. No braces, no semicolons. The <a href="docs/overview.html">language overview</a> fits on one page.</p></details>
-      <details><summary>Do I need to know Rust, C++ or LLVM?</summary><p>No. You write ADVL and drop PNGs and WAVs into <code>assets/</code>. The compiler, the runtime and LLVM are implementation details you never touch.</p></details>
-      <details><summary>Which genres does it fit?</summary><p>Anything built from scenes, choices and state: point &amp; click with verbs and inventories, first-person node-based adventures, gamebooks, visual novels, puzzle boxes and small life sims.</p></details>
-      <details><summary>How do I test a game?</summary><p>Write a <code>.play</code> script and run the release binary with <code>ADVC_HEADLESS=1 ADVC_STDIN=1</code>. It exits with status 1 and the failing line if a step doesn't happen in time, so it slots straight into CI. See <a href="docs/testing.html">Scripted play and recording</a>.</p></details>
-      <details><summary>How do players get my game?</summary><p>Today you ship the executable and its <code>.pak</code> anywhere you like — a zip with two files. A dedicated advc store is coming soon; it will be optional, like the zip path.</p></details>
-      <details><summary>Can I bring my own art and audio?</summary><p>Yes: every image and sound is a file you name explicitly in ADVL. The showcase games use hand-painted and AI-generated art, synthesized sound effects and recorded voices.</p></details>
-    </div>
-  </div>
-</section>
 
 <!-- ================= CTA ================= -->
 <section class="final">
