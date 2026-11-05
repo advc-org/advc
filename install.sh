@@ -22,12 +22,18 @@ BIN_DIR="/usr/local/bin"
 VERSION=""
 
 banner() {
-    echo "        __       __"
-    echo "  __ _| |__ __| |__"
-    echo " / _\` | '_ \ _| '_ \\"
-    echo " \\__,_|_.__/\\__|_.__/"
+    echo ""
+    echo "               █████"
+    echo "              ░░███"
+    echo "  ██████    ███████  █████ █████  ██████"
+    echo " ░░░░░███  ███░░███ ░░███ ░░███  ███░░███"
+    echo "  ███████ ░███ ░███  ░███  ░███ ░███ ░░░"
+    echo " ███░░███ ░███ ░███  ░░███ ███  ░███  ███"
+    echo "░░████████░░████████  ░░█████   ░░██████"
+    echo " ░░░░░░░░  ░░░░░░░░    ░░░░░     ░░░░░░"
+    echo ""
     echo " the adventure game compiler"
-    echo
+    echo ""
 }
 
 while [ $# -gt 0 ]; do
@@ -343,3 +349,8 @@ else
     echo "installed in the cache; the executable is at"
     echo "  $CACHE/advc-$version_from_name-$triple/advc"
 fi
+
+echo ""
+echo "If you want to uninstall run:"
+echo "curl -fsSL https://github.com/advc-org/advc/raw/master/install.sh | sh -s -- --uninstall"
+echo "and tell us why at https://github.com/advc-org/advc"
