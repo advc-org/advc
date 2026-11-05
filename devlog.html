@@ -43,6 +43,10 @@
       <article class="devlog-body" data-devlog>
         <p class="devlog-loading">loading the devlog…</p>
       </article>
+      <!-- The publish embeds devlog.md here (base64). This copy carries the
+           placeholder: the page tries the fetch first and falls back to this
+           content when fetch cannot run (file://, no server). -->
+      <script type="text/markdown" data-devlog-md data-enc="none"><!--devlog-md--></script>
     </div>
   </section>
 </main>
@@ -68,20 +72,59 @@ window.addEventListener("DOMContentLoaded", () => {
             "the markdown library failed its integrity check — the devlog did not render.";
         return;
     }
+    // A minimal fallback renderer: the CDN's marked is what makes this page
+    // pretty; if the CDN is unreachable or its integrity check fails, this
+    // still renders the devlog's structure (headings, code, lists, bold) so
+    // the page is never raw markdown.
+    const mini = (md) => md
+        .split(/\n\n+/)
+        .map((block) => {
+            const esc = block.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            if (/^#\s/.test(esc)) return `<h1>${esc.slice(2)}</h1>`;
+            if (/^##\s/.test(esc)) return `<h2>${esc.slice(3)}</h2>`;
+            if (/^###\s/.test(esc)) return `<h3>${esc.slice(4)}</h3>`;
+            if (/^[-*]\s/m.test(esc)) {
+                return `<ul>${esc.split(/\n/).filter((l) => /^[-*]\s/.test(l))
+                    .map((l) => `<li>${l.replace(/^[-*]\s/, "")}</li>`).join("")}</ul>`;
+            }
+            const inline = esc
+                .replace(/`([^`]+)`/g, "<code>$1</code>")
+                .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
+            return `<p>${inline.replace(/\n/g, "<br>")}</p>`;
+        })
+        .join("");
+    const render = (md) => {
+        if (window.marked) {
+            document.querySelector("[data-devlog]").innerHTML = marked.parse(md);
+        } else {
+            document.querySelector("[data-devlog]").innerHTML = mini(md);
+            console.warn("[devlog] rendered with the fallback renderer (marked was not loaded)");
+        }
+    };
+    // Source 1: the devlog.md next to the page (the freshest, over http).
     fetch("devlog.md", { cache: "no-store" })
         .then((r) => {
             if (!r.ok) throw new Error(`http ${r.status}`);
             return r.text();
         })
-        .then((md) => {
-            document.querySelector("[data-devlog]").innerHTML = marked.parse(md);
-        })
-        .catch((e) => {
-            const hint = location.protocol === "file:"
-                ? "this page is opened from disk — serve it over http (python3 -m http.server) so it can fetch devlog.md"
-                : "";
-            document.querySelector("[data-devlog]").textContent =
-                `the devlog could not be loaded (${e.message}).${hint ? " " + hint : ""}`;
+        .then(render)
+        .catch(() => {
+            // Source 2: the embedded copy — publish-repo base64-encodes
+            // devlog.md into this page, so it renders even from disk with no
+            // server, and even if marked never loads.
+            const holder = document.querySelector("[data-devlog-md]");
+            let md = "";
+            if (holder) {
+                md = holder.dataset.enc === "base64"
+                    ? atob(holder.textContent.replace(/\s+/g, ""))
+                    : (holder.textContent === "<!--devlog-md-->" ? "" : holder.textContent);
+            }
+            if (md.trim()) {
+                render(md);
+            } else {
+                document.querySelector("[data-devlog]").textContent =
+                    "the devlog could not be loaded — embed it (just publish-repo) or serve this folder over http.";
+            }
         });
 });
 </script>
