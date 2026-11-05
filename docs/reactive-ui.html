@@ -1,0 +1,827 @@
+<!DOCTYPE HTML>
+<html lang="en" class="navy sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Reactive UI - advc — language reference</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Documentation for advc, the adventure game engine language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="theme/advc-160d1159.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "navy";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-1915e4d6.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-2265370e.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('navy')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">advc — language reference</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/advc/advc" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="reference-reactive-ui"><a class="header" href="#reference-reactive-ui">Reference: Reactive UI</a></h1>
+<p>A <code>ui</code> block is a panel the script declares once and then opens and closes by
+name. Its elements — images, text, buttons, grids of items — re-render <strong>on
+their own</strong> when the scene variables they read change. You do not redraw a
+verb bar each frame; you write a scene variable and the bar rebuilds itself.</p>
+<p>This reference is the complete specification. The tutorial
+[A Cold Crime Scene(./tutorials/crime-scene.md) walks one of the blocks
+below line by line.</p>
+<pre><code class="language-advc">ui panel modal=false
+    image panel pos=0,352
+    image pos=12,376 hit=rect click=verbWalk
+        source
+            switch crime::verb crime::pointing
+                0 _, _ 0
+                    verb_walk_on
+                _ _
+                    verb_walk_off
+        when
+            mouse_enter
+                crime::pointing = 0
+            mouse_leave
+                crime::pointing = 5
+    grid items=$inventoryItems cols=3 size=68,42 padding=6 pos=243,373
+        image $item.image hit=rect click=clickEvidence
+    if crime::clues &gt;= 1 pos=534,446
+        image clue_lamp_on
+</code></pre>
+<h2 id="declaring-and-opening"><a class="header" href="#declaring-and-opening">Declaring and opening</a></h2>
+<pre><code class="language-advc">ui &lt;name&gt; [$p $q? …] [modal=true|false]
+    &lt;elements…&gt;
+</code></pre>
+<p><code>modal=</code> defaults to <code>true</code>: while the block is open it swallows every click
+that misses its elements (a click on nothing does <strong>not</strong> fall through to the
+world). <code>modal=false</code> makes it a HUD — a miss passes through to the actors
+beneath. Several blocks can be open at once, and the same block can be open
+several times (opening an open block stacks another instance; hide first when
+you want replace semantics).</p>
+<p>From a script:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Written</th><th>Effect</th></tr>
+</thead>
+<tbody>
+<tr><td><code>ui::show &lt;def&gt; [args...] [z=&lt;number&gt;]</code></td><td>Open a stacked, non-modal instance; the caller continues. Default layer <code>z=9</code>.</td></tr>
+<tr><td><code>$id = ui::show &lt;def&gt; …</code></td><td>The same open; <code>$id</code> binds the instance’s id.</td></tr>
+<tr><td><code>ui::hide &lt;expr&gt;</code></td><td>Close: an id closes that one instance (a dead id is a no-op); a def name closes every live instance of the block.</td></tr>
+<tr><td><code>ui::modal &lt;def&gt; [args...] [z=&lt;number&gt;]</code></td><td>Open a menu and park the caller until it dies: the player picks an element (its <code>click=</code> func runs first) or clicks outside every element (cancel). Only the menu’s own elements are picks; it closes alone, leaving any HUD open under it. Opening a modal while one is pending replaces it.</td></tr>
+<tr><td><code>wait ui::show &lt;def&gt; …</code></td><td>The same non-modal open; the caller parks until the block is built.</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-advc">func gallery
+    $idx = ui::show pageX label=lblX1 cb=onX
+    ui::show pageY label=lblY
+    ui::hide $idx          // pageX closes; pageY (stacked above) stays
+</code></pre>
+<p>The <code>z=</code> draw layer orders blocks among actors: <code>z</code> values are the same scale
+as actors’ <code>z</code> (<a href="./reference/commands.html">Actors</a>); a clickable actor above a HUD
+(<code>z</code> higher than the block’s) takes the clicks that land on itself, and a
+click beside it reaches the block. A block’s text labels always draw after
+every image. The ESC pause menu (<code>ui optionsMenu</code> — see
+[Testing(./testing.md)) is always on top.</p>
+<p>An instance’s body is built once, top to bottom, before the next click
+reaches it; the elements’ variable subscriptions keep it current for its
+lifetime — the build never re-runs. <code>ui::hide &lt;expr&gt;</code> is typed about it:</p>
+<pre><code class="language-text">error: `ui::hide` takes a ui id or a def name
+--&gt; main.advf:6
+ 4: func gallery
+ 5:     ui::show pageX
+ 6:     ui::hide 3
+                 ^ a number literal is not a ui id — bind the id (`$id = ui::show …`) or hide by def name; ids are runtime values, never numerals
+</code></pre>
+<p><em>(tests: <code>ui-bad-hide-number</code>, <code>ui-bad-hide-binding</code>, <code>ui-bad-hide-scene-var</code>,
+<code>ui-bad-hide-unknown-def</code>)</em></p>
+<p>Opening a block that doesn’t exist fails with a suggestion:
+<code>error: </code>ui::show<code>opens an unknown block</code>nope<code>… did you mean</code>hud<code>?</code>
+<em>(test: <code>ui-bad-unknown-def</code> in the ui-bad family)</em></p>
+<h3 id="the-body-takes-elements-only"><a class="header" href="#the-body-takes-elements-only">The body takes elements only</a></h3>
+<p>A <code>ui</code> body is element statements — <code>image</code>, <code>text</code>, <code>button</code>, <code>quad</code>,
+<code>grid</code>, <code>expand</code>, <code>row</code>, <code>column</code>, <code>if</code>, <code>switch</code>, <code>$slot</code> — and comments.
+Anything else is rejected at compile time, pointing at the line:</p>
+<pre><code class="language-text">error: `option::show` is not a `ui` element — a `ui` body takes element
+statements only (image/text/button/quad/grid/expand/row/column/if/switch/$slot);
+commands are forbidden in a builder body, so this line is either a typo or a
+misplaced command
+</code></pre>
+<p><em>(test: <code>tests/ui/ui-bad-body-command</code>)</em></p>
+<p>Everything over time arrives through the elements’ reactive subscriptions —
+the build never waits, never reads the world mid-flight.</p>
+<h2 id="elements"><a class="header" href="#elements">Elements</a></h2>
+<p>An element is one line with attributes after it (<code>pos=12,376</code>, <code>hit=rect</code>,
+<code>click=verbWalk</code>, …). Containers take an indented body of further elements.</p>
+<h3 id="image--a-picture"><a class="header" href="#image--a-picture"><code>image</code> — a picture</a></h3>
+<pre><code class="language-advc">image panel pos=0,352                       // static: a named texture
+image pos=12,376 hit=rect click=verbWalk    // switched: a `source` child
+    source
+        switch crime::verb
+            1
+                verb_look_on
+            _
+                verb_look_off
+</code></pre>
+<ul>
+<li><strong>Static</strong>: <code>image &lt;stem&gt; …</code> — the texture is the named image (which must
+exist in <code>assets/</code>; a typo fails with <code>unknown image</code> and the closest
+name — <em>(test: <code>ui-bad-image</code>)</em>).</li>
+<li><strong>Switched</strong>: an <code>image</code> with no source and a <code>source</code> child picks the
+texture by pattern — <a href="#switched-images">Switched images</a> below.</li>
+</ul>
+<p>An image is hit by its <strong>solid pixels</strong> (<code>hit=pixel</code>, the default) or its
+whole rectangle (<code>hit=rect</code> — for a thin label or a small target). Its
+<code>click=</code> func gets <code>$1</code> = 1 when the pixel under the click is solid, 0 when
+transparent. An image may carry a <code>when</code> child for pointer events
+(<a href="#when--pointer-events-on-an-image">when</a> below).</p>
+<p>A reactive image source cannot name a scene variable:</p>
+<pre><code class="language-text">error: `ui bad`: `image sv::foo` may not bind to a scene variable
+hint: an image source must name a texture (or `$item.image` in a grid); for a
+reactive image use `if`/`switch` to choose between `image` children.
+</code></pre>
+<p><em>(test: <code>ui-bad-image-var</code>)</em></p>
+<h3 id="text--a-string"><a class="header" href="#text--a-string"><code>text</code> — a string</a></h3>
+<pre><code class="language-advc">text hudLbl pos=20,80 click=onHud     // a `str` declaration's text
+text sv::score pos=20,50              // a scene variable's live value
+</code></pre>
+<p>Two forms:</p>
+<ul>
+<li><strong>Bound</strong> — <code>text &lt;str-name&gt;</code>: renders a declared <code>str</code>.</li>
+<li><strong>Reactive</strong> — <code>text &lt;path&gt;</code>: renders the variable’s live integer value in
+decimal; the label follows every write.</li>
+</ul>
+<p>A text may carry <code>click=</code> — with it, <code>hover_tint=</code> colours the label while
+the cursor is over it, and plain text keeps its colour when not clickable.</p>
+<p><code>pos=</code> is the top-left of the line box: capitals start a few pixels under
+<code>y</code>, and wrapped lines advance by the font’s line height.</p>
+<h3 id="text-attributes"><a class="header" href="#text-attributes">Text attributes</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Attribute</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>size=&lt;px&gt;</code></td><td>Font size in px per em (default: the font’s baked size). Distance fields scale cleanly, so any size is sharp. On a <code>text</code>, <code>size=</code> is <strong>one number</strong>; on other elements, <code>size=</code> is the box <code>w,h</code>.</td></tr>
+<tr><td><code>font=&lt;stem&gt;</code></td><td>Draw the label with another font, loaded with <code>font &lt;stem&gt;</code> (see <a href="./reference/assets-fonts.html">Assets &amp; fonts</a>). Unloaded — a warning at build time, the active font is used.</td></tr>
+<tr><td><code>width=&lt;px&gt;</code></td><td>Wrap into lines no wider than this; lines advance by the line height.</td></tr>
+<tr><td><code>align=left|center|right</code></td><td>Align each line inside <code>width=</code> (no effect without it).</td></tr>
+<tr><td><code>outline=&lt;…&gt;</code></td><td>Glyph border: <code>outline=0</code> none, <code>outline=&lt;w&gt;</code> black <code>w</code> px, <code>outline=r,g,b</code> coloured 1 px, <code>outline=r,g,b,w</code>. Without it: black, 2 px.</td></tr>
+<tr><td><code>tint=r,g,b,a</code></td><td>Multiply the rendered colours (see below).</td></tr>
+<tr><td><code>hover_tint=r,g,b,a</code></td><td>The colour a <em>clickable</em> text takes while hovered (multiplied by <code>tint=</code>). Without it: a menu pick turns red, other texts keep colour.</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-advc">text title pos=485,119 size=48 font=cinzel tint=1,0.72,0.35,1
+text prose pos=485,189 width=650 align=left outline=0 tint=0.2,0.14,0.08,1
+text choice1 pos=520,840 click=pick1 hover_tint=1,0.8,0.4,1
+</code></pre>
+<p>All of these are literals — to change one by a condition, put variants under
+<code>if</code>. Each has a checked form; every failure is a located error
+<em>(tests: <code>ui-bad-align</code>, <code>ui-bad-text-size</code>, <code>ui-bad-width</code>, <code>ui-bad-outline</code>,
+<code>ui-bad-outline-range</code>, <code>ui-bad-hover-tint</code>)</em>:</p>
+<pre><code class="language-text">error: `ui hud`: `align=` must be `left`, `center` or `right`
+</code></pre>
+<h3 id="tint-on-images"><a class="header" href="#tint-on-images"><code>tint=</code> on images</a></h3>
+<p><code>tint=r,g,b,a</code> (each 0..1) multiplies an image’s colours; <code>a</code> multiplies the
+opacity. The tint is fixed: recolour by condition with tinted copies under
+<code>if</code>. A <code>quad</code> takes its colour from <code>color=</code> (a <code>tint=</code> there is ignored,
+with a warning).</p>
+<pre><code class="language-text">error: `ui hud`: `tint=2,1,1,1`: each component must be 0..1
+hint: a tint multiplies the colours: `1` leaves a channel as painted, `0.5` halves it.
+</code></pre>
+<p><em>(tests: <code>ui-bad-tint</code>, <code>ui-bad-tint-range</code>)</em></p>
+<h3 id="button--a-clickable-plate-with-text-on-it"><a class="header" href="#button--a-clickable-plate-with-text-on-it"><code>button</code> — a clickable plate with text on it</a></h3>
+<pre><code class="language-advc">button choice_1 click=goA hover=choice_1_on pos=0,0
+    text cA pos=100,19 tint=1,0.95,0.85,1
+</code></pre>
+<pre><code>button &lt;base-image&gt; [hover=&lt;image&gt;] [click=&lt;func&gt;] [attrs…]
+    &lt;text children…&gt;
+</code></pre>
+<ul>
+<li>The base texture (an asset stem, or a <code>$</code> parameter) is required — it is
+the button’s art <em>and</em> its default hit area (default <code>hit=rect</code>).</li>
+<li><code>hover=&lt;image&gt;</code> swaps the art while the cursor is on it.</li>
+<li><code>click=&lt;func&gt;</code> runs on click. Its <code>text</code> children are labels positioned
+relative to the button; a child <code>click=</code> or any non-text child is rejected
+<em>(tests: <code>ui-bad-button-child</code>)</em>:</li>
+</ul>
+<pre><code class="language-text">error: `ui x`: a `button` may only have `text` children, found `image`
+</code></pre>
+<h3 id="quad--a-solid-rectangle"><a class="header" href="#quad--a-solid-rectangle"><code>quad</code> — a solid rectangle</a></h3>
+<pre><code class="language-advc">quad color=0,0,0,0.3 pos=0,0 size=640,80 click=onBar
+</code></pre>
+<p><code>color=r,g,b,a</code>, each component 0..1, <code>a</code> the opacity as seen on screen —
+<code>quad color=0,0,0,0.3</code> over a scene darkens it about 30% (the ESC pause
+menu’s dimming is exactly this). It fills its parent unless it has
+<code>pos=</code>/<code>size=</code>, and takes <code>click=</code> over its whole rectangle.</p>
+<pre><code class="language-text">error: `ui dim`: a `quad` needs its colour
+hint: `quad color=r,g,b,a`, each 0..1, `a` the opacity, e.g. `quad color=0,0,0,0.3`.
+</code></pre>
+<p><em>(tests: <code>ui-bad-quad</code>, <code>ui-bad-quad-range</code>)</em></p>
+<h3 id="grid--a-list-of-items"><a class="header" href="#grid--a-list-of-items"><code>grid</code> — a list of items</a></h3>
+<pre><code class="language-advc">grid items=$inventoryItems cols=3 size=68,42 padding=6 pos=243,373
+    image $item.image hit=rect click=clickEvidence
+
+grid items=$options cols=1 anchor=center padding=20
+    text $item.label click=$item.callback
+</code></pre>
+<p><code>items=</code> names where the rows come from; <code>cols=</code> the columns; <code>size=w,h</code> the
+fixed cell size; <code>padding=</code> the gap. The single child is the template
+repeated per row, and <code>$item.&lt;field&gt;</code> binds:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Binding</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>$item.image</code></td><td>The item’s icon image.</td></tr>
+<tr><td><code>$item.label</code></td><td>The item’s label string (<code>str</code> name).</td></tr>
+<tr><td><code>$item.callback</code></td><td>The item’s click func.</td></tr>
+</tbody>
+</table>
+</div>
+<p><code>anchor=center</code> centers the whole grid on the canvas; <code>anchor=bottom</code> pins
+the last row’s ink to the canvas bottom and stacks the rest upward.</p>
+<p>A template <code>click=</code> gets <code>$1</code> = the pixel solidity flag and <code>$2</code> = the item’s
+<strong>declaration index</strong> (its place in the <code>inventory</code>/<code>collection</code> block),
+wherever it sits in the grid. A plain image gets only <code>$1</code>.</p>
+<p>Sources (<a href="./reference/top-level.html">Top-level</a> declares the blocks):</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th><code>items=</code></th><th>Rows</th></tr>
+</thead>
+<tbody>
+<tr><td><code>$inventoryItems</code></td><td>The held inventory items, pickup order.</td></tr>
+<tr><td><code>$verbs</code></td><td>The verb-menu actor’s enabled verbs.</td></tr>
+<tr><td><code>$options</code></td><td>The ESC pause menu’s Save / Load / Exit.</td></tr>
+<tr><td><code>$&lt;collection&gt;</code></td><td>A <code>collection</code> block’s items.</td></tr>
+</tbody>
+</table>
+</div>
+<p>A grid without <code>items=</code> is an error <em>(test: <code>ui-bad-grid</code>)</em>:</p>
+<pre><code class="language-text">error: `grid` in `ui badGrid` has no `items=` source
+hint: a grid repeats its children over a collection — bind one with `items=$&lt;name&gt;`
+(e.g. `items=$verbs` or `items=$inventoryItems`).
+</code></pre>
+<h3 id="row--column--expand--layout-containers"><a class="header" href="#row--column--expand--layout-containers"><code>row</code> / <code>column</code> / <code>expand</code> — layout containers</a></h3>
+<pre><code class="language-advc">row pos=20,20
+    image …
+    image …
+</code></pre>
+<p><code>row</code> lays its children out left-to-right; <code>column</code> top-to-bottom; <code>expand</code>
+is a plain container sized to its <code>pos=</code>/<code>size=</code> (or its parent). All three
+take <code>pos=</code>/<code>size=</code> and an indented body.</p>
+<h3 id="if--switch--reactive-containers"><a class="header" href="#if--switch--reactive-containers"><code>if</code> / <code>switch</code> — reactive containers</a></h3>
+<pre><code class="language-advc">if crime::clues &gt;= 1 pos=534,446
+    image clue_lamp_on
+</code></pre>
+<p>Children render only while the condition holds; absent otherwise (a click on
+the spot falls through — for a non-modal block — to the world).</p>
+<p>Conditions compare scene variables (or a literal) with <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>,
+<code>&gt;</code>, <code>&gt;=</code>, combined with <code>&amp;&amp;</code> and <code>||</code> and parentheses:</p>
+<pre><code class="language-advc">if $a? == false &amp;&amp; $b? == false
+    quad pos=0,0 size=4,4
+if $b? == false &amp;&amp; hero::key == 1
+    image hero_key
+</code></pre>
+<p>A scene-variable path must be a comparison operand by itself — a variable
+inside a larger arithmetic expression is not supported; compute into a <code>$</code>
+local first. <code>$</code>-references other than presence tests are rejected:</p>
+<pre><code class="language-text">error: … condition …
+        conditions may only read scene variables (not `$name`/`$N`)
+</code></pre>
+<p><em>(test: <code>ui-bad-opt-in-condition</code> and friends)</em></p>
+<p><code>switch &lt;path&gt;</code> renders only the child at index = the variable’s value —
+the whole container rebuilds on a write:</p>
+<pre><code class="language-advc">switch crime::arm pos=20,100
+    text armA click=onArmA
+    text armB click=onArmB
+</code></pre>
+<p>A switch with <strong>two</strong> arms may select on a presence test (<code>switch $p?</code>) —
+arm 0 renders while the parameter is empty, arm 1 when it has a value.
+<em>(test: <code>ui-opt-switch</code>)</em></p>
+<h2 id="switched-images"><a class="header" href="#switched-images">Switched images</a></h2>
+<p>An <code>image</code> with a <code>source</code> child picks its texture by first match over a
+multi-variable pattern:</p>
+<pre><code class="language-advc">image pos=12,376 hit=rect click=verbWalk
+    source
+        switch crime::verb crime::pointing
+            0 _, _ 0
+                verb_walk_on
+            _ _
+                verb_walk_off
+</code></pre>
+<p><code>switch</code> lists the variables it reads; each arm is a pattern row — one cell
+per variable — then the image to show. <code>_</code> is the wildcard; the first
+matching row wins (<code>_ _</code> is the default). Rows may be OR-ed with <code>,</code>:</p>
+<pre><code class="language-advc">switch crime::verb
+    1, 2, 3
+        verb_active_on
+    _
+        verb_active_off
+</code></pre>
+<p>Malformed patterns are located errors — a cell count mismatch says exactly
+what’s off <em>(tests: <code>ui-bad-switch-pattern</code>, <code>ui-bad-switch-image</code>)</em>:</p>
+<pre><code class="language-text">error: `ui bad`: a `source switch crime::verb crime::pointing` arm has a
+3-cell pattern row but there are 2
+hint: one cell per selector, `_` for wildcard, e.g. `1 _`
+</code></pre>
+<h2 id="when--pointer-events-on-an-image"><a class="header" href="#when--pointer-events-on-an-image"><code>when</code> — pointer events on an image</a></h2>
+<p>An image may take a <code>when</code> child binding pointer events:</p>
+<pre><code class="language-advc">image pos=20,20 hit=rect click=onVerb
+    when
+        mouse_enter
+            crime::pointing = 1
+        mouse_leave
+            crime::pointing = 0
+        mouse_click
+            crime::verb = 1
+</code></pre>
+<p>Three kinds: <code>mouse_enter</code>, <code>mouse_leave</code>, <code>mouse_click</code>. A <code>mouse_click</code> arm
+fires <strong>before</strong> the image’s <code>click=</code> func, so the func sees any var the arm
+wrote. Arm bodies:</p>
+<ul>
+<li><strong>Simple arm</strong> — exactly one line <code>&lt;path&gt; = &lt;integer&gt;</code>: a direct write, no
+thread cost. The verb-bar fast path above.</li>
+<li><strong>General arm</strong> — anything else (several statements, a non-assignment, a
+computed value): the body becomes a function the runtime starts on the
+event, so it <strong>can wait</strong>, say, talk — it is not cut short by a later
+event, and a later transition does not cancel it:</li>
+</ul>
+<pre><code class="language-advc">when
+    mouse_enter
+        crime::pointing = 1
+        print "enter"
+    mouse_click
+        print "click"
+        wait nothing 1
+        print "after-wait"
+</code></pre>
+<p>General arms receive no <code>$N</code> <em>(test: <code>ui-bad-when-arm</code>)</em>:</p>
+<pre><code class="language-text">error: `ui x`: `when enter` arm reads `$1`
+        `when` arm bodies run as a callback with no `$N` args
+</code></pre>
+<p><em>(the interleaving is pinned by <code>tests/ui/ui-when-general-body</code>)</em></p>
+<h2 id="components--ui-blocks-with--parameters"><a class="header" href="#components--ui-blocks-with--parameters">Components — <code>ui</code> blocks with <code>$</code> parameters</a></h2>
+<p>A <strong>component</strong> is a <code>ui</code> block declaring <code>$</code>-named parameters after its name.
+Callers open it with named <code>key=value</code> args (or positionally); the values
+arrive as <code>$1..$N</code> in declaration order:</p>
+<pre><code class="language-advc">ui choices $choice $go modal=false
+    text $choice pos=20,80 click=$go
+
+ui log $who modal=false
+    text $who pos=20,20
+
+func entry
+    ui::show log who=tIntro
+    ui::show choices choice=tYes go=onYes
+</code></pre>
+<p>Rules:</p>
+<ul>
+<li>Every parameter must be bound — unknown, repeated or missing keys fail at
+the call site <em>(tests: <code>ui-bad-named-arg</code>, <code>ui-bad-template-missing</code>,
+<code>ui-bad-template-unknown</code>, <code>ui-bad-template-duplicate</code>)</em>:</li>
+</ul>
+<pre><code class="language-text">error: `ui::show tplUI` is missing `go=`
+--&gt; main.advf:12
+10:
+11: func entry
+12:     ui::show tplUI label=lblA
+            ^^^^^ `ui tplUI` declares `$label` `$go`; add `go=`
+</code></pre>
+<ul>
+<li>Positional and named forms must not be mixed <em>(test:
+<code>ui-bad-template-mixed</code>)</em>:</li>
+</ul>
+<pre><code class="language-text">error: `ui::show tplUI` mixes positional and named arguments
+        pass every parameter as `key=value` (or every one positionally); `ui tplUI` declares `$label` `$go`
+</code></pre>
+<ul>
+<li>A parameter’s kind is inferred from the body: <code>text $p</code> makes it a <code>str</code>,
+<code>image</code>/<code>button &lt;p&gt;</code> an image, <code>click=$p</code> a func, <code>grid items=$p</code> a
+collection, an attribute part (<code>pos=0,$y</code>, <code>tint=$ink</code>) a number, a
+condition operand (<code>if sv::x &gt;= $p</code>) an int, and a selector (<code>switch $sel</code>)
+a path <em>(tests: <code>ui-slot-attr-params</code>, <code>ui-cond-param</code>, <code>ui-param-switch</code>)</em>.
+Each bound value is checked against the kind — an unknown name is an error
+with the closest candidate <em>(tests: <code>ui-bad-arg-unknown-str</code>,
+<code>ui-bad-arg-unknown-func</code>, <code>ui-bad-arg-unknown-image</code>)</em>:</li>
+</ul>
+<pre><code class="language-text">error: `ui::show tplUI`: unknown func `goon` for `go=`
+                ^^^^ no `func goon`, did you mean `go`?
+</code></pre>
+<ul>
+<li>Conflicting uses in the body are an error <em>(test: <code>ui-bad-param-conflict</code>)</em>:</li>
+</ul>
+<pre><code class="language-text">error: `ui page`: `$go` is used as both a str and a func
+        ^^ used as a `click=` (func) here
+        ^^ first used as a `text` (str) here
+</code></pre>
+<ul>
+<li>Reading an undeclared parameter, too:
+<code>error: </code>ui page<code>reads an unknown parameter</code>$lable<code>… did you mean</code>$label<code>?</code>
+<em>(test: <code>ui-bad-param-unknown</code>)</em></li>
+</ul>
+<h3 id="slots--inlining-one-component"><a class="header" href="#slots--inlining-one-component">Slots — inlining one component</a></h3>
+<p>A slot line is <code>$&lt;component&gt; [key=value …]</code> inside another block’s container.
+<code>pos=</code>/<code>size=</code>/<code>anchor=</code> place it like an <code>expand</code> (no <code>pos=</code> fills the parent
+content rect); the other <code>key=value</code>s bind the component’s params. Values are
+a <code>$</code>-parameter of the enclosing block (forwarding) or a plain name — at
+layout time the slot’s children are the component’s own nodes with the
+substitutions applied:</p>
+<pre><code class="language-advc">ui choices $choice $go modal=false
+    text $choice pos=20,80 click=$go
+
+ui page $choice $go modal=false
+    $choices choice=$choice go=$go pos=20,60
+</code></pre>
+<p>The component still works as a block of its own (<code>ui::show choices …</code>); when
+inlined, its <code>modal=</code> is ignored. Missing bindings, unknown components and
+cycles are compile errors <em>(tests: <code>ui-bad-slot-missing</code>, <code>ui-bad-slot-unknown</code>,
+<code>ui-bad-slot-cycle</code>)</em>:</p>
+<pre><code class="language-text">error: `ui page`: `$choices` is missing parameters
+                ^^^^^^^^ inlining `ui choices` needs `go=`
+</code></pre>
+<pre><code class="language-text">error: ui b inlines itself: `$a` → `$b`
+        ^^ this slot closes the cycle (`$a` → `$b`)
+</code></pre>
+<h3 id="slot-values--expressions-tuples-paths"><a class="header" href="#slot-values--expressions-tuples-paths">Slot values — expressions, tuples, paths</a></h3>
+<p>A slot value (and each attribute part) is a <strong>comma list of elements</strong>; every
+element is one of three forms, chosen so each has exactly one reading
+<em>(EXPR.md §2; <code>cmd 1 -2</code> stays two args)</em>:</p>
+<ul>
+<li>a bare atom — a number (<code>6</code>, <code>-2</code>), a name or <code>::</code>-path, a <code>$</code>-reference,
+<code>none</code>, <code>true</code>/<code>false</code>;</li>
+<li>a parenthesized expression — <code>(page + 1)</code>, <code>(1 - 2)</code> — free whitespace
+inside the parens;</li>
+<li>a whitespace-free compound — <code>1+2</code>, <code>$v*2</code>, <code>(3*2),419</code>.</li>
+</ul>
+<p>Whitespace is what separates one value from the next, so <strong>a compound
+containing whitespace must be parenthesized</strong>: <code>pos=1 - 2</code> errors where
+<code>pos=1-2</code> is subtraction and <code>pos=1,-2</code> is the two-part tuple
+<em>(test: <code>ui-bad-slot-compound-space</code>)</em>. A trailing comma errors, and a comma
+before another <code>=</code> is the located “separate the bindings with spaces” error.</p>
+<p>What binds where — the kind decides, and where the parameter is <em>read</em>
+decides whether the value may be live:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Kind (from the body)</th><th>Slot value forms</th><th>Where its value lands</th></tr>
+</thead>
+<tbody>
+<tr><td><code>int</code></td><td>Any numeric element, incl. a <code>::</code>-path</td><td>A condition operand: <strong>live</strong> — the value splices into each inline instance’s <code>pred_N</code></td></tr>
+<tr><td><code>number</code></td><td>A compile-time constant element (literals/arithmetic)</td><td>An attribute part (or whole attribute); no runtime layout exists</td></tr>
+<tr><td><code>path</code></td><td>A bare <code>::</code>-joined scene path only</td><td>A selector; the path inlines, so subscriptions stay static</td></tr>
+<tr><td><code>str</code></td><td>A str-table name, or a bare <code>::</code>-path for <code>text $p</code> (live re-render)</td><td>Text content</td></tr>
+<tr><td><code>image</code> / <code>func</code> / <code>collection</code></td><td>The name</td><td>The asset/func/collection</td></tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><code>if page &gt;= $step</code> reads the parameter by <strong>substitution</strong>: each <code>$para step=…</code> slot inlines its own value, each instance gets its own <code>pred_N</code> —
+a constant bakes into it, a <code>::</code>-path expression (<code>step=(scene::page + 1)</code>)
+re-evaluates when the var writes <em>(tests: <code>ui-cond-param</code>,
+<code>ui-cond-param-live</code>)</em>. A def whose conditions read parameters compiles
+because it is opened somewhere (<code>ui::show</code>) or only ever inlined; a
+condition parameter cannot be bound at an open site — that open arg is a
+runtime value <em>(test: <code>ui-bad-cond-param-opened</code>)</em>.</li>
+<li><code>tint=$ink</code> (the whole-attribute form, from the slot’s tuple
+<code>ink=0.95,0.75,0.4,1</code>) and per-part forms (<code>pos=500,$y</code>,
+<code>pos=(4*2),419</code>) resolve at compile time per instance
+<em>(test: <code>ui-slot-attr-params</code>)</em>; a scene variable bound into an attribute
+is the runtime-restyle error — R11 territory <em>(test:
+<code>ui-bad-attr-live-scene-var</code>)</em> — as is a wrong-arity tuple
+<em>(test: <code>ui-bad-attr-tuple-arity</code>)</em>.</li>
+<li><code>text $hp</code> (a str-kind parameter) still takes the str-table name, and now
+the bare path too: <code>hp=sv::hp</code> inlines the path and the label re-renders
+live wherever the stat is inlined <em>(test: <code>ui-stat-hud</code>)</em>. <code>switch $sel</code>
+reads the slot’s <code>::</code>-path the same way <em>(test: <code>ui-param-switch</code>)</em>.</li>
+<li>A <code>$</code>-parameter <strong>inside</strong> a slot value’s expression or a forward into an
+<code>int</code>/<code>number</code>/<code>path</code> parameter is a runtime value: an error <em>(test:
+<code>ui-bad-slot-runtime-param</code>)</em> — runtime parameters reach a component’s
+predicates and layout at R11.</li>
+<li>A bool-valued element (<code>true</code>, or a comparison) is never a slot value —
+bools are the 1/0 of conditions, not values <em>(test: <code>ui-bad-slot-bool</code>)</em>.</li>
+<li><code>font=$f</code> reads the slot’s <strong>font stem</strong>: the value is checked against
+the font assets (not the str table), and the resolved stem lands in the
+label’s per-instance <code>font</code> segment <em>(test: <code>ui-param-font-slot</code>)</em>; an
+open binding stays rejected — the runtime resolves fonts by name only at
+build time <em>(test: <code>ui-bad-param-font</code>)</em>.</li>
+<li>An optional parameter bound a value everywhere (a numeric element or a
+tuple counts) draws the usual “its <code>?</code> is pointless” warning
+<em>(test: <code>ui-opt-warn-num</code>)</em>.</li>
+</ul>
+<h3 id="optional-parameters"><a class="header" href="#optional-parameters">Optional parameters</a></h3>
+<p>Declare a parameter optional with a trailing <code>?</code>. Every call still binds it —
+an optional parameter is passed <code>none</code>, never left out:</p>
+<pre><code class="language-advc">ui choiceBar $bar $barOn $choice $go $turn? modal=false
+    button $bar click=$go hover=$barOn
+        text $choice pos=100,19 tint=1,0.95,0.85,1
+        text $turn??? pos=565,19 tint=1,0.8,0.35,1
+
+$choiceBar bar=choice_1 barOn=choice_1_on choice=cA go=goA turn=turnA pos=500,838
+$choiceBar bar=choice_2 barOn=choice_2_on choice=none go=none turn=none pos=500,926
+</code></pre>
+<p>The three marks do different work where the parameter is <em>read</em>:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Written</th><th>Type</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>$p?</code></td><td><code>Bool</code></td><td>A test: “has a value”. Only in an <code>if</code> condition or as a two-arm <code>switch $p?</code> selector.</td></tr>
+<tr><td><code>$p??</code></td><td>the value</td><td>A <strong>lift</strong>: if <code>$p</code> is <code>none</code>, whatever <code>$p??</code> sits in is absent.</td></tr>
+<tr><td><code>$p???</code></td><td>the value</td><td>A <strong>guard</strong>: if <code>$p</code> is <code>none</code>, the line — and its indented subtree — is skipped.</td></tr>
+</tbody>
+</table>
+</div>
+<p>What an absent value does by position:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Position</th><th><code>$p??</code> absent</th><th><code>$p???</code> absent</th></tr>
+</thead>
+<tbody>
+<tr><td><code>text &lt;source&gt;</code></td><td>The node is removed (children remain in an <code>expand</code>).</td><td>Node and subtree skipped.</td></tr>
+<tr><td><code>image &lt;source&gt;</code></td><td>The node and its event children removed.</td><td>Skipped.</td></tr>
+<tr><td><code>button &lt;base&gt;</code></td><td>An expand with no art, hit, click or hover — text children still render.</td><td>Button and children skipped.</td></tr>
+<tr><td><code>hover=</code> / <code>click=</code></td><td>The attribute is left out (the node shows, not clickable).</td><td>The node is skipped.</td></tr>
+<tr><td><code>grid items=</code></td><td>The grid is removed (zero rows).</td><td>Skipped.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Narrowing.</strong> Inside <code>if $p?</code> the plain <code>$p</code> is a value and needs no mark;
+arm 1 of <code>switch $p?</code> proves it present, arm 0 proves it absent:</p>
+<pre><code class="language-advc">ui n $go? $art? modal=false
+    if $go?
+        button box click=$go pos=0,0
+    switch $art?
+        quad pos=0,0 size=4,4 click=onNone
+        image $art pos=0,0
+</code></pre>
+<p>Negation is <code>$p? == false</code> (there is no <code>!</code>).</p>
+<p>Every misuse is an error pointing at the read <em>(tests: <code>ui-bad-opt-*</code> — the
+whole family: <code>ui-bad-opt-decl-marks</code>, <code>ui-bad-opt-mark-required</code>,
+<code>ui-bad-opt-in-func</code>, <code>ui-bad-opt-plain-value</code>, <code>ui-bad-opt-bool-value</code>,
+<code>ui-bad-opt-in-condition</code>, <code>ui-bad-opt-into-required</code>, <code>ui-bad-opt-none-required</code>,
+<code>ui-bad-opt-missing-key</code>, <code>ui-bad-opt-switch-arms</code>, <code>ui-bad-opt-reserved-none</code>
+…)</em>:</p>
+<pre><code class="language-text">error: `ui c`: `$t` may be none (it is declared `$t?`) here — it is read as a
+value by `text`: test it first with `if $t?`, keep the line with `$t??`, or
+skip it with `$t???`
+</code></pre>
+<pre><code class="language-text">error: `ui p`: `t=` of `ui c` is required, so it cannot be none
+        ^^^^ `none` is the empty value of an optional parameter; `$t` of `ui c`
+        is required, so it cannot be none — pass a value name
+</code></pre>
+<p>A pass-through warning fires when a parameter is never actually used or is
+redundant with an optional target <em>(tests: <code>ui-opt-warnings</code>,
+<code>ui-opt-warn-opens</code>)</em>.</p>
+<h2 id="click-dispatch"><a class="header" href="#click-dispatch">Click dispatch</a></h2>
+<p>A left click goes to the first of these that is open, topmost first:</p>
+<ol>
+<li>The ESC pause menu.</li>
+<li>Modal <code>ui</code> blocks — a <code>ui::modal</code> menu, or a block declared <code>modal=true</code>.</li>
+<li>An <code>option::show</code> menu (it swallows every click while up).</li>
+<li>Non-modal blocks — a miss falls through.</li>
+<li>The world: actors (highest <code>z</code> first), then walking to the clicked floor.</li>
+</ol>
+<p><code>mouse::active false</code> cuts off category 5 entirely, and the pointer stays
+visible (see <a href="./reference/commands.html#the-mouse">Actors › The mouse</a>).</p>
+<h2 id="limitations"><a class="header" href="#limitations">Limitations</a></h2>
+<ul>
+<li>A scene-variable read must be the whole operand in <code>var::when</code> conditions
+(compute into a variable first) — <code>ui</code> <code>if</code> conditions read them live
+anywhere in the expression.</li>
+<li>Per-item hover in a grid: two hoverable images in the same grid share one
+hover target, so <code>mouse_enter</code>/<code>mouse_leave</code> fire for the cell group rather
+than per item; per-item <code>click=</code> is unaffected.</li>
+<li>Attribute parts take parameters and constant expressions; <code>font=$f</code> takes
+the slot’s font stem (verified against the font assets, and the label
+renders with it per inline instance), <code>z=</code> stays an open-argument. An
+open <code>ui::show</code> arg cannot feed an <code>int</code>/<code>number</code>/<code>path</code> parameter — nor
+a <code>font=$p</code> stem — those take the slot’s compile-time values.</li>
+<li>An <code>image</code> whose texture is a string-valued variable is rejected — string
+variables are not yet reactive sources; use integer variables with
+<code>source { switch }</code>.</li>
+<li>A <code>click=</code> func runs synchronously and cannot wait — use a <code>when mouse_click</code> general arm (which can), or have the click func <code>start</code>
+another script.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="reference/animations-voice.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="reference/assets-fonts.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="reference/animations-voice.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="reference/assets-fonts.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="theme/advc-themes-62298e09.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

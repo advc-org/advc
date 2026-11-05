@@ -1,0 +1,145 @@
+/* advc theme — overlays mdBook's dark themes with the landing-page palette.
+   Loaded after the default stylesheets, so equal-specificity overrides win. */
+
+.navy,
+.coal,
+.ayu {
+    --bg:            #0b0613;
+    --fg:            #f5efff;
+    --fg-heading:    #f5efff;
+    --non-existant-color: #7d6ba0;
+
+    --sidebar-bg:    #100822;
+    --sidebar-fg:    #b8a8d6;
+    --sidebar-non-existant: #4a3b66;
+    --sidebar-active: #ec4899;
+    --sidebar-spacer: #1a0f2e;
+
+    --scrollbar:     #2a1c44;
+    --scrollbar-hover: #3a2a5e;
+
+    --icons:         #7d6ba0;
+    --icons-hover:   #f5efff;
+
+    --links:         #22d3ee;
+    --links-hover:   #ec4899;
+
+    --inline-code-color: #f5efff;
+    --inline-code-bg:    rgba(139, 92, 246, 0.18);
+
+    --theme-popup-bg: #140a26;
+    --theme-popup-fg: #f5efff;
+    --theme-hover:    rgba(139, 92, 246, 0.25);
+
+    --quote-bg:      rgba(139, 92, 246, 0.08);
+    --quote-border:  #8b5cf6;
+
+    --table-border-color: #2a1c44;
+    --table-header-bg:    #140a26;
+    --table-alternate-row-bg: rgba(139, 92, 246, 0.05);
+
+    --searchbar-border-color: #2a1c44;
+    --searchbar-bg:   #100822;
+    --searchbar-fg:   #f5efff;
+    --searchbar-shadow-color: rgba(236, 72, 153, 0.35);
+
+    --searchresults-header-fg: #b8a8d6;
+    --searchresults-border-color: rgba(139, 92, 246, 0.25);
+    --searchresults-li-bg: rgba(139, 92, 246, 0.06);
+    --searchmark-bg: rgba(34, 211, 238, 0.30);
+
+    --warning-border: #fbbf24;
+
+    /* advc canonical namespace — fallback values so the no-JS look matches
+       Aurora. At runtime, advc-themes.js overrides these as inline styles on
+       <html>, which beats the .navy/.coal/.ayu rules above. */
+    --advc-accent1-rgb: 236, 72, 153;
+    --advc-accent2-rgb: 139, 92, 246;
+    --advc-accent3-rgb: 34, 211, 238;
+    --advc-grad-hot: linear-gradient(135deg, #fb7185 0%, #ec4899 35%, #8b5cf6 75%, #22d3ee 100%);
+    --advc-code-bg: #0e0720;
+}
+
+/* Body + ambient glow to echo the landing page */
+body {
+    background:
+        radial-gradient(55% 50% at 10% 6%, rgba(var(--advc-accent1-rgb), 0.14), transparent 60%),
+        radial-gradient(45% 40% at 90% 14%, rgba(var(--advc-accent3-rgb), 0.10), transparent 60%),
+        radial-gradient(60% 55% at 50% 100%, rgba(var(--advc-accent2-rgb), 0.12), transparent 60%),
+        var(--bg);
+}
+
+/* Headings: a hot gradient like the landing page hero */
+h1, h2, h3, h4 {
+    color: var(--fg-heading);
+}
+h1 a, h2 a, h3 a { color: inherit; }
+.content h1 {
+    background: var(--advc-grad-hot);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Links */
+a { color: var(--links); }
+a:hover { color: var(--links-hover); }
+.menu-title { color: var(--fg); font-weight: 700; }
+
+/* Sidebar active item */
+.chapter li a.active,
+.chapter li.active > a {
+    color: var(--sidebar-active);
+}
+
+/* Inline code */
+code, .inline-code {
+    color: var(--inline-code-color);
+    background: var(--inline-code-bg);
+    padding: 0.12em 0.4em;
+    border-radius: 6px;
+    font-size: 0.9em;
+}
+
+/* Code blocks: slightly lifted panel, magenta left accent */
+pre {
+    background: var(--advc-code-bg) !important;
+    border: 1px solid rgba(var(--advc-accent2-rgb), 0.22);
+    border-left: 3px solid var(--quote-border);
+    border-radius: 10px;
+}
+pre code {
+    background: transparent;
+    padding: 0;
+    color: #ede6ff;
+}
+
+/* Blockquotes (admonition-like asides) */
+blockquote {
+    border-left: 3px solid var(--quote-border);
+    background: var(--quote-bg);
+    border-radius: 0 8px 8px 0;
+}
+
+/* Tables */
+table { border-collapse: collapse; }
+thead { background: var(--table-header-bg); }
+
+/* Search bar focus glow */
+#searchbar {
+    box-shadow: 0 0 0 1px rgba(var(--advc-accent1-rgb), 0.2);
+}
+#searchbar:focus {
+    box-shadow: 0 0 0 2px rgba(var(--advc-accent1-rgb), 0.5);
+}
+
+/* Theme picker button hover */
+.theme-popup {
+    border: 1px solid rgba(var(--advc-accent2-rgb), 0.3);
+}
+
+/* Scrollbar styling for webkit */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
