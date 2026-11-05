@@ -483,3 +483,75 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
   width: 100%;
   box-sizing: border-box;
 }
+
+/* ─── doc pages: pricing + EULA (static html, the devlog reading layout) ── */
+.doc-page { padding: 56px 0 96px; }
+.doc-body { max-width: 66ch; }
+.doc-body > *:first-child { margin-top: 0; }
+.doc-body h1 {
+  font-size: clamp(2.6rem, 6vw, 4.2rem);
+  letter-spacing: -0.02em;
+  color: #e5e7eb;
+  margin: 18px 0 34px;
+}
+.doc-body h2 {
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #f9a8d4;
+  border: none;
+  padding: 56px 0 22px;
+}
+.doc-body h2::after {
+  content: "";
+  display: block;
+  width: 92px;
+  height: 2px;
+  margin-top: 14px;
+  background: #ec4899;
+}
+.doc-body .lede { font-size: 1.3rem; line-height: 1.7; color: #e2e8f0; margin-bottom: 34px; }
+.doc-body p, .doc-body li {
+  color: #cbd5e1;
+  font-size: 1.13rem;
+  line-height: 1.85;
+  margin: 0 0 26px;
+}
+.doc-body ul { margin: 0 0 34px; padding-left: 22px; }
+.doc-body li { margin-bottom: 16px; }
+.doc-body li::marker { color: #ec4899; }
+.doc-body b, .doc-body strong { color: #f1f5f9; }
+.doc-body a { color: #ec4899; }
+.doc-body code {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.88em;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: rgba(236, 72, 153, 0.10);
+  border: 1px solid color-mix(in oklab, #ec4899 22%, transparent);
+}
+.doc-body blockquote {
+  margin: 0 0 30px;
+  border-left: 2px solid #ec4899;
+  padding: 6px 0 6px 18px;
+  color: #94a3b8;
+}
+.doc-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 34px;
+}
+.doc-body th, .doc-body td {
+  text-align: left;
+  padding: 14px 16px;
+  border-bottom: 1px solid color-mix(in oklab, #ec4899 18%, transparent);
+  color: #cbd5e1;
+  vertical-align: top;
+}
+.doc-body th {
+  color: #f9a8d4;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.78rem;
+}
+.doc-body td b { color: #f1f5f9; }
