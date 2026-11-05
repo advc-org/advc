@@ -9,8 +9,9 @@
 #   --bin-dir <dir>   where the `advc` executable goes (default: /usr/local/bin)
 #   --cache-dir <dir> where the packs extract (default: $HOME/.cache/advc)
 #   --uninstall       remove the installed compiler; every removal is
-#                     printed and CONFIRMED one at a time — the default
-#                     answer is NO and one no aborts the whole uninstall
+#                     printed FIRST in one list, confirmed once with a
+#                     single [y/N] — the default answer is NO and nothing
+#                     is removed without that one yes
 #   --help            this text
 #
 # The tool override for the GitHub checkout (tests): ADVC_GITHUB_REPO.
@@ -95,37 +96,44 @@ if [ "${UNINSTALL:-0}" = 1 ]; then
     done
     cache_entries=""
     n_entries=0
-    n_bytes=0
+    n_kb=0
     if [ -d "$CACHE" ]; then
         for entry in "$CACHE"/*; do
             [ -e "$entry" ] || break
             cache_entries="$cache_entries
 $entry"
             n_entries=$((n_entries + 1))
-            entry_bytes=$(du -sk "$entry" | cut -f1)
-            n_bytes=$((n_bytes + entry_bytes))
+            entry_kb=$(du -sk "$entry" | cut -f1)
+            n_kb=$((n_kb + entry_kb))
         done
+    fi
+    # du -sk counts in KB; the summary reads better as MB (or GB).
+    if [ "$n_kb" -ge 1048576 ]; then
+        n_size="$(( (n_kb + 524287) / 1048576 )) GB"
+    elif [ "$n_kb" -ge 1024 ]; then
+        n_size="$(( (n_kb + 511) / 1024 )) MB"
+    else
+        n_size="${n_kb} KB"
     fi
 
-    # The summary/what-will-go.
+    # The summary/what-will-go: EVERY command is printed before anything runs.
     echo "  uninstalling advc ($triple)"
     echo
-    echo "  what will be removed, ONE by ONE (each printed + confirmed; the"
-    echo "  default answer is NO and the first no aborts the whole uninstall;"
-    echo "  anything explicitly confirmed before it stays removed):"
+    echo "  what will be removed, in one go:"
     echo
     if [ -n "$found_bin" ]; then
-        echo "    the executable:  $found_bin"
+        echo "    rm -rf $found_bin"
     else
-        echo "    the executable:  none found in $BIN_DIR, /usr/local/bin, ~/.local/bin"
+        echo "    (no executable found in $BIN_DIR, /usr/local/bin, ~/.local/bin)"
     fi
     if [ "$n_entries" -gt 0 ]; then
-        echo "    the cache:       $n_entries item(s) under $CACHE (~${n_bytes} MB)"
+        echo "    the cache: $n_entries item(s) under $CACHE (~$n_size)"
         printf '%s\n' "$cache_entries" | while IFS= read -r e; do
-            [ -n "$e" ] && echo "                     $e"
+            [ -n "$e" ] && echo "    rm -rf $e"
         done
+        echo "    rmdir $CACHE"
     else
-        echo "    the cache:       nothing under $CACHE"
+        echo "    (the cache: nothing under $CACHE)"
     fi
     echo
     printf 'Proceed? [y/N] '
@@ -136,48 +144,39 @@ $entry"
     esac
     echo
 
-    # The removals, one by one, CONFIRMED individually — the y above only
-    # opened the phase. The same default: Enter or anything else = abort.
-    confirm() {
-        printf '%s\nRemove this? [y/N] ' "$1"
-        IFS= read -r answer </dev/tty 2>/dev/null || answer=""
-        case "$answer" in
-            y|Y|yes|YES) return 0 ;;
-            *) echo "  → kept (answer '$answer'); the uninstall aborts here" >&2; return 1 ;;
-        esac
-    }
+    # The removals, one go: the confirm above approved the whole list. A
+    # failed rm never prints "removed".
     run_rm() {
-        if confirm "rm -rf $1"; then
-            if eval "rm -rf $1" 2>/dev/null; then
-                echo "  → removed"
-            elif sudo rm -rf "$1" 2>/dev/null; then
-                # A root-owned path (the /usr/local/bin default) needs the
-                # admin rights the user just proved by confirming.
-                echo "  → removed (with sudo)"
-            else
-                echo "  → FAILED — the item stays; check its permissions" >&2
-                exit 1
-            fi
+        if rm -rf "$1" 2>/dev/null; then
+            echo "  → removed $1"
+        elif sudo rm -rf "$1" 2>/dev/null; then
+            # A root-owned path (the /usr/local/bin default) needs the
+            # admin rights the user just proved by confirming.
+            echo "  → removed $1 (with sudo)"
         else
-            exit 1
+            echo "  → FAILED to remove $1 — check its permissions" >&2
         fi
     }
 
     if [ -n "$found_bin" ]; then
-        run_rm "'$found_bin'"
+        run_rm "$found_bin"
     fi
     if [ -d "$CACHE" ]; then
         for entry in "$CACHE"/*; do
             [ -e "$entry" ] || break
-            run_rm "'$entry'"
+            run_rm "$entry"
         done
-        if [ -e "$CACHE" ] && confirm "rmdir $CACHE"; then
-            rmdir "$CACHE" && echo "  → removed" || { echo "  → kept (not empty)"; exit 1; }
+        if [ -e "$CACHE" ]; then
+            if rmdir "$CACHE" 2>/dev/null; then
+                echo "  → removed $CACHE"
+            else
+                echo "  → kept $CACHE (not empty)"
+            fi
         fi
     fi
 
     echo
-    echo "  uninstall done. any kept items stay exactly where they are."
+    echo "  uninstall done."
     exit 0
 fi
 
@@ -223,9 +222,53 @@ compiler_name=$(basename "$compiler_url" .tar.gz)
 runtime_name=$(basename "$runtime_url" .tar.gz)
 version_from_name=$(printf '%s' "$compiler_name" | sed "s/^advc-//; s/-$triple\$//")
 
+# The pack sizes straight from the release JSON (the "size" field sits in
+# the same asset object as the browser_download_url, BEFORE it), byte → ~MB.
+# RS="," splits the JSON into one field per record, so it works on both the
+# pretty-printed (GitHub API) and compact forms.
+size_of() {
+    printf '%s' "$releases_json" | awk -v target="$1" '
+        BEGIN { RS = "," }
+        /"browser_download_url"/ {
+            if (index($0, target) > 0) { print last_size; exit }
+        }
+        /"size": *[0-9]+/ {
+            bytes = $0
+            sub(/.*"size": */, "", bytes)
+            gsub(/[^0-9]/, "", bytes)
+            last_size = bytes
+        }
+    '
+}
+mb_of() { echo "$(( ($1 + 524287) / 1048576 ))"; }
+
+# ─── the plan: everything that will happen, BEFORE anything touches the disk
+c_bytes=$(size_of "$compiler_url")
+r_bytes=$(size_of "$runtime_url")
+echo
+echo "  installing advc $version_from_name for $triple. here is what will happen:"
+echo
+echo "    1. download (into a temp dir, removed after):"
+echo "         $compiler_name.tar.gz  (~$(mb_of "${c_bytes:-0}") MB)"
+echo "         $runtime_name.tar.gz  (~$(mb_of "${r_bytes:-0}") MB)"
+echo "    2. extract both packs into $CACHE"
+echo "         (the compiler and the runtime stay there — advc finds"
+echo "          them by version: $CACHE/$compiler_name/)"
+echo "    3. copy the executable into $BIN_DIR"
+echo "         (a root-owned folder, so sudo may ask for your password;"
+echo "          a Skip keeps advc in the cache and prints the full path)"
+echo "    4. run advc --version to verify"
+echo
+printf 'Proceed? [y/N] '
+IFS= read -r answer </dev/tty 2>/dev/null || answer=""
+case "$answer" in
+    y|Y|yes|YES) echo ;;
+    *) echo "install cancelled — nothing was downloaded or changed (answer '$answer')" >&2; exit 1 ;;
+esac
+
 echo "  [2/5] downloading the packs"
-echo "        compiler pack: $compiler_name.tar.gz  (~21 MB)"
-echo "        runtime pack:  $runtime_name.tar.gz  (~37 MB)"
+echo "        compiler pack: $compiler_name.tar.gz"
+echo "        runtime pack:  $runtime_name.tar.gz"
 
 # Download both packs into a temp dir (cleaned up however the script ends).
 # curl '#' = one quiet progress bar per download.
