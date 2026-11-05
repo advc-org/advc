@@ -1,0 +1,52 @@
+// Death (#13): attacking the dragon again without the potion.
+
+// --- #13 Your Adventure Ends Here -----------------------------------------------------
+str n13
+    en "13"
+str t13
+    en "Your Adventure Ends Here"
+str p13a
+    en "You stagger to your feet and raise your sword one last time. But your arm is weak, and the blade glances harmlessly from the scales."
+str p13d
+    en "SKARTHAX opens its jaws, and the world turns to fire."
+str p13f
+    en "YOUR ADVENTURE ENDS HERE."
+str p13g
+    en "Perhaps the King's counsel held a clue: do not waste your gifts, and do not despair."
+str c13a
+    en "Begin again."
+
+ui p13 modal=false
+    $pageHead section=n13 title=t13
+    if book::reveal >= 2 pos=500,189
+        text p13a width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 6 pos=500,357
+        text p13d width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 9 pos=500,483
+        text p13f width=640 outline=0 tint=0.26,0.009,0.006,1
+    if book::reveal >= 11 pos=500,567
+        text p13g width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 99
+        $choices choice1=c13a go1=clickNewGame turn1=none choice2=none go2=none turn2=none choice3=none go3=none turn3=none
+
+// The click: lock the mouse and run the page turn; the death knell as the
+// page reveals.
+func go13
+    mouse::active false
+    start to13
+
+func to13
+    call turnPage
+    call closePages
+    call show13
+    call fadeIn
+    sound sfx_toll 0.8
+    call revealText
+    call showChoices
+
+func show13
+    select scene
+    image 0 0 0 ill_death
+    call geo_death
+    book::music = 0
+    ui::show p13 z=7

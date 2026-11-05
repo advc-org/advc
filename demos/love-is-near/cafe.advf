@@ -1,0 +1,773 @@
+// The Moonbean Cafe: Luna's five visits, in order, whenever Kai goes, and a
+// short hello after the fifth. Every visit costs a $5 coffee.
+//
+// 1 "First time here?"   2 the city (the stars, Tuesday's hint)
+// 3 the sketchbook (ask, don't grab: Wednesday's hint)   4 the rainy evening
+// 5 the ask: yes with affection >= 3, then the $20 tickets (Thursday's hint),
+//   or her number on the cup without the money.
+// Lines: visit k at k01.., the hello at 601..; menu k is visit k's choice.
+
+str caf101a
+    en "The door bell rings. Inside, the cafe smells of cinnamon and warm milk."
+str caf102a
+    en "Welcome! First time here? I'd love to know what I can get for you."
+str caf103a
+    en "Up close she is even prettier. Her name tag says LUNA. Kai's mind goes blank."
+str c1a
+    en "I'll just have a black coffee."
+str c1b
+    en "What do you recommend?"
+str c1c
+    en "Do you come here often?"
+str caf111a
+    en "One black coffee, coming up. Simple. I respect that."
+str caf121a
+    en "Ooh, nobody ever asks! The honey lavender latte. My favourite. I invented it, actually."
+str caf122a
+    en "Then I'll have that. Your favourite."
+str caf123a
+    en "...Good choice."
+str caf131a
+    en "I... work here? So, yes. Every day, actually."
+str caf132a
+    en "(Smooth, Kai. Very smooth.)"
+str caf141a
+    en "I'm Luna, by the way. You're the new boy at Sato House, right? I saw the van."
+str caf142a
+    en "Kai. Yes. Mrs. Sato's building. Or Mochi's, apparently."
+str caf143a
+    en "Ha! Mochi really is the boss. See you around, Kai."
+
+str caf201a
+    en "Kai! Back again? The usual... wait, do you have a usual yet?"
+str caf202a
+    en "Not yet. Surprise me."
+str caf203a
+    en "So. How do you like Kaminato so far? Be honest."
+str c2a
+    en "The food here is amazing."
+str c2b
+    en "The stars over the harbour."
+str c2c
+    en "Honestly? I miss home a bit."
+str caf211a
+    en "Right? The ramen place by the station is dangerous. I go twice a week."
+str caf221a
+    en "The stars? You noticed them too?"
+str caf222a
+    en "From the pier you can see the whole summer triangle. I go there after closing."
+str caf223a
+    en "Maybe you could show me which one is Vega."
+str caf224a
+    en "...Maybe I could."
+str caf231a
+    en "That's okay. It took me a whole year to stop missing my mom's cooking."
+str caf232a
+    en "Come here when it gets bad. Coffee helps. A little."
+str caf241a
+    en "She hands him his cup. There is a tiny star drawn in the foam."
+
+str caf301a
+    en "On her break, Luna sits at the corner table with a pencil behind her ear, drawing in a worn sketchbook."
+str caf302a
+    en "Oh! Kai. Sorry, I'm on my break. Ken will take your order."
+str c3a
+    en "What are you drawing?"
+str c3b
+    en "Can I see? Come on, show me."
+str c3c
+    en "Shouldn't you be working?"
+str caf311a
+    en "Just... the view from the window. The street lamps, the people going home."
+str caf312a
+    en "You can look, if you want. Since you asked nicely."
+str caf313a
+    en "The page is full of tiny lights and tiny people. It's beautiful."
+str caf314a
+    en "You're really good, Luna."
+str caf321a
+    en "Um... not today. It's not ready."
+str caf322a
+    en "She closes the sketchbook and holds it against her apron."
+str caf323a
+    en "(Daichi literally told me not to do that.)"
+str caf331a
+    en "It's my break. Breaks are for the things I love."
+str caf332a
+    en "...Sorry. That came out sharp. Enjoy your coffee."
+
+str caf401a
+    en "Rain pours over Hikari Street. The cafe is empty except for the two of them."
+str caf402a
+    en "You're soaked! Sit, sit. Nobody else is coming in this weather."
+str caf403a
+    en "Can I tell you a secret? I want to make picture books. Stars, foxes, lost kids finding their way home. That kind of thing."
+str caf404a
+    en "My parents think it's a waste of time. Maybe they're right."
+str c4a
+    en "Do it. I'd buy the first copy."
+str c4b
+    en "Picture books? Like, for babies?"
+str c4c
+    en "Anyway... can I get a refill?"
+str caf411a
+    en "You'd really... buy it?"
+str caf412a
+    en "I'd make Mrs. Sato buy ten. And Mochi."
+str caf413a
+    en "Thank you, Kai. Really."
+str caf421a
+    en "...Yeah. For babies. Never mind."
+str caf431a
+    en "Oh. Sure. One refill, coming up."
+str caf441a
+    en "The rain softens. For a while neither of them says anything, and it's nice."
+
+str caf501a
+    en "Kai! You look nervous. Did something happen?"
+str caf502a
+    en "N-no! I mean... the Star Festival is this Saturday, at the hill observatory."
+str c5a
+    en "Would you go with me?"
+str c5b
+    en "...I just wanted to tell you. Bye!"
+str caf511a
+    en "Oh... Kai, that's sweet. But I promised my aunt I'd help at her food stall."
+str caf512a
+    en "Maybe... another time?"
+str caf513a
+    en "It doesn't sound like another time."
+str caf521a
+    en "Me? With you?"
+str caf522a
+    en "...I'd love to."
+str caf531a
+    en "Great! Then I'll get us two tickets. My treat."
+str caf532a
+    en "It's a date, then. Saturday, seven o'clock, at the bottom of the hill."
+str caf541a
+    en "Kai reaches for his wallet. Not even enough for one ticket."
+str caf542a
+    en "Luna, I'm so sorry. I... can't afford the tickets this week."
+str caf543a
+    en "Hey. It's okay."
+str caf544a
+    en "She takes a marker and writes something on his paper cup."
+str caf545a
+    en "My number. Next time, for sure. Okay?"
+str caf551a
+    en "Kai? ...Wait!"
+str caf552a
+    en "Too late. Kai is already halfway down Hikari Street, red to the ears."
+
+str caf601a
+    en "Only one more sleep! I already picked my yukata."
+str caf602a
+    en "Did you save my number? ...Good. Don't lose it."
+str caf603a
+    en "Hi, Kai. The usual?"
+
+ui sCafe modal=false
+    if dlg::line == 101
+        text caf101a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 102
+        text caf102a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 103
+        text caf103a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::menu == 1
+        text c1a pos=1256,279 click=pick1
+        text c1b pos=1256,399 click=pick2
+        text c1c pos=1256,519 click=pick3
+    if dlg::line == 111
+        text caf111a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 121
+        text caf121a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 122
+        text caf122a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 123
+        text caf123a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 131
+        text caf131a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 132
+        text caf132a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 141
+        text caf141a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 142
+        text caf142a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 143
+        text caf143a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 201
+        text caf201a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 202
+        text caf202a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 203
+        text caf203a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::menu == 2
+        text c2a pos=1256,279 click=pick1
+        text c2b pos=1256,399 click=pick2
+        text c2c pos=1256,519 click=pick3
+    if dlg::line == 211
+        text caf211a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 221
+        text caf221a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 222
+        text caf222a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 223
+        text caf223a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 224
+        text caf224a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 231
+        text caf231a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 232
+        text caf232a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 241
+        text caf241a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 301
+        text caf301a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 302
+        text caf302a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::menu == 3
+        text c3a pos=1256,279 click=pick1
+        text c3b pos=1256,399 click=pick2
+        text c3c pos=1256,519 click=pick3
+    if dlg::line == 311
+        text caf311a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 312
+        text caf312a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 313
+        text caf313a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 314
+        text caf314a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 321
+        text caf321a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 322
+        text caf322a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 323
+        text caf323a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 331
+        text caf331a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 332
+        text caf332a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 401
+        text caf401a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 402
+        text caf402a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 403
+        text caf403a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 404
+        text caf404a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::menu == 4
+        text c4a pos=1256,279 click=pick1
+        text c4b pos=1256,399 click=pick2
+        text c4c pos=1256,519 click=pick3
+    if dlg::line == 411
+        text caf411a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 412
+        text caf412a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 413
+        text caf413a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 421
+        text caf421a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 431
+        text caf431a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 441
+        text caf441a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 501
+        text caf501a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 502
+        text caf502a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::menu == 5
+        text c5a pos=1256,279 click=pick1
+        text c5b pos=1256,399 click=pick2
+    if dlg::line == 511
+        text caf511a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 512
+        text caf512a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 513
+        text caf513a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 521
+        text caf521a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 522
+        text caf522a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 531
+        text caf531a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 532
+        text caf532a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 541
+        text caf541a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 542
+        text caf542a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 543
+        text caf543a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 544
+        text caf544a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 545
+        text caf545a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 551
+        text caf551a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 552
+        text caf552a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 601
+        text caf601a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 602
+        text caf602a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 603
+        text caf603a pos=252,827 width=1440 tint=1,0.96,0.9,1
+
+// --- entering ---------------------------------------------------------------------------------
+// The cafe by day in the afternoon, lamplit in the evening (visit 4 is always
+// the rainy evening). Every visit pays for its coffee.
+func cafeVisit
+    call fadeOut
+    call closeScenes
+    call clearChars
+    select bg
+    switch day::slot
+        image 0 0 0 bg_cafe_day
+        image 0 0 0 bg_cafe_day
+        image 0 0 0 bg_cafe_eve
+        image 0 0 0 bg_cafe_eve
+    end
+    vn::hudShown = 1
+    vn::music = 4
+    ui::show sCafe z=4.5
+    call boxOn
+    dlg::who = 0
+    switch luna::visit
+        call visitA
+        call visitB
+        call visitC
+        call visitD
+        call visitE
+        call visitAfter
+    end
+
+func lunaIn
+    select chr1
+    image 0 0 0 luna_smile
+    call fadeIn
+    sound sfx_bell 0.5
+    call spend5
+
+// --- visit 1 ---------------------------------------------------------------------------------
+func visitA
+    call fadeIn
+    sound sfx_bell 0.5
+    call spend5
+    dlg::line = 101
+    call next
+    select chr1
+    image 0 0 0 luna_smile
+    call popIn1
+    dlg::who = 7
+    dlg::line = 102
+    call next
+    dlg::who = 0
+    dlg::line = 103
+    call next
+    dlg::opts = 3
+    dlg::i1 = 1
+    dlg::i2 = 2
+    dlg::i3 = 4
+    dlg::menu = 1
+    call choose
+    dlg::who = 2
+    switch dlg::pick
+        dlg::pick = 0
+        call v1Black
+        call v1Recommend
+        call v1Often
+    end
+    select chr1
+    image 0 0 0 luna_smile
+    dlg::who = 2
+    dlg::line = 141
+    call next
+    dlg::who = 1
+    dlg::line = 142
+    call next
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_laugh
+    dlg::line = 143
+    call next
+    luna::met = 1
+    call visit1
+
+func v1Black
+    select chr1
+    image 0 0 0 luna_neutral
+    dlg::line = 111
+    call next
+func v1Recommend
+    select chr1
+    image 0 0 0 luna_laugh
+    dlg::line = 121
+    call next
+    dlg::who = 1
+    dlg::line = 122
+    call next
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_blush
+    dlg::line = 123
+    call gainLove
+    call next
+func v1Often
+    select chr1
+    image 0 0 0 luna_surprised
+    dlg::line = 131
+    call next
+    dlg::who = 1
+    dlg::line = 132
+    call next
+
+// --- visit 2 ---------------------------------------------------------------------------------
+func visitB
+    call lunaIn
+    dlg::who = 2
+    dlg::line = 201
+    call next
+    dlg::who = 1
+    dlg::line = 202
+    call next
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_neutral
+    dlg::line = 203
+    call next
+    dlg::opts = 3
+    dlg::i1 = 1
+    dlg::i2 = 3
+    dlg::i3 = 4
+    dlg::menu = 2
+    call choose
+    switch dlg::pick
+        dlg::pick = 0
+        call v2Food
+        call v2Stars
+        call v2Home
+    end
+    dlg::who = 0
+    select chr1
+    image 0 0 0 luna_smile
+    dlg::line = 241
+    call next
+    call visit1
+
+func v2Food
+    select chr1
+    image 0 0 0 luna_smile
+    dlg::line = 211
+    call next
+func v2Stars
+    select chr1
+    image 0 0 0 luna_surprised
+    dlg::line = 221
+    call next
+    select chr1
+    image 0 0 0 luna_laugh
+    dlg::line = 222
+    call next
+    dlg::who = 1
+    dlg::line = 223
+    call next
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_blush
+    dlg::line = 224
+    call gainLove
+    call next
+func v2Home
+    select chr1
+    image 0 0 0 luna_sad
+    dlg::line = 231
+    call next
+    select chr1
+    image 0 0 0 luna_smile
+    dlg::line = 232
+    call next
+
+// --- visit 3 ---------------------------------------------------------------------------------
+func visitC
+    select chr1
+    image 0 0 0 luna_neutral
+    call fadeIn
+    sound sfx_bell 0.5
+    call spend5
+    dlg::who = 0
+    dlg::line = 301
+    call next
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_surprised
+    dlg::line = 302
+    call next
+    dlg::opts = 3
+    dlg::i1 = 1
+    dlg::i2 = 4
+    dlg::i3 = 3
+    dlg::menu = 3
+    call choose
+    switch dlg::pick
+        dlg::pick = 0
+        call v3Ask
+        call v3Grab
+        call v3Work
+    end
+    call visit1
+
+func v3Ask
+    select chr1
+    image 0 0 0 luna_smile
+    dlg::line = 311
+    call next
+    select chr1
+    image 0 0 0 luna_blush
+    dlg::line = 312
+    call next
+    dlg::who = 0
+    dlg::line = 313
+    call next
+    dlg::who = 1
+    dlg::line = 314
+    call gainLove
+    call next
+func v3Grab
+    select chr1
+    image 0 0 0 luna_sad
+    dlg::line = 321
+    call next
+    dlg::who = 0
+    dlg::line = 322
+    call next
+    dlg::who = 1
+    dlg::line = 323
+    call next
+func v3Work
+    select chr1
+    image 0 0 0 luna_neutral
+    dlg::line = 331
+    call next
+    select chr1
+    image 0 0 0 luna_sad
+    dlg::line = 332
+    call next
+
+// --- visit 4: the rainy evening ------------------------------------------------------------
+func visitD
+    select bg
+    image 0 0 0 bg_cafe_rain
+    select chr1
+    image 0 0 0 luna_smile
+    call fadeIn
+    sound sfx_rain 0.5
+    sound sfx_bell 0.4
+    call spend5
+    dlg::who = 0
+    dlg::line = 401
+    call next
+    dlg::who = 2
+    dlg::line = 402
+    call next
+    select chr1
+    image 0 0 0 luna_neutral
+    dlg::line = 403
+    call next
+    select chr1
+    image 0 0 0 luna_sad
+    dlg::line = 404
+    call next
+    dlg::opts = 3
+    dlg::i1 = 2
+    dlg::i2 = 4
+    dlg::i3 = 5
+    dlg::menu = 4
+    call choose
+    switch dlg::pick
+        dlg::pick = 0
+        call v4Book
+        call v4Babies
+        call v4Refill
+    end
+    dlg::who = 0
+    dlg::line = 441
+    call next
+    call visit1
+
+func v4Book
+    select chr1
+    image 0 0 0 luna_blush
+    dlg::line = 411
+    call next
+    dlg::who = 1
+    dlg::line = 412
+    call next
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_laugh
+    dlg::line = 413
+    call gainLove
+    call next
+func v4Babies
+    select chr1
+    image 0 0 0 luna_sad
+    dlg::line = 421
+    call next
+func v4Refill
+    select chr1
+    image 0 0 0 luna_neutral
+    dlg::line = 431
+    call next
+
+// --- visit 5: the ask ------------------------------------------------------------------------
+func visitE
+    call lunaIn
+    dlg::who = 2
+    dlg::line = 501
+    call next
+    dlg::who = 1
+    dlg::line = 502
+    call next
+    dlg::opts = 2
+    dlg::i1 = 2
+    dlg::i2 = 1
+    dlg::menu = 5
+    call choose
+    switch dlg::pick
+        dlg::pick = 0
+        call askHer
+        call askRunAway
+    end
+
+// Asking counts as the fifth visit; running away does not (ask next time).
+func askHer
+    luna::asked = 1
+    call visit1
+    switch luna::love
+        call askNo
+        call askNo
+        call askNo
+        call askYes
+        call askYes
+        call askYes
+    end
+
+func askNo
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_sad
+    dlg::line = 511
+    call next
+    dlg::line = 512
+    call next
+    dlg::who = 0
+    dlg::line = 513
+    call next
+
+func askYes
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_surprised
+    dlg::line = 521
+    call next
+    select chr1
+    image 0 0 0 luna_blush
+    dlg::line = 522
+    call next
+    switch money::units
+        call askBroke
+        call askBroke
+        call askBroke
+        call askBroke
+        call askPaid
+        call askPaid
+        call askPaid
+        call askPaid
+        call askPaid
+        call askPaid
+        call askPaid
+        call askPaid
+        call askPaid
+        call askPaid
+        call askPaid
+        call askPaid
+        call askPaid
+        call askPaid
+        call askPaid
+        call askPaid
+    end
+
+func askPaid
+    dlg::who = 1
+    dlg::line = 531
+    call spend20
+    luna::date = 1
+    call next
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_laugh
+    dlg::line = 532
+    call next
+
+func askBroke
+    dlg::who = 0
+    dlg::line = 541
+    call next
+    dlg::who = 1
+    dlg::line = 542
+    call next
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_smile
+    dlg::line = 543
+    call next
+    dlg::who = 0
+    select prop
+    image 0 0 0 cup
+    call popInProp
+    dlg::line = 544
+    call next
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_blush
+    dlg::line = 545
+    luna::number = 1
+    call next
+
+func askRunAway
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_surprised
+    dlg::line = 551
+    call next
+    dlg::who = 0
+    call clearChars
+    dlg::line = 552
+    call next
+
+// --- after the fifth visit ----------------------------------------------------------------------
+func visitAfter
+    call lunaIn
+    dlg::who = 2
+    switch luna::date
+        call afterNoDate
+        call afterDate
+    end
+
+func afterDate
+    dlg::line = 601
+    call next
+func afterNoDate
+    switch luna::number
+        call afterRegular
+        call afterNumber
+    end
+func afterNumber
+    dlg::line = 602
+    call next
+func afterRegular
+    select chr1
+    image 0 0 0 luna_neutral
+    dlg::line = 603
+    call next

@@ -1,0 +1,522 @@
+// Arthur Kessler's apartment-office, 1:40 a.m. The one room of the scene:
+// actors, hotspots, the verb dispatch for every object, the clue pickups,
+// ambience loops, the intro and the finale.
+//
+// How a click works (SCUMM style):
+//   1. the player picks a verb in the panel -> crime::verb (panel.advf);
+//   2. clicking a hotspot starts its `use<Obj>` handler as a click thread
+//      (R5), which can park;
+//   3. `use<Obj>` locks the mouse, switches on crime::verb (0 walk, 1 look,
+//      2 pick, 3 talk, 4 pull) and calls the per-verb handler, then
+//      `actionDone` resets the verb to WALK TO and unlocks the mouse.
+// Clicking empty floor walks there (engine walk map fallback).
+
+import detective
+import officer
+import panel
+import voices
+import roomgeo
+
+// crime::talking is 1 while the officer conversation is open; the asked* flags
+// are the questions already asked (the officer's menu hides those).
+var crime
+    var verb = 0
+    var clues = 0
+    var trash = 0
+    var done = 0
+    var talking = 0
+    var askedWhat = 0
+    var askedWho = 0
+    var askedWitness = 0
+    var askedLocked = 0
+
+// --- scene setup -------------------------------------------------------
+// The room's actors (hotspots, props, trashFront / trashPaper for det_search)
+// and the go<Obj> walk-to funcs come from roomgeo.advf (tools/roomgeo.py).
+func crimeScene
+    call roomActors
+
+    actor officer, pos 46 268, z 2
+        image 0 -36 -156 officer
+        say::color cyan, say::follow 0 -20
+        enable
+        mouse::area "image0"
+        mouse::click useOfficer
+        lipsync lips_officer
+
+    actor detective, pos 60 340, z 3, walkat officewalk walkDetective, pose poseDetective, mouse::over false
+        image 0 -36 -156 det_stand_e
+        say::color white, say::follow 0 -20
+        vel 100
+        enable
+        inside officewalk depth scaleDetective
+        lipsync lips_detective
+
+    // Both in the room's light: the officer in the door's, the detective in
+    // each zone's he walks into (roomgeo.advf, from tools/light.py).
+    call roomLight
+
+    // The room is 960 px wide: the view starts on the left (door, desk) and
+    // scrolls half a screen when the detective nears an edge.
+    camera::bounds 960 352
+    camera::follow detective
+    camera::at 0 0
+
+    call evidencePanel
+
+    start musicLoop
+    start rainLoop
+    start rainFall
+    start neonLoop
+    start sirenLoop
+    start officerIdle
+    start intro
+
+// --- intro & finale ----------------------------------------------------
+func intro
+    mouse::active false
+    select detective
+    wait nothing 1s
+    wait walkto 210 306
+    call faceS
+    wait talk Intro1
+    call faceW
+    wait talk OffIntro
+    wait talk Intro2
+    call faceS
+    wait talk Intro3
+    mouse::active true
+
+func finale
+    mouse::active false
+    select detective
+    wait walkto 300 318
+    call faceS
+    wait talk Final1
+    wait talk Final2
+    sound sfx_finale 0.8
+    wait talk Final3
+    select theEnd
+    image 0 0 0 to_be_continued
+
+// --- verb dispatch helpers -----------------------------------------------
+func actionDone
+    crime::verb = 0
+    switch crime::done
+        mouse::active true
+        start finale
+    end
+
+func noop
+    print "noop"
+
+func cantPick
+    select detective
+    wait random
+        talk CantPick1
+        talk CantPick2
+    end
+
+func cantPull
+    select detective
+    wait talk CantPull
+
+func cantTalk
+    select detective
+    wait random
+        talk CantTalk1
+        talk CantTalk2
+    end
+
+// --- board ---------------------------------------------------------------
+func useBoard
+    mouse::active false
+    switch crime::verb
+        call goBoard
+        call Look_Board
+        call Pick_Board
+        call Talk_Board
+        call Pull_Board
+    end
+    call actionDone
+func Look_Board
+    call goBoard
+    wait talk LookBoard1
+    wait talk LookBoard2
+func Pick_Board
+    call goBoard
+    wait talk PickBoard
+func Talk_Board
+    select detective
+    wait talk TalkBoard
+func Pull_Board
+    call goBoard
+    wait talk PullBoard
+
+// --- desk papers (clue 1) ------------------------------------------------
+func usePapers
+    mouse::active false
+    switch crime::verb
+        call goPapers
+        call Look_Papers
+        call Pick_Papers
+        call cantTalk
+        call cantPull
+    end
+    call actionDone
+func Look_Papers
+    call goPapers
+    wait talk LookPapers
+func Pick_Papers
+    call goPapers
+    select detective
+    sound sfx_paper 0.7
+    wait play det_take_papers 1 1.2s
+    sound sfx_pickup 0.6
+    call faceS
+    wait talk PickPapers
+    call gotPapers
+
+// --- desk drawers ----------------------------------------------------------
+anim shake_left
+    duration 1
+        image 0 -1 0 drawers_left
+    duration 1
+        image 0 1 0 drawers_left
+    duration 1
+        image 0 -1 0 drawers_left
+    duration 1
+        image 0 1 0 drawers_left
+    duration 1
+        image 0 0 0 drawers_left
+anim shake_right
+    duration 1
+        image 0 0 1 drawers_right
+    duration 1
+        image 0 0 0 drawers_right
+anim shake_cabinet
+    duration 1
+        image 0 1 0 cabinet
+    duration 1
+        image 0 -1 0 cabinet
+    duration 1
+        image 0 1 0 cabinet
+    duration 1
+        image 0 0 0 cabinet
+
+func useDrawersL
+    mouse::active false
+    switch crime::verb
+        call goDrawersL
+        call Look_DrawersL
+        call Pick_DrawersL
+        call cantTalk
+        call Pull_DrawersL
+    end
+    call actionDone
+func Look_DrawersL
+    call goDrawersL
+    wait talk LookDrawers
+func Pick_DrawersL
+    call goDrawersL
+    wait talk PickDrawers
+func Pull_DrawersL
+    call goDrawersL
+    select detective
+    play det_yank 1 0.6s
+    sound sfx_rattle 0.8
+    select drawersLeft
+    wait play shake_left 1 0.5s
+    call faceN
+    wait talk PullLocked
+
+func useDrawersR
+    mouse::active false
+    switch crime::verb
+        call goDrawersR
+        call Look_DrawersR
+        call Pick_DrawersR
+        call cantTalk
+        call Pull_DrawersR
+    end
+    call actionDone
+func Look_DrawersR
+    call goDrawersR
+    wait talk LookDrawers
+func Pick_DrawersR
+    call goDrawersR
+    wait talk PickDrawers
+func Pull_DrawersR
+    call goDrawersR
+    select detective
+    play det_yank 1 0.6s
+    sound sfx_thunk 0.9
+    select drawersRight
+    wait play shake_right 1 0.2s
+    call faceN
+    wait talk PullStuck
+
+// --- filing cabinet ---------------------------------------------------------
+func useCabinet
+    mouse::active false
+    switch crime::verb
+        call goCabinet
+        call Look_Cabinet
+        call Pick_Cabinet
+        call cantTalk
+        call Pull_Cabinet
+    end
+    call actionDone
+func Look_Cabinet
+    call goCabinet
+    wait talk LookCabinet
+func Pick_Cabinet
+    call goCabinet
+    wait talk PickDrawers
+func Pull_Cabinet
+    call goCabinet
+    sound sfx_rattle 0.8
+    select cabinet
+    wait play shake_cabinet 1 0.4s
+    select detective
+    wait talk PullCabinet
+
+// --- trash can (clue 2: the business card) ----------------------------------
+func useTrash
+    mouse::active false
+    switch crime::verb
+        call goTrash
+        call Look_Trash
+        call Pick_Trash
+        call cantTalk
+        call cantPull
+    end
+    call actionDone
+func Look_Trash
+    call goTrash
+    switch crime::trash
+        call searchTrash
+        call trashEmpty
+    end
+func searchTrash
+    crime::trash = 1
+    select detective
+    wait talk LookTrash1
+    sound sfx_rummage 0.8
+    wait play det_search 1 2.4s
+    sound sfx_pickup 0.6
+    call faceS
+    wait talk LookTrash2
+    call gotCard
+func trashEmpty
+    select detective
+    wait talk LookTrashEmpty
+func Pick_Trash
+    call goTrash
+    wait talk PickTrash
+
+// --- syringe (clue 3) -----------------------------------------------------
+func useNeedle
+    mouse::active false
+    switch crime::verb
+        call goNeedle
+        call Look_Needle
+        call Pick_Needle
+        call cantTalk
+        call cantPull
+    end
+    call actionDone
+func Look_Needle
+    call goNeedle
+    wait talk LookNeedle
+func Pick_Needle
+    call goNeedle
+    select detective
+    // goNeedle leaves him facing west, so the crouch is the flipped twin
+    wait play det_take_needle_w 1 1.2s
+    sound sfx_pickup 0.6
+    call faceS
+    wait talk PickNeedle
+    call gotNeedle
+
+// --- flavour hotspots -------------------------------------------------------
+func useWindow
+    mouse::active false
+    switch crime::verb
+        call goWindow
+        call Look_Window
+        call cantPick
+        call cantTalk
+        call Pull_Window
+    end
+    call actionDone
+func Look_Window
+    call goWindow
+    wait talk LookWindow
+func Pull_Window
+    call goWindow
+    wait talk PullWindow
+
+func useLamp
+    mouse::active false
+    switch crime::verb
+        call goLamp
+        call Look_Lamp
+        call cantPick
+        call cantTalk
+        call cantPull
+    end
+    call actionDone
+func Look_Lamp
+    call goLamp
+    wait talk LookLamp
+
+func useTypewriter
+    mouse::active false
+    switch crime::verb
+        call goTypewriter
+        call Look_Typewriter
+        call cantPick
+        call cantTalk
+        call cantPull
+    end
+    call actionDone
+func Look_Typewriter
+    call goTypewriter
+    wait talk LookTypewriter
+
+func useShelf
+    mouse::active false
+    switch crime::verb
+        call goShelf
+        call Look_Shelf
+        call cantPick
+        call cantTalk
+        call cantPull
+    end
+    call actionDone
+func Look_Shelf
+    call goShelf
+    wait talk LookShelf
+
+func useChair
+    mouse::active false
+    switch crime::verb
+        call goChair
+        call Look_Chair
+        call cantPick
+        call cantTalk
+        call cantPull
+    end
+    call actionDone
+func Look_Chair
+    call goChair
+    wait talk LookChair
+
+func useChalk
+    mouse::active false
+    switch crime::verb
+        call goChalk
+        call Look_Chalk
+        call cantPick
+        call cantTalk
+        call cantPull
+    end
+    call actionDone
+func Look_Chalk
+    call goChalk
+    wait talk LookChalk
+
+func useDoor
+    mouse::active false
+    switch crime::verb
+        call goDoor
+        call Look_Door
+        call cantPick
+        call cantTalk
+        call Pull_Door
+    end
+    call actionDone
+func Look_Door
+    call goDoor
+    wait talk LookDoor
+func Pull_Door
+    call goDoor
+    wait talk PullDoor
+
+// --- officer ----------------------------------------------------------------
+func useOfficer
+    mouse::active false
+    switch crime::verb
+        call goOfficer
+        call Look_Officer
+        call Pick_Officer
+        call Talk_Officer
+        call cantPull
+    end
+    call actionDone
+func Look_Officer
+    call goOfficer
+    wait talk LookOfficer
+func Pick_Officer
+    call goOfficer
+    wait talk PickOfficer
+func Talk_Officer
+    call goOfficer
+    wait talk TalkOfficer
+    wait talk OffGreet
+    call officerDialog
+
+// --- ambience ---------------------------------------------------------------
+anim rain_anim
+    duration 1
+        image 0 0 0 rain_0
+    duration 1
+        image 0 0 0 rain_1
+    duration 1
+        image 0 0 0 rain_2
+
+anim neon_flicker
+    duration 2
+        image 0 0 0 neon_off
+    duration 1
+        noimage 0
+    duration 1
+        image 0 0 0 neon_off
+    duration 3
+        noimage 0
+
+func musicLoop
+    wait sound music_noir 0.35
+    start musicLoop
+
+func rainLoop
+    wait sound amb_rain 0.45
+    start rainLoop
+
+func rainFall
+    select rain
+    wait play rain_anim 100 0.3s
+    start rainFall
+
+func neonLoop
+    wait random
+        nothing 5s
+        nothing 8s
+        nothing 13s
+    end
+    sound amb_neon 0.25
+    select neon
+    wait play neon_flicker 1 0.7s
+    start neonLoop
+
+func sirenLoop
+    wait random
+        nothing 25s
+        nothing 40s
+    end
+    wait random
+        sound amb_siren 0.25
+        sound amb_thunder 0.5
+    end
+    start sirenLoop

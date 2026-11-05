@@ -1,0 +1,152 @@
+// Sunday evening: Kai arrives at Sato House, meets Mrs. Sato and Mochi, walks
+// down Hikari Street and sees Luna through the window of the Moonbean Cafe.
+//
+// Rows: pos y 827 / 877 / 927 from x 252. Narration is pale blue
+// (tint 0.78,0.86,1), speech cream (tint 1,0.96,0.9).
+
+str pro1a
+    en "Sunday evening. Two hours on the train from the countryside, one suitcase. Kaminato: a harbour city of steep streets, sea wind and a million lights."
+str pro2a
+    en "Number 12, Hikari Street. Sato House. Home for the next four years."
+str pro3a
+    en "You must be Kai! Welcome, welcome. I'm Mrs. Sato, your landlady."
+str pro4a
+    en "Nice to meet you, Mrs. Sato. Thank you for having me."
+str pro5a
+    en "Polite boy. Good. Rent is due on the first, the door locks at midnight, and no loud music after ten. Mochi gets very upset."
+str pro6a
+    en "Mochi?"
+str pro7a
+    en "My shiba. The real owner of this building. And if you ever need pocket money, I always have chores. Fifteen dollars each."
+str pro8a
+    en "Fifteen dollars... I'll remember that. My wallet is not exactly heavy."
+str pro9a
+    en "Go on, take a walk before dark. Hikari Street is prettiest at sunset."
+str pro10a
+    en "Down the street, warm light spills from a small cafe on the corner. MOONBEAN CAFE, says the sign. It smells of roasted beans and caramel."
+str pro11a
+    en "Behind the window, a girl in a brown apron is writing the specials on a chalkboard."
+str pro12a
+    en "She laughs at something, tucks a strand of chestnut hair behind her ear... ...and for a second, Kai forgets how to breathe."
+str pro13a
+    en "(...Okay. New city, new start. Maybe I'll try their coffee.)"
+str pro14a
+    en "That night, among unopened boxes, Kai makes a plan for the week."
+str pro15a
+    en "Mornings are for college. Afternoons and evenings are his to spend. The cafe costs $5 a visit. Mrs. Sato pays $15 for chores. There is a quiz on Friday."
+str pro16a
+    en "(Fifteen dollars, a timetable, and a coffee shop I can't stop thinking about.)"
+
+ui sPro modal=false
+    if dlg::line == 1
+        text pro1a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 2
+        text pro2a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 3
+        text pro3a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 4
+        text pro4a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 5
+        text pro5a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 6
+        text pro6a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 7
+        text pro7a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 8
+        text pro8a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 9
+        text pro9a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 10
+        text pro10a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 11
+        text pro11a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 12
+        text pro12a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 13
+        text pro13a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 14
+        text pro14a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 15
+        text pro15a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 16
+        text pro16a pos=252,827 width=1440 tint=1,0.96,0.9,1
+
+func prologue
+    call fadeOut
+    call closeScenes
+    call clearChars
+    select bg
+    image 0 0 0 bg_building_eve
+    vn::hudShown = 0
+    vn::music = 2
+    ui::show sPro z=4.5
+    call boxOn
+    dlg::who = 0
+    call fadeIn
+    dlg::line = 1
+    call next
+    dlg::line = 2
+    call next
+    select chr1
+    image 0 0 0 sato_smile
+    call popIn1
+    dlg::who = 4
+    dlg::line = 3
+    call next
+    dlg::who = 1
+    dlg::line = 4
+    call next
+    dlg::who = 4
+    select chr1
+    image 0 0 0 sato_neutral
+    dlg::line = 5
+    call next
+    select chr2
+    image 0 0 0 mochi
+    call popIn2
+    sound sfx_bark 0.7
+    dlg::who = 1
+    dlg::line = 6
+    call next
+    dlg::who = 4
+    select chr1
+    image 0 0 0 sato_smile
+    dlg::line = 7
+    call next
+    dlg::who = 1
+    dlg::line = 8
+    call next
+    dlg::who = 4
+    dlg::line = 9
+    call next
+    call fadeOut
+    call clearChars
+    select bg
+    image 0 0 0 bg_street_eve
+    vn::music = 4
+    dlg::who = 0
+    dlg::line = 10
+    call fadeIn
+    call next
+    dlg::line = 11
+    call next
+    dlg::line = 12
+    call next
+    dlg::who = 1
+    dlg::line = 13
+    call next
+    call fadeOut
+    select bg
+    image 0 0 0 bg_room_night
+    vn::music = 2
+    day::slot = 3
+    dlg::who = 0
+    dlg::line = 14
+    call fadeIn
+    call next
+    vn::hudShown = 1
+    dlg::line = 15
+    call next
+    dlg::who = 1
+    dlg::line = 16
+    call next

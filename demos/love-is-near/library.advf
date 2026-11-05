@@ -1,0 +1,47 @@
+// The library: each visit is one more chapter for Friday's quiz (up to 3).
+
+str lib1a
+    en "Kai opens chapter one: The Celestial Sphere. Three cans of vending machine coffee later, it starts to make sense."
+str lib2a
+    en "Chapter two: The Summer Triangle. Vega, Altair, Deneb. Kai draws them in the margin. Badly."
+str lib3a
+    en "Chapter three. Kai reads it twice and quizzes himself until the librarian starts switching off the lamps."
+str lib4a
+    en "Kai already knows the quiz by heart. Instead he reads a picture book about a fox who follows the stars home."
+
+ui sLib modal=false
+    if dlg::line == 1
+        text lib1a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 2
+        text lib2a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 3
+        text lib3a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 4
+        text lib4a pos=252,827 width=1440 tint=0.78,0.86,1,1
+
+func doLibrary
+    call fadeOut
+    call closeScenes
+    call clearChars
+    select bg
+    image 0 0 0 bg_library
+    vn::hudShown = 1
+    vn::music = 2
+    ui::show sLib z=4.5
+    call boxOn
+    dlg::who = 0
+    call fadeIn
+    sound sfx_page 0.5
+    switch study::pts
+        dlg::line = 1
+        dlg::line = 2
+        dlg::line = 3
+        dlg::line = 4
+    end
+    switch study::pts
+        call gainStudy
+        call gainStudy
+        call gainStudy
+        dlg::pick = 0
+    end
+    call next

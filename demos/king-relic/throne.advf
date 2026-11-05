@@ -1,0 +1,148 @@
+// The throne room of Castle Aldmoor: the summons (#1), the King's counsel
+// (#4) and the ending (#200).
+//
+// Every section keeps its strings (number n, title t, prose p<N>a.., choice
+// labels c<N>..) and the paragraphs of its `ui p<N>` block; the shared
+// chrome (the numbered header, the choices box) is inlined from the
+// `pageHead`/`choicesK` components in book.advf, and one `go<N>` func is the
+// click: lock the mouse, the page turn and the reveal.
+
+// --- #1 The Summons --------------------------------------------------------------
+str n1
+    en "1"
+str t1
+    en "The Summons"
+str p1a
+    en "Torchlight trembles across the great hall of Castle Aldmoor as you kneel before the throne. King Aldric is old now, his voice thin as ash. 'Three nights past,' he says, 'the dragon Skarthax tore through our chapel and carried off the Sword of Dawn, the relic of my house. It lies now in the dungeon beneath the old keep, where no knight has dared to follow.'"
+str p1i
+    en "He leans forward. 'You are only a squire. But bring the relic home, and you shall rise a knight of this realm.'"
+str c1a
+    en "Kneel and accept the quest."
+str c1b
+    en "Ask the King about the dungeon."
+
+ui p1 modal=false
+    $pageHead section=n1 title=t1
+    if book::reveal >= 2 pos=500,189
+        text p1a width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 11 pos=500,567
+        text p1i width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 99
+        $choices choice1=c1a go1=go7 turn1=turn7 choice2=c1b go2=go4 turn2=turn4 choice3=none go3=none turn3=none
+// The painted torches flicker (positions and frames: artgeo.advf, tools/art.py).
+func throneTorches
+    call geo_throne
+
+// The click: lock the mouse and run the page turn.
+func go1
+    mouse::active false
+    start to1
+
+func to1
+    call turnPage
+    call closePages
+    call show1
+    call openPage
+
+func show1
+    select scene
+    image 0 0 0 ill_throne
+    call throneTorches
+    map::here = 0
+    book::music = 1
+    ui::show p1 z=7
+
+// --- #4 The King's Counsel -------------------------------------------------------
+str n4
+    en "4"
+str t4
+    en "The King's Counsel"
+str p4a
+    en "'The old keep was my grandfather's,' the King says. 'Its dungeon has but three chambers.' 'First, a passage guarded by the dead. A skeleton warrior walks there still. Its bones are brittle; strike true and it will fall.'"
+str p4f
+    en "'West of it lies a vault where my forebears kept their remedies under lock and key.'"
+str p4h
+    en "'North, behind the great doors, the dragon sleeps upon its hoard. Its fire will bring you to the edge of death. Whatever befalls you, do not despair, and do not waste your gifts.'"
+str c4a
+    en "Accept the quest."
+
+ui p4 modal=false
+    $pageHead section=n4 title=t4
+    if book::reveal >= 2 pos=500,189
+        text p4a width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 8 pos=500,441
+        text p4f width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 11 pos=500,567
+        text p4h width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 99
+        $choices choice1=c4a go1=go7 turn1=turn7 choice2=none go2=none turn2=none choice3=none go3=none turn3=none
+
+// The click: lock the mouse and run the page turn.
+func go4
+    mouse::active false
+    start to4
+
+func to4
+    call turnPage
+    call closePages
+    call show4
+    call openPage
+
+func show4
+    select scene
+    image 0 0 0 ill_throne
+    call throneTorches
+    map::here = 0
+    book::music = 1
+    ui::show p4 z=7
+
+// --- #200 Arise, Sir Knight -------------------------------------------------------
+str n200
+    en "200"
+str t200
+    en "Arise, Sir Knight"
+str p200a
+    en "The bells of Castle Aldmoor ring out as you lay the Sword of Dawn at the foot of the throne."
+str p200c
+    en "King Aldric rises. He lifts the relic, and touches its blade to each of your shoulders."
+str p200e
+    en "'Kneel a squire,' he says, 'and rise a knight. Arise, Sir Knight of Aldmoor!'"
+str p200g
+    en "And so your adventure ends, and your legend begins."
+str c200a
+    en "Read again from the beginning."
+
+ui p200 modal=false
+    $pageHead section=n200 title=t200
+    if book::reveal >= 2 pos=500,189
+        text p200a width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 5 pos=500,315
+        text p200c width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 8 pos=500,441
+        text p200e width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 11 pos=500,567
+        text p200g width=640 outline=0 tint=0.22,0.085,0.009,1
+    if book::reveal >= 99
+        $choices choice1=c200a go1=clickNewGame turn1=none choice2=none go2=none turn2=none choice3=none go3=none turn3=none
+
+func go200
+    mouse::active false
+    start to200
+
+func to200
+    call turnPage
+    call closePages
+    call show200
+    call fadeIn
+    sound sfx_victory 0.8
+    call revealText
+    call showChoices
+
+func show200
+    select scene
+    image 0 0 0 ill_knight
+    call geo_knight
+    map::here = 0
+    quest::knight = 1
+    book::music = 4
+    ui::show p200 z=7

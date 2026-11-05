@@ -1,0 +1,268 @@
+// Game state: every scene variable the scenes and the UI read, the reset that
+// starts a new week, and the money / affection / study steps.
+//
+// The UI only READS these vars; funcs WRITE them and the blocks follow.
+// ADVL expressions cannot read a scene variable (a path in an expression is
+// 0), so every step is a `switch` whose arms assign literals (PLAN.md 8, K11).
+// A `var` initial value does not reach the scene variables either, so
+// `resetGame` writes every one of them.
+
+//   day::n: 0 Sunday (prologue), 1..5 Monday..Friday, 6 Saturday
+//   day::slot: 0 morning, 1 afternoon, 2 evening, 3 night
+var day
+    var n = 0
+    var slot = 0
+
+//   money::units: money in $5 units, 0..19 ($0..$95)
+var money
+    var units = 3
+
+//   luna::love: affection 0..5; luna::visit: cafe visits so far
+//   luna::met: 1 after the first visit; luna::asked: 1 after the fifth
+//   luna::date: 1 = she said yes (tickets bought); luna::number: 1 = next time
+//   luna::park: 1 after meeting her while walking Mochi
+var luna
+    var love = 0
+    var visit = 0
+    var met = 0
+    var asked = 0
+    var date = 0
+    var number = 0
+    var park = 0
+
+//   study::pts: library visits 0..3; quiz::passed: 1 after Friday
+var study
+    var pts = 0
+var quiz
+    var passed = 0
+
+//   chores::done: chores done (picks the next one); home::called: Mom has called
+var chores
+    var done = 0
+var home
+    var called = 0
+
+//   dlg::line: the scene's line on screen (0 none); dlg::menu: the choice menu
+//   shown (0 none); dlg::opts: its number of options (2 or 3)
+//   dlg::who: 0 narration, 1 Kai, 2 Luna, 3 Daichi, 4 Mrs. Sato, 5 Mom,
+//   6 Professor Ueda, 7 the barista (before she gives her name)
+//   dlg::nextLine: set by a click; dlg::picked / dlg::pick: the choice made
+//   dlg::hover: the hovered choice button; dlg::box: the box is shown
+//   dlg::i1..i3: the icons of the choices (1 talk, 2 heart, 3 star, 4 smile, 5 cup)
+var dlg
+    var line = 0
+    var menu = 0
+    var opts = 0
+    var who = 0
+    var nextLine = 0
+    var picked = 0
+    var pick = 0
+    var hover = 0
+    var box = 0
+    var i1 = 0
+    var i2 = 0
+    var i3 = 0
+
+//   vn::auto: 0 click to advance, 1 auto, 2 skip; vn::qhover: hovered quick button
+//   vn::fade: fader step 0..4; vn::hudShown: 1 while the HUD is shown
+//   vn::toast: the toast shown (see vn.advf); vn::music: the music loop
+//   vn::plan: 1 while the planner is open
+//   vn::title: 1 on the title screen; vn::tbtn: hovered title button
+//   vn::ending: the ending card shown (1..4); vn::help: 1 while help is open
+//   vn::ctc: the click-to-continue arrow (0 hidden, 1 / 2 its two frames)
+var vn
+    var auto = 0
+    var qhover = 0
+    var fade = 0
+    var hudShown = 0
+    var toast = 0
+    var music = 0
+    var plan = 0
+    var title = 0
+    var tbtn = 0
+    var ending = 0
+    var help = 0
+    var ctc = 0
+
+func resetGame
+    day::n = 0
+    day::slot = 0
+    money::units = 3
+    luna::love = 0
+    luna::visit = 0
+    luna::met = 0
+    luna::asked = 0
+    luna::date = 0
+    luna::number = 0
+    luna::park = 0
+    study::pts = 0
+    quiz::passed = 0
+    chores::done = 0
+    home::called = 0
+    dlg::line = 0
+    dlg::menu = 0
+    dlg::opts = 0
+    dlg::who = 0
+    dlg::nextLine = 0
+    dlg::picked = 0
+    dlg::pick = 0
+    dlg::hover = 0
+    dlg::box = 0
+    dlg::i1 = 0
+    dlg::i2 = 0
+    dlg::i3 = 0
+    vn::auto = 0
+    vn::qhover = 0
+    vn::hudShown = 0
+    vn::toast = 0
+    vn::plan = 0
+    vn::ending = 0
+    vn::help = 0
+    vn::ctc = 0
+
+// --- money (in $5 units) ---------------------------------------------------------
+func add3Units
+    switch money::units
+        money::units = 3
+        money::units = 4
+        money::units = 5
+        money::units = 6
+        money::units = 7
+        money::units = 8
+        money::units = 9
+        money::units = 10
+        money::units = 11
+        money::units = 12
+        money::units = 13
+        money::units = 14
+        money::units = 15
+        money::units = 16
+        money::units = 17
+        money::units = 18
+        money::units = 19
+        money::units = 19
+        money::units = 19
+        money::units = 19
+    end
+
+func add1Unit
+    switch money::units
+        money::units = 1
+        money::units = 2
+        money::units = 3
+        money::units = 4
+        money::units = 5
+        money::units = 6
+        money::units = 7
+        money::units = 8
+        money::units = 9
+        money::units = 10
+        money::units = 11
+        money::units = 12
+        money::units = 13
+        money::units = 14
+        money::units = 15
+        money::units = 16
+        money::units = 17
+        money::units = 18
+        money::units = 19
+        money::units = 19
+    end
+
+func sub1Unit
+    switch money::units
+        money::units = 0
+        money::units = 0
+        money::units = 1
+        money::units = 2
+        money::units = 3
+        money::units = 4
+        money::units = 5
+        money::units = 6
+        money::units = 7
+        money::units = 8
+        money::units = 9
+        money::units = 10
+        money::units = 11
+        money::units = 12
+        money::units = 13
+        money::units = 14
+        money::units = 15
+        money::units = 16
+        money::units = 17
+        money::units = 18
+    end
+
+func sub4Units
+    switch money::units
+        money::units = 0
+        money::units = 0
+        money::units = 0
+        money::units = 0
+        money::units = 0
+        money::units = 1
+        money::units = 2
+        money::units = 3
+        money::units = 4
+        money::units = 5
+        money::units = 6
+        money::units = 7
+        money::units = 8
+        money::units = 9
+        money::units = 10
+        money::units = 11
+        money::units = 12
+        money::units = 13
+        money::units = 14
+        money::units = 15
+    end
+
+// --- affection, study, visits, days ------------------------------------------------
+func love1
+    switch luna::love
+        luna::love = 1
+        luna::love = 2
+        luna::love = 3
+        luna::love = 4
+        luna::love = 5
+        luna::love = 5
+    end
+
+func study1
+    switch study::pts
+        study::pts = 1
+        study::pts = 2
+        study::pts = 3
+        study::pts = 3
+    end
+
+func visit1
+    switch luna::visit
+        luna::visit = 1
+        luna::visit = 2
+        luna::visit = 3
+        luna::visit = 4
+        luna::visit = 5
+        luna::visit = 5
+    end
+
+func chore1
+    switch chores::done
+        chores::done = 1
+        chores::done = 2
+        chores::done = 3
+        chores::done = 4
+        chores::done = 5
+        chores::done = 5
+    end
+
+func nextDay
+    switch day::n
+        day::n = 1
+        day::n = 2
+        day::n = 3
+        day::n = 4
+        day::n = 5
+        day::n = 6
+        day::n = 6
+    end

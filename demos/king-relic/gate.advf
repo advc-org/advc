@@ -1,0 +1,63 @@
+// The dungeon gate in the ruined keep (#7): the way down, and the way back
+// up from the passage.
+
+// --- #7 The Dungeon Gate ----------------------------------------------------------
+str n7
+    en "7"
+str t7
+    en "The Dungeon Gate"
+str p7a
+    en "Dusk finds you at the ruined keep. Ivy chokes its broken towers, and the wind moans through the arrow slits like a dying man."
+str p7d
+    en "In the shadow of the gatehouse, a stair spirals down into darkness. You light your torch. The flame gutters, then steadies."
+str p7g
+    en "Cold air rises from below, carrying the smell of damp stone and something older: the dry, bitter scent of a beast that breathes fire."
+str p7j
+    en "You tighten the straps of your shield."
+str c7a
+    en "Descend into the dungeon."
+
+ui p7 modal=false
+    $pageHead section=n7 title=t7
+    if book::reveal >= 2 pos=500,189
+        text p7a width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 6 pos=500,357
+        text p7d width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 10 pos=500,525
+        text p7g width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 14 pos=500,693
+        text p7j width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 99
+        $choicesBox
+        if quest::skeleton == 0
+            $choiceBar bar=choice_1 barOn=choice_1_on choice=c7a go=goDescend turn=turn23 pos=500,838
+        if quest::skeleton == 1
+            $choiceBar bar=choice_1 barOn=choice_1_on choice=c7a go=goDescend turn=turn61 pos=500,838
+
+// The click: lock the mouse and run the page turn.
+func go7
+    mouse::active false
+    start to7
+
+func to7
+    call turnPage
+    call closePages
+    call show7
+    call openPage
+
+func show7
+    select scene
+    image 0 0 0 ill_gate
+    call geo_gate
+    map::gate = 1
+    map::here = 1
+    book::music = 2
+    ui::show p7 z=7
+
+// Down the stairs: to the skeleton (#23), or past its bones (#61).
+func goDescend
+    mouse::active false
+    switch quest::skeleton
+        start to23
+        start to61
+    end

@@ -1,0 +1,594 @@
+// The visual-novel machinery every scene shares: the actors, the click that
+// advances a line, the dialogue box and name plate, the choice buttons, the
+// quick menu (AUTO / SKIP / HELP), the HUD, the toasts, the fader and the music.
+//
+// Layout (1920x1080 canvas, PLAN.md 2): box x 150..1770 y 780..1050, name plate
+// 190..520 x 735..795, rows at pos y 827 / 877 / 927 from x 252, choices
+// x 1150..1810 from y 250 every 120, labels at x 1256 and pos y 279 / 399 / 519.
+// A text's pos= is the top of its line box.
+//
+// A scene plays a line with `dlg::line = k` + `call next`, and a choice with
+// `dlg::opts`, the icons `dlg::i1..i3` (1 talk, 2 heart, 3 star, 4 smile, 5 cup),
+// `dlg::menu = k`, `call choose` and `switch dlg::pick`.
+
+// --- strings ---------------------------------------------------------------------
+str blank
+    en " "
+str nmKai
+    en "Kai"
+str nmLuna
+    en "Luna"
+str nmDaichi
+    en "Daichi"
+str nmSato
+    en "Mrs. Sato"
+str nmMom
+    en "Mom"
+str nmProf
+    en "Prof. Ueda"
+str nmBarista
+    en "Barista"
+str m0
+    en "$0"
+str m1
+    en "$5"
+str m2
+    en "$10"
+str m3
+    en "$15"
+str m4
+    en "$20"
+str m5
+    en "$25"
+str m6
+    en "$30"
+str m7
+    en "$35"
+str m8
+    en "$40"
+str m9
+    en "$45"
+str m10
+    en "$50"
+str m11
+    en "$55"
+str m12
+    en "$60"
+str m13
+    en "$65"
+str m14
+    en "$70"
+str m15
+    en "$75"
+str m16
+    en "$80"
+str m17
+    en "$85"
+str m18
+    en "$90"
+str m19
+    en "$95"
+
+// HUD day and time of day, the quick menu, the toasts
+str dSun
+    en "SUN"
+str dMon
+    en "MON"
+str dTue
+    en "TUE"
+str dWed
+    en "WED"
+str dThu
+    en "THU"
+str dFri
+    en "FRI"
+str dSat
+    en "SAT"
+str sMorning
+    en "Morning"
+str sAfternoon
+    en "Afternoon"
+str sEvening
+    en "Evening"
+str sNight
+    en "Night"
+str qAuto
+    en "AUTO"
+str qSkip
+    en "SKIP"
+str qHelp
+    en "HELP"
+str tMoney15
+    en "+ $15"
+str tMoney5
+    en "+ $5"
+str tSpend5
+    en "- $5"
+str tSpend20
+    en "- $20"
+str tHeart
+    en "Luna  +1"
+str tStudy
+    en "Study  +1"
+str tPass
+    en "Quiz: PASSED"
+str tFail
+    en "Quiz: FAILED"
+
+// --- the click that advances a line ----------------------------------------------------
+// The whole screen, under everything else: a click anywhere that no button
+// takes reads on.
+ui clicker modal=false
+    quad color=0,0,0,0 pos=0,0 size=1920,1080 click=advance
+
+func advance
+    dlg::nextLine = 1
+
+// --- the dialogue box, the name plate, the quick menu ---------------------------------
+ui dlgBox modal=false
+    if dlg::box == 1
+        image box pos=150,780 click=advance
+        if dlg::who >= 1 pos=190,735
+            image plate
+        switch dlg::who pos=222,743
+            text blank
+            text nmKai tint=0.75,0.88,1,1
+            text nmLuna tint=1,0.55,0.45,1
+            text nmDaichi tint=1,0.82,0.4,1
+            text nmSato tint=0.85,0.75,1,1
+            text nmMom tint=0.7,1,0.75,1
+            text nmProf tint=0.9,0.9,0.85,1
+            text nmBarista tint=1,0.55,0.45,1
+        if vn::ctc == 1 pos=1716,1000
+            image ctc_0
+        if vn::ctc == 2 pos=1716,1000
+            image ctc_1
+        image pos=1400,736 hit=rect click=clickAuto
+            source
+                switch vn::auto
+                    1
+                        q_frame
+                    _
+                        q_area
+            when
+                mouse_enter
+                    vn::qhover = 1
+                mouse_leave
+                    vn::qhover = 0
+        if vn::auto == 1 pos=1400,742
+            text qAuto width=120 align=center size=24 outline=0 tint=0.905,0.672,0.305,1
+        if vn::auto != 1
+            if vn::qhover == 1 pos=1400,742
+                text qAuto width=120 align=center size=24 outline=0 tint=1,0.402,0.305,1
+            if vn::qhover != 1 pos=1400,742
+                text qAuto width=120 align=center size=24 outline=0 tint=0.956,0.855,0.716,1
+        image pos=1520,736 hit=rect click=clickSkip
+            source
+                switch vn::auto
+                    2
+                        q_frame
+                    _
+                        q_area
+            when
+                mouse_enter
+                    vn::qhover = 2
+                mouse_leave
+                    vn::qhover = 0
+        if vn::auto == 2 pos=1520,742
+            text qSkip width=120 align=center size=24 outline=0 tint=0.905,0.672,0.305,1
+        if vn::auto != 2
+            if vn::qhover == 2 pos=1520,742
+                text qSkip width=120 align=center size=24 outline=0 tint=1,0.402,0.305,1
+            if vn::qhover != 2 pos=1520,742
+                text qSkip width=120 align=center size=24 outline=0 tint=0.956,0.855,0.716,1
+        image pos=1640,736 hit=rect click=clickHelp
+            source
+                switch vn::qhover
+                    _
+                        q_area
+            when
+                mouse_enter
+                    vn::qhover = 3
+                mouse_leave
+                    vn::qhover = 0
+        if vn::qhover == 3 pos=1640,742
+            text qHelp width=120 align=center size=24 outline=0 tint=1,0.402,0.305,1
+        if vn::qhover != 3 pos=1640,742
+            text qHelp width=120 align=center size=24 outline=0 tint=0.956,0.855,0.716,1
+
+// AUTO toggles reading on by itself; SKIP races to the next choice.
+func clickAuto
+    switch vn::auto
+        vn::auto = 1
+        vn::auto = 0
+        vn::auto = 1
+    end
+    dlg::nextLine = 1
+func clickSkip
+    switch vn::auto
+        vn::auto = 2
+        vn::auto = 2
+        vn::auto = 0
+    end
+    dlg::nextLine = 1
+func clickHelp
+    start helpFlow
+
+// --- next and choose -------------------------------------------------------------------------
+// Waits for the player to read on: a click (or the AUTO / SKIP delay). The
+// click-to-continue arrow shows meanwhile (`ui box`, bobbed by ctcLoop). It is
+// a ui image switched by vn::ctc: an actor anim stopped right after a 70 ms
+// SKIP wait could still set its frame afterwards and leave the arrow behind.
+func next
+    dlg::nextLine = 0
+    vn::ctc = 1
+    switch vn::auto
+        wait var::when dlg::nextLine == 1
+        wait nothing 2600ms
+        wait nothing 70ms
+    end
+    vn::ctc = 0
+    sound sfx_click 0.25
+
+func ctcLoop
+    switch vn::ctc
+        vn::ctc = 0
+        vn::ctc = 2
+        vn::ctc = 1
+    end
+    wait nothing 350ms
+    start ctcLoop
+
+// The choice buttons. A scene's block prints the labels (`if dlg::menu == k`);
+// the buttons, their hover light and the icons are here.
+ui choices modal=false
+    if dlg::menu >= 1
+        image pos=1150,250 hit=rect click=pick1
+            source
+                switch dlg::hover
+                    1
+                        choice_on
+                    _
+                        choice
+            when
+                mouse_enter
+                    dlg::hover = 1
+                mouse_leave
+                    dlg::hover = 0
+        image pos=1172,268 hit=rect click=pick1
+            source
+                switch dlg::i1
+                    1
+                        icon_talk
+                    2
+                        icon_heart
+                    3
+                        icon_star
+                    4
+                        icon_smile
+                    _
+                        icon_cup
+        image pos=1150,370 hit=rect click=pick2
+            source
+                switch dlg::hover
+                    2
+                        choice_on
+                    _
+                        choice
+            when
+                mouse_enter
+                    dlg::hover = 2
+                mouse_leave
+                    dlg::hover = 0
+        image pos=1172,388 hit=rect click=pick2
+            source
+                switch dlg::i2
+                    1
+                        icon_talk
+                    2
+                        icon_heart
+                    3
+                        icon_star
+                    4
+                        icon_smile
+                    _
+                        icon_cup
+        if dlg::opts >= 3
+            image pos=1150,490 hit=rect click=pick3
+                source
+                    switch dlg::hover
+                        3
+                            choice_on
+                        _
+                            choice
+                when
+                    mouse_enter
+                        dlg::hover = 3
+                    mouse_leave
+                        dlg::hover = 0
+            image pos=1172,508 hit=rect click=pick3
+                source
+                    switch dlg::i3
+                        1
+                            icon_talk
+                        2
+                            icon_heart
+                        3
+                            icon_star
+                        4
+                            icon_smile
+                        _
+                            icon_cup
+
+func pick1
+    dlg::pick = 1
+    dlg::picked = 1
+func pick2
+    dlg::pick = 2
+    dlg::picked = 1
+func pick3
+    dlg::pick = 3
+    dlg::picked = 1
+
+// Shows the menu the caller set up and waits for a pick. SKIP stops here.
+func choose
+    switch vn::auto
+        vn::auto = 0
+        vn::auto = 1
+        vn::auto = 0
+    end
+    dlg::hover = 0
+    dlg::picked = 0
+    wait var::when dlg::picked == 1
+    dlg::menu = 0
+    dlg::hover = 0
+    sound sfx_select 0.6
+
+// --- the HUD ------------------------------------------------------------------------------------------
+// Day and time, money, Luna's hearts (once you have met her), study books.
+ui hudBar modal=false
+    if vn::hudShown == 1
+        image hud pos=24,20
+        switch day::n pos=38,38
+            text dSun width=90 align=center size=28 outline=0 tint=0.905,0.672,0.305,1
+            text dMon width=90 align=center size=28 outline=0 tint=0.905,0.672,0.305,1
+            text dTue width=90 align=center size=28 outline=0 tint=0.905,0.672,0.305,1
+            text dWed width=90 align=center size=28 outline=0 tint=0.905,0.672,0.305,1
+            text dThu width=90 align=center size=28 outline=0 tint=0.905,0.672,0.305,1
+            text dFri width=90 align=center size=28 outline=0 tint=0.905,0.672,0.305,1
+            text dSat width=90 align=center size=28 outline=0 tint=0.905,0.672,0.305,1
+        switch day::slot pos=134,39
+            text sMorning size=26 font=nunito_semibold outline=0 tint=0.956,0.855,0.716,1
+            text sAfternoon size=26 font=nunito_semibold outline=0 tint=0.956,0.855,0.716,1
+            text sEvening size=26 font=nunito_semibold outline=0 tint=0.956,0.855,0.716,1
+            text sNight size=26 font=nunito_semibold outline=0 tint=0.956,0.855,0.716,1
+        image coin pos=316,39
+        switch money::units pos=360,35
+            text m0 tint=1,0.88,0.6,1
+            text m1 tint=1,0.88,0.6,1
+            text m2 tint=1,0.88,0.6,1
+            text m3 tint=1,0.88,0.6,1
+            text m4 tint=1,0.88,0.6,1
+            text m5 tint=1,0.88,0.6,1
+            text m6 tint=1,0.88,0.6,1
+            text m7 tint=1,0.88,0.6,1
+            text m8 tint=1,0.88,0.6,1
+            text m9 tint=1,0.88,0.6,1
+            text m10 tint=1,0.88,0.6,1
+            text m11 tint=1,0.88,0.6,1
+            text m12 tint=1,0.88,0.6,1
+            text m13 tint=1,0.88,0.6,1
+            text m14 tint=1,0.88,0.6,1
+            text m15 tint=1,0.88,0.6,1
+            text m16 tint=1,0.88,0.6,1
+            text m17 tint=1,0.88,0.6,1
+            text m18 tint=1,0.88,0.6,1
+            text m19 tint=1,0.88,0.6,1
+        if luna::met == 1
+            image heart_empty pos=452,40
+            image heart_empty pos=488,40
+            image heart_empty pos=524,40
+            image heart_empty pos=560,40
+            image heart_empty pos=596,40
+            if luna::love >= 1 pos=452,40
+                image heart_full
+            if luna::love >= 2 pos=488,40
+                image heart_full
+            if luna::love >= 3 pos=524,40
+                image heart_full
+            if luna::love >= 4 pos=560,40
+                image heart_full
+            if luna::love >= 5 pos=596,40
+                image heart_full
+        image book_empty pos=654,40
+        image book_empty pos=690,40
+        image book_empty pos=726,40
+        if study::pts >= 1 pos=654,40
+            image book_full
+        if study::pts >= 2 pos=690,40
+            image book_full
+        if study::pts >= 3 pos=726,40
+            image book_full
+
+// --- toasts ------------------------------------------------------------------------------------------------
+//   vn::toast: 1 +$15, 2 +$5, 3 -$5, 4 -$20, 5 Luna +1, 6 Study +1, 7 passed, 8 failed
+// (top right, opposite the HUD)
+ui toastBox modal=false
+    if vn::toast == 1 pos=1530,24
+        image toast_gold
+        text tMoney15 pos=0,19 width=360 align=center size=38 outline=0 tint=0.905,0.672,0.305,1
+    if vn::toast == 2 pos=1530,24
+        image toast_gold
+        text tMoney5 pos=0,19 width=360 align=center size=38 outline=0 tint=0.905,0.672,0.305,1
+    if vn::toast == 3 pos=1530,24
+        image toast_spend
+        text tSpend5 pos=0,19 width=360 align=center size=38 outline=0 tint=0.871,0.578,0.456,1
+    if vn::toast == 4 pos=1530,24
+        image toast_spend
+        text tSpend20 pos=0,19 width=360 align=center size=38 outline=0 tint=0.871,0.578,0.456,1
+    if vn::toast == 5 pos=1530,24
+        image toast_heart
+        text tHeart pos=50,19 width=310 align=center size=38 outline=0 tint=1,0.305,0.352,1
+    if vn::toast == 6 pos=1530,24
+        image toast_study
+        text tStudy pos=0,19 width=360 align=center size=38 outline=0 tint=0.305,0.578,1,1
+    if vn::toast == 7 pos=1530,24
+        image toast_pass
+        text tPass pos=0,19 width=360 align=center size=38 outline=0 tint=0.402,0.791,0.305,1
+    if vn::toast == 8 pos=1530,24
+        image toast_fail
+        text tFail pos=0,19 width=360 align=center size=38 outline=0 tint=1,0.305,0.262,1
+
+func showToast
+    wait nothing 1600ms
+    vn::toast = 0
+
+func earn15
+    call add3Units
+    vn::toast = 1
+    sound sfx_coin 0.7
+    start showToast
+func earn5
+    call add1Unit
+    vn::toast = 2
+    sound sfx_coin 0.7
+    start showToast
+func spend5
+    call sub1Unit
+    vn::toast = 3
+    sound sfx_coin 0.5
+    start showToast
+func spend20
+    call sub4Units
+    vn::toast = 4
+    sound sfx_coin 0.6
+    start showToast
+func gainLove
+    call love1
+    vn::toast = 5
+    sound sfx_heart 0.7
+    start showToast
+    select heartfx
+    play heartPop 1 0.9s
+func gainStudy
+    call study1
+    vn::toast = 6
+    sound sfx_page 0.6
+    start showToast
+
+anim heartPop
+    duration 1
+        image 0 0 0 heart_big
+    duration 1
+        noimage 0
+    duration 1
+        image 0 0 0 heart_big
+    duration 1
+        noimage 0
+
+// --- the fader ---------------------------------------------------------------------------------------------
+// Four steps of a dark quad at z 8, over the text blocks (z 4.5 and below).
+ui fader modal=false
+    if vn::fade == 1 pos=0,0 size=1920,1080
+        quad color=0.03,0.02,0.04,0.3
+    if vn::fade == 2 pos=0,0 size=1920,1080
+        quad color=0.03,0.02,0.04,0.6
+    if vn::fade == 3 pos=0,0 size=1920,1080
+        quad color=0.03,0.02,0.04,0.85
+    if vn::fade == 4 pos=0,0 size=1920,1080
+        quad color=0.03,0.02,0.04,1
+
+func fadeOut
+    mouse::active false
+    dlg::menu = 0
+    sound sfx_whoosh 0.35
+    vn::fade = 1
+    wait nothing 70ms
+    vn::fade = 2
+    wait nothing 70ms
+    vn::fade = 3
+    wait nothing 70ms
+    vn::fade = 4
+    wait nothing 160ms
+
+func fadeIn
+    vn::fade = 3
+    wait nothing 70ms
+    vn::fade = 2
+    wait nothing 70ms
+    vn::fade = 1
+    wait nothing 70ms
+    vn::fade = 0
+    mouse::active true
+
+// --- actors ---------------------------------------------------------------------------------------------------
+// `bg` the background, `chr1` the main character (left of centre, clear of
+// the choice buttons on the right), `chr2` a second one (Mochi),
+// `prop` an object held up to the camera (the phone, the cup), `heartfx` the
+// heart pop.
+func vnActors
+    actor bg, pos 0 0, z 0, enable, mouse::over false
+    actor chr1, pos 330 50, z 2, enable, mouse::over false
+    actor chr2, pos 1060 600, z 2.5, enable, mouse::over false
+    actor prop, pos 770 120, z 2.6, enable, mouse::over false
+    actor heartfx, pos 600 36, z 5.5, enable, mouse::over false
+
+// Characters step in: dim to full colour.
+func popIn1
+    select chr1
+    tint 0.35 0.32 0.38
+    tint 1 1 1 260ms
+func popIn2
+    select chr2
+    tint 0.35 0.32 0.38
+    tint 1 1 1 260ms
+func popInProp
+    select prop
+    tint 0.35 0.32 0.38
+    tint 1 1 1 260ms
+
+func clearChars
+    select chr1
+    stopall
+    noimage 0
+    select chr2
+    stopall
+    noimage 0
+    select prop
+    noimage 0
+
+// The box for a scene (its text appears when fadeIn switches text on).
+func boxOn
+    dlg::box = 1
+func boxOff
+    dlg::box = 0
+    dlg::line = 0
+
+// --- help ------------------------------------------------------------------------------------------------------
+ui helpUi
+    quad color=0,0,0,0.55 click=closeHelp
+    image help pos=360,160 click=closeHelp
+
+func closeHelp
+    vn::help = 0
+
+func helpFlow
+    vn::help = 1
+    ui::modal helpUi z=9
+    vn::help = 0
+
+// --- music ------------------------------------------------------------------------------------------------------
+//   vn::music: 1 title, 2 home, 3 campus, 4 cafe, 5 date, 6 sad
+// The loop reads vn::music before each repeat (a sound cannot be stopped,
+// K9), and keeps the game alive while it waits for a click (K17).
+func musicLoop
+    switch vn::music
+        wait nothing 1s
+        wait sound mus_title 0.4
+        wait sound mus_home 0.4
+        wait sound mus_campus 0.35
+        wait sound mus_cafe 0.4
+        wait sound mus_date 0.42
+        wait sound mus_sad 0.4
+    end
+    start musicLoop

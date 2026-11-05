@@ -1,0 +1,47 @@
+// LOVE IS NEAR -- a visual novel.
+// Kai has just moved to Kaminato for college. In one week he goes to class,
+// does chores for his landlady and tries to ask Luna, the barista of the
+// Moonbean Cafe, to the Star Festival. See PLAN.md.
+import state
+import vn
+import planner
+import title
+import prologue
+import college
+import cafe
+import chores
+import library
+import home
+import endings
+
+// A 1920x1080 canvas: the engine draws every text at 32 px per em, the size of
+// the reference's dialogue text at this height.
+default resolution 1920 1080
+default window 1920 1080
+
+// ESC pause menu: the screen dimmed under the engine's Save / Load / Exit.
+ui optionsMenu
+    quad color=0,0,0,0.5
+    grid items=$options cols=1 anchor=center padding=20
+        text $item.label click=$item.callback
+
+func entry
+    // Nunito SemiBold for small print (HUD time of day, card notes, the title
+    // hint); the last `font` (Nunito ExtraBold) is the one every other text uses.
+    font nunito_semibold
+    font nunito
+    call resetGame
+    call vnActors
+    vn::fade = 4
+    ui::show clicker z=1
+    ui::show choices z=3.2
+    ui::show dlgBox z=4
+    ui::show hudBar z=5
+    ui::show planner z=6
+    ui::show titleUi z=6
+    ui::show endUi z=6
+    ui::show toastBox z=7
+    ui::show fader z=8
+    start musicLoop
+    start ctcLoop
+    call showTitle

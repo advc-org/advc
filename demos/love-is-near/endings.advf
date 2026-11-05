@@ -1,0 +1,301 @@
+// Saturday: the Star Festival, and the four endings.
+//   1 Under the Same Stars   the date, quiz passed
+//   2 Stars and Study Notes  the date, quiz failed
+//   3 Next Time, For Sure    her number on the cup (no money for the tickets)
+//   4 Just a Regular         no date
+// Each ends on its card and "Play again".
+// Lines: the festival 101.. (ending 1 at 111.., ending 2 at 121..),
+// ending 3 at 301.., ending 4 at 401..
+
+str end101a
+    en "Saturday, seven o'clock. Lanterns climb the hill like a river of fireflies."
+str end102a
+    en "Kai! Over here!"
+str end103a
+    en "She is wearing a navy yukata with little white flowers. Kai forgets his own name."
+str end104a
+    en "Don't stare like that. ...Okay. You can stare a little."
+str end105a
+    en "They eat taiyaki, lose at the goldfish game, and climb up to the big telescope."
+str end106a
+    en "Look. That's Vega. And Altair, across the river of stars. In the old story they can only meet once a year. Tonight."
+str end111a
+    en "I passed the quiz because of that star, you know. Vega was question one."
+str end112a
+    en "Then Vega owes us both. ...Kai? I'm really glad you walked into the Moonbean."
+str end113a
+    en "Under the same stars, in a city that is finally starting to feel like home."
+str end121a
+    en "I failed the quiz, by the way. Spectacularly. Question one was Vega."
+str end122a
+    en "Then I'll teach you. Vega, Altair, Deneb. Repeat after me."
+str end123a
+    en "Somewhere, Mom is texting about grades. Kai doesn't look at his phone all night."
+
+str end301a
+    en "Saturday night. From his window, Kai can see the lanterns on the hill."
+str end302a
+    en "On the desk, an empty paper cup with a phone number written on it in marker."
+str end303a
+    en "(Next time, for sure.)"
+str end304a
+    en "He types a message. Deletes it. Types it again. Send."
+str end305a
+    en "A reply, almost at once: a photo of Vega through the big telescope, and a tiny drawn star."
+
+str end401a
+    en "Saturday. Kai walks past the festival posters on his way to the convenience store."
+str end402a
+    en "Through the Moonbean's window, Luna is closing up, humming to herself."
+str end403a
+    en "She waves. He waves back. A regular customer, waving at his barista."
+str end404a
+    en "(Maybe next week I'll be braver.)"
+
+ui sEnd modal=false
+    if dlg::line == 101
+        text end101a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 102
+        text end102a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 103
+        text end103a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 104
+        text end104a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 105
+        text end105a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 106
+        text end106a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 111
+        text end111a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 112
+        text end112a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 113
+        text end113a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 121
+        text end121a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 122
+        text end122a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 123
+        text end123a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 301
+        text end301a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 302
+        text end302a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 303
+        text end303a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 304
+        text end304a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 305
+        text end305a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 401
+        text end401a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 402
+        text end402a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 403
+        text end403a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 404
+        text end404a pos=252,827 width=1440 tint=1,0.96,0.9,1
+
+// The card at the end, and Play again.
+str bAgain
+    en "Play again"
+str endNum1
+    en "ENDING 1 / 4"
+str endNum2
+    en "ENDING 2 / 4"
+str endNum3
+    en "ENDING 3 / 4"
+str endNum4
+    en "ENDING 4 / 4"
+str endName1
+    en "Under the Same Stars"
+str endName2
+    en "Stars and Study Notes"
+str endName3
+    en "Next Time, For Sure"
+str endName4
+    en "Just a Regular"
+
+ui endUi modal=false
+    if vn::ending >= 1
+        quad color=0,0,0,0.45 pos=0,0 size=1920,1080
+        image end_plate pos=460,330
+        switch vn::ending pos=460,375
+            text blank
+            text endNum1 width=1000 align=center size=36 outline=0 tint=0.905,0.672,0.305,1
+            text endNum2 width=1000 align=center size=36 outline=0 tint=0.905,0.672,0.305,1
+            text endNum3 width=1000 align=center size=36 outline=0 tint=0.905,0.672,0.305,1
+            text endNum4 width=1000 align=center size=36 outline=0 tint=0.905,0.672,0.305,1
+        switch vn::ending pos=460,426
+            text blank
+            text endName1 width=1000 align=center size=64 outline=0 tint=1,0.839,0.791,1
+            text endName2 width=1000 align=center size=64 outline=0 tint=1,0.839,0.791,1
+            text endName3 width=1000 align=center size=64 outline=0 tint=1,0.839,0.791,1
+            text endName4 width=1000 align=center size=64 outline=0 tint=1,0.839,0.791,1
+        image pos=750,600 hit=rect click=clickAgain
+            source
+                switch vn::tbtn
+                    1
+                        btn_plate_on
+                    _
+                        btn_plate
+            when
+                mouse_enter
+                    vn::tbtn = 1
+                mouse_leave
+                    vn::tbtn = 0
+        text bAgain pos=750,618 width=420 align=center size=40 outline=0 tint=0.956,0.855,0.716,1
+
+func clickAgain
+    mouse::active false
+    start backToTitle
+
+func backToTitle
+    call fadeOut
+    vn::ending = 0
+    vn::tbtn = 0
+    call resetGame
+    call showTitle
+
+// --- Saturday ----------------------------------------------------------------------------------------
+func saturday
+    call fadeOut
+    call closeScenes
+    call clearChars
+    vn::hudShown = 0
+    ui::show sEnd z=4.5
+    call boxOn
+    dlg::who = 0
+    switch luna::date
+        call noDate
+        call festival
+    end
+
+func noDate
+    switch luna::number
+        call endRegular
+        call endNextTime
+    end
+
+func festival
+    select bg
+    image 0 0 0 bg_festival
+    vn::music = 5
+    dlg::line = 101
+    call fadeIn
+    call next
+    select chr1
+    image 0 0 0 luna_yukata_smile
+    call popIn1
+    dlg::who = 2
+    dlg::line = 102
+    call next
+    dlg::who = 0
+    dlg::line = 103
+    call next
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_yukata_blush
+    dlg::line = 104
+    call next
+    dlg::who = 0
+    select chr1
+    image 0 0 0 luna_yukata_laugh
+    dlg::line = 105
+    call next
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_yukata_smile
+    dlg::line = 106
+    call next
+    switch quiz::passed
+        call endStudy
+        call endStars
+    end
+
+func endStars
+    dlg::who = 1
+    dlg::line = 111
+    call next
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_yukata_blush
+    dlg::line = 112
+    call next
+    call stargazing
+    dlg::line = 113
+    call fadeIn
+    call next
+    vn::ending = 1
+    call endCard
+
+func endStudy
+    dlg::who = 1
+    dlg::line = 121
+    call next
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_yukata_laugh
+    dlg::line = 122
+    call next
+    call stargazing
+    dlg::line = 123
+    call fadeIn
+    call next
+    vn::ending = 2
+    call endCard
+
+// The two of them on the hill, seen from behind (the event picture).
+func stargazing
+    call fadeOut
+    call clearChars
+    select bg
+    image 0 0 0 cg_festival
+    dlg::who = 0
+
+func endNextTime
+    select bg
+    image 0 0 0 bg_room_night
+    vn::music = 2
+    dlg::line = 301
+    call fadeIn
+    call next
+    select prop
+    image 0 0 0 cup
+    call popInProp
+    dlg::line = 302
+    call next
+    dlg::who = 1
+    dlg::line = 303
+    call next
+    dlg::who = 0
+    dlg::line = 304
+    call next
+    sound sfx_heart 0.5
+    dlg::line = 305
+    call next
+    vn::ending = 3
+    call endCard
+
+func endRegular
+    select bg
+    image 0 0 0 bg_street_eve
+    vn::music = 6
+    dlg::line = 401
+    call fadeIn
+    call next
+    dlg::line = 402
+    call next
+    dlg::line = 403
+    call next
+    dlg::who = 1
+    dlg::line = 404
+    call next
+    vn::ending = 4
+    call endCard
+
+// The box closes and the ending's card comes up over the last picture.
+func endCard
+    call boxOff
+    vn::tbtn = 0
+    sound sfx_select 0.6

@@ -1,0 +1,95 @@
+// The sidebar's JOURNAL, MAP and OPTIONS: modal blocks over the page area,
+// opened with `ui::show` (the caller waits; a click anywhere closes them).
+//
+// The overlays open at z 9.5 over an opaque leather sheet, which covers the
+// page and its text (text draws in its block's layer).
+
+str jTitle
+    en "QUEST JOURNAL"
+str j1
+    en "Answer the summons of King Aldric."
+str j2
+    en "Get past the skeleton in the Cursed Passage."
+str j3
+    en "Find what the rusty key unlocks."
+str j4
+    en "Slay the dragon Skarthax."
+str j5
+    en "Bring the Sword of Dawn home to the King."
+str jHint
+    en "Click anywhere to close."
+str mTitle
+    en "MAP OF THE DUNGEON"
+str oTitle
+    en "HOW TO PLAY"
+str j6
+    en "Read the page, then click a choice to turn to its section."
+str j7
+    en "Rest the cursor on an inventory item to examine it."
+str j8
+    en "The JOURNAL lists your quest; the MAP shows where you are."
+str j9
+    en "Press ESC at any time to save, load or leave the game."
+str jCredits
+    en "CREDITS"
+str j10
+    en "A gamebook written and built with ADVL and the advc engine."
+str j11
+    en "Typefaces: IM FELL English by Igino Marini, Cinzel by Natanael Gama (SIL OFL)."
+str j12
+    en "Illustrations painted with the FLUX.2 klein image model; music and sound synthesized."
+
+ui journal
+    image overlay_bg pos=440,20
+    text jTitle pos=442,97 width=1450 align=center tint=0.95,0.75,0.4,1
+    image check_on pos=560,228
+    text j1 pos=625,227 tint=1,0.92,0.78,1
+    image check_off pos=560,308
+    if quest::skeleton == 1 pos=560,308
+        image check_on
+    text j2 pos=625,307 tint=1,0.92,0.78,1
+    if quest::keyFound == 1 pos=560,388
+        image check_off
+    if quest::chest == 1 pos=560,388
+        image check_on
+    if quest::keyFound == 1 pos=625,387
+        text j3 tint=1,0.92,0.78,1
+    image check_off pos=560,468
+    if quest::dragon == 1 pos=560,468
+        image check_on
+    text j4 pos=625,467 tint=1,0.92,0.78,1
+    image check_off pos=560,548
+    if quest::knight == 1 pos=560,548
+        image check_on
+    text j5 pos=625,547 tint=1,0.92,0.78,1
+    text jHint pos=442,977 width=1450 align=center tint=0.7,0.6,0.45,1
+
+// `ui mapView` (the MAP overlay) is generated in artgeo.advf: its rooms and
+// markers are placed where tools/art.py measured them on the painted map.
+
+// OPTIONS: how to play. Save / Load / Exit stay on ESC: the engine's
+// `$options` items only act inside the ESC menu (PLAN.md, engine issues).
+ui gameOptions
+    image overlay_bg pos=440,20
+    text oTitle pos=442,97 width=1450 align=center tint=0.95,0.75,0.4,1
+    text j6 pos=560,227 tint=1,0.92,0.78,1
+    text j7 pos=560,307 tint=1,0.92,0.78,1
+    text j8 pos=560,387 tint=1,0.92,0.78,1
+    text j9 pos=560,467 tint=1,0.88,0.55,1
+    text jCredits pos=560,627 tint=0.95,0.75,0.4,1
+    text j10 pos=560,707 tint=0.85,0.78,0.66,1
+    text j11 pos=560,787 tint=0.85,0.78,0.66,1
+    text j12 pos=560,867 tint=0.85,0.78,0.66,1
+    text jHint pos=442,977 width=1450 align=center tint=0.7,0.6,0.45,1
+
+func journalFlow
+    sound sfx_page 0.5
+    ui::modal journal z=9.5
+
+func mapFlow
+    sound sfx_page 0.5
+    ui::modal mapView z=9.5
+
+func optionsFlow
+    sound sfx_click 0.5
+    ui::modal gameOptions z=9.5

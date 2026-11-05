@@ -1,0 +1,38 @@
+// THE KING'S RELIC -- a choose-your-adventure gamebook.
+// A squire enters the dungeon under the old keep, destroys a skeleton, opens a
+// chest, survives the dragon Skarthax with a healing potion and brings the
+// Sword of Dawn home to King Aldric. See PLAN.md.
+import state
+import artgeo
+import book
+import overlays
+import combat
+import cover
+import throne
+import gate
+import passage
+import vault
+import lair
+import death
+
+// A 1920x1440 canvas: the engine draws every text at 32 px per em, which at
+// this size matches the body text of a printed gamebook page.
+default resolution 1920 1440
+default window 1920 1440
+
+// ESC pause menu: the screen dimmed under the engine's Save / Load / Exit.
+ui optionsMenu
+    quad color=0,0,0,0.45
+    grid items=$options cols=1 anchor=center padding=20
+        text $item.label click=$item.callback
+
+func entry
+    font fell
+    call resetGame
+    call bookActors
+    ui::show fader z=8.8
+    ui::show flashInset z=8.9
+    ui::show banner z=8.6
+    start musicLoop
+    start runeGlow
+    call showCover

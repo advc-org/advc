@@ -1,0 +1,142 @@
+// Room 2, the Vault: the locked chest (#88) and the healing potion inside it
+// (#96). The rusty key (always taken at #61 before the vault can be reached)
+// opens the chest and is used up.
+
+// The picture has the closed chest; the open chest is the `spr1` overlay cut
+// from the painting of it (artgeo.advf places it, the potion's glint and the
+// torch flicker).
+func vaultScene
+    select scene
+    image 0 0 0 ill_vault
+    call geo_vault
+    map::vault = 1
+    map::here = 3
+
+// --- #88 The Vault ---------------------------------------------------------------------
+str n88
+    en "88"
+str t88
+    en "The Vault"
+str p88a
+    en "Beyond the door lies a low, vaulted room. Shelves of cracked jars line the walls, their remedies long since turned to dust."
+str p88d
+    en "In the middle of the floor stands a great chest, bound in black iron. Its lock is crusted with rust."
+str p88d2
+    en "The great iron-bound chest stands open, empty now but for the smell of old herbs."
+str c88a
+    en "Unlock the chest with the key."
+str cReturn
+    en "Return to the passage."
+
+ui p88 modal=false
+    $pageHead section=n88 title=t88
+    if book::reveal >= 2 pos=500,189
+        text p88a width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 6
+        if quest::chest == 0 pos=500,357
+            text p88d width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 6
+        if quest::chest == 1 pos=500,357
+            text p88d2 width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 99
+        $choicesBox
+        if hero::key == 1
+            $choiceBar bar=choice_1 barOn=choice_1_on choice=c88a go=go96 turn=turn96 pos=500,838
+            $choiceBar bar=choice_2 barOn=choice_2_on choice=cReturn go=go61 turn=turn61 pos=500,926
+        if quest::chest == 1
+            $choiceBar bar=choice_1 barOn=choice_1_on choice=cReturn go=go61 turn=turn61 pos=500,838
+
+// The page's setup: the open chest shows through the spr1 slot if it has
+// been opened already.
+func show88
+    call vaultScene
+    switch quest::chest
+        nothing 0s
+        call chestOpened
+    end
+    book::music = 2
+    ui::show p88 z=7
+
+func chestOpened
+    select spr1
+    image 0 0 0 chest_open
+
+// The lid opens: the painted chest dissolves into the open one.
+anim chestOpening
+    duration 1
+        image 0 0 0 chest_open_0
+    duration 1
+        image 0 0 0 chest_open_1
+    duration 2
+        image 0 0 0 chest_open
+
+// The click: lock the mouse and run the page turn.
+func go88
+    mouse::active false
+    start to88
+
+func to88
+    call turnPage
+    call closePages
+    call show88
+    call openPage
+
+// --- #96 The Healing Draught ----------------------------------------------------------
+str n96
+    en "96"
+str t96
+    en "The Healing Draught"
+str p96a
+    en "The rusty key grinds in the lock, then turns. With a groan, the heavy lid swings open."
+str p96c
+    en "Nestled in rotten velvet lies a single flask of glass, stoppered with wax. The liquid inside glows a deep and living red."
+str p96f
+    en "It is a HEALING POTION. Drink it, and all your lost STAMINA will be restored."
+str p96h
+    en "The old key snaps in the lock as you turn it back. It will open nothing else."
+
+ui p96 modal=false
+    $pageHead section=n96 title=t96
+    if book::reveal >= 2 pos=500,189
+        text p96a width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 5 pos=500,315
+        text p96c width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 9 pos=500,483
+        text p96f width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 12 pos=500,609
+        text p96h width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 99
+        $choices choice1=cReturn go1=go61 turn1=turn61 choice2=none go2=none turn2=none choice3=none go3=none turn3=none
+
+// The click: lock the mouse and run the page turn; the chest opens while
+// the page reveals, and the potion is given.
+func go96
+    mouse::active false
+    start to96
+
+func to96
+    call turnPage
+    call closePages
+    call show96
+    call fadeIn
+    call revealText
+    call openChest
+    call showChoices
+
+func show96
+    call vaultScene
+    book::music = 2
+    ui::show p96 z=7
+
+func openChest
+    sound sfx_key 0.7
+    wait nothing 500ms
+    sound sfx_chest 0.8
+    wait nothing 300ms
+    select spr1
+    wait play chestOpening 1 0.6s
+    quest::chest = 1
+    hero::key = 0
+    select glint
+    play glintAnim 99999 1.6s
+    call givePotion

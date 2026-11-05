@@ -1,0 +1,179 @@
+// Game state: every scene variable the pages and the UI read, the reset that
+// starts a new adventure, and STAMINA arithmetic.
+//
+// The UI only READS these vars; funcs WRITE them and the blocks follow.
+// ADVL expressions cannot read a scene variable (a path in an expression is
+// 0), so STAMINA moves one step at a time through `switch hero::hp` arms that
+// assign literals (PLAN.md, engine issue 4). A `var` initial value does not
+// reach the scene variables either (they read 0 until written), so
+// `resetGame` writes every one of them.
+
+//   hero::hp: STAMINA 0..10
+//   hero::key: 1 while the rusty key is carried
+//   hero::potion: 1 while the healing potion is carried
+//   hero::relic: 1 once the Sword of Dawn is carried
+var hero
+    var hp = 10
+    var key = 0
+    var potion = 0
+    var relic = 0
+
+//   quest::skeleton: 1 once the skeleton is destroyed
+//   quest::keyFound: 1 once the key was taken from the bones
+//   quest::chest: 1 once the chest is open
+//   quest::dragon: 1 once Skarthax is slain
+//   quest::knight: 1 at the ending
+var quest
+    var skeleton = 0
+    var keyFound = 0
+    var chest = 0
+    var dragon = 0
+    var knight = 0
+
+//   map::here: 0 surface, 1 gate, 2 passage, 3 vault, 4 lair
+//   map::gate, hall, vault, lair: visited flags (reveal the room on the maps)
+var map
+    var here = 0
+    var gate = 0
+    var hall = 0
+    var vault = 0
+    var lair = 0
+
+//   book::reveal: page text reveal counter (99 = choices shown)
+//   book::fade: page fader step 0..4
+//   book::flash: full-screen flash: 0 none, 1 red, 2 gold
+//   book::hover: hovered choice bar 1..3
+//   book::btn: hovered sidebar button 1..3
+//   book::inv: hovered inventory slot 1..6
+//   book::found: item banner: 1 key, 2 potion, 3 relic
+//   book::music: 1 title, 2 dungeon, 3 battle, 4 victory
+//   book::dying: 1 while the dying vignette pulses
+//   book::cover: 1 while the cover is shown
+//   book::cbtn: hovered cover button
+var book
+    var reveal = 0
+    var fade = 0
+    var flash = 0
+    var hover = 0
+    var btn = 0
+    var inv = 0
+    var found = 0
+    var music = 0
+    var dying = 0
+    var cover = 0
+    var cbtn = 0
+
+//   combat::foe: 1 skeleton, 2 dragon
+//   combat::heroRoll: last attack totals (0 = not rolled yet)
+//   combat::result: the combat log line, see combat.advf
+var combat
+    var foe = 0
+    var foeHp = 3
+    var heroRoll = 0
+    var foeRoll = 0
+    var result = 0
+
+func resetGame
+    hero::hp = 10
+    hero::key = 0
+    hero::potion = 0
+    hero::relic = 0
+    quest::skeleton = 0
+    quest::keyFound = 0
+    quest::chest = 0
+    quest::dragon = 0
+    quest::knight = 0
+    map::here = 0
+    map::gate = 0
+    map::hall = 0
+    map::vault = 0
+    map::lair = 0
+    book::reveal = 0
+    book::fade = 0
+    book::flash = 0
+    book::hover = 0
+    book::btn = 0
+    book::inv = 0
+    book::found = 0
+    book::dying = 0
+    combat::foe = 0
+    combat::foeHp = 3
+    combat::heroRoll = 0
+    combat::foeRoll = 0
+    combat::result = 0
+
+// --- STAMINA steps ---------------------------------------------------------
+// hurt1 / heal1 move STAMINA by one, clamped to 0..10.
+func hurt1
+    switch hero::hp
+        hero::hp = 0
+        hero::hp = 0
+        hero::hp = 1
+        hero::hp = 2
+        hero::hp = 3
+        hero::hp = 4
+        hero::hp = 5
+        hero::hp = 6
+        hero::hp = 7
+        hero::hp = 8
+        hero::hp = 9
+    end
+
+func heal1
+    switch hero::hp
+        hero::hp = 1
+        hero::hp = 2
+        hero::hp = 3
+        hero::hp = 4
+        hero::hp = 5
+        hero::hp = 6
+        hero::hp = 7
+        hero::hp = 8
+        hero::hp = 9
+        hero::hp = 10
+        hero::hp = 10
+    end
+
+// Drain the hearts one by one down to 1 (the dragon's fire).
+func drainToOne
+    switch hero::hp
+        call noop
+        call noop
+        call drainStep
+        call drainStep
+        call drainStep
+        call drainStep
+        call drainStep
+        call drainStep
+        call drainStep
+        call drainStep
+        call drainStep
+    end
+func drainStep
+    call hurt1
+    wait nothing 90ms
+    call drainToOne
+
+// Fill the hearts one by one up to 10 (the healing potion).
+func fillToFull
+    switch hero::hp
+        call fillStep
+        call fillStep
+        call fillStep
+        call fillStep
+        call fillStep
+        call fillStep
+        call fillStep
+        call fillStep
+        call fillStep
+        call fillStep
+        call noop
+    end
+func fillStep
+    call heal1
+    sound sfx_click 0.4
+    wait nothing 90ms
+    call fillToFull
+
+func noop
+    print "noop"

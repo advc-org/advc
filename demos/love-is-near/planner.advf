@@ -1,0 +1,156 @@
+// The week: the day loop (college in the morning, two free slots, the night)
+// and the planner where the player picks the afternoon and the evening.
+//
+// Cards (420x520) at x 240 / 750 / 1260, y 240; the header at 580,120.
+// Afternoon: cafe, chores, library. Evening: cafe, library, home. The cafe
+// card is greyed out without $5.
+
+str planAfternoon
+    en "Where to this afternoon?"
+str planEvening
+    en "Where to this evening?"
+str cardCafe
+    en "Moonbean Café"
+str cardCafeFx
+    en "Coffee  -$5"
+str cardCafeSub
+    en "See Luna"
+str cardChores
+    en "Mrs. Sato"
+str cardChoresFx
+    en "Chores  +$15"
+str cardChoresSub
+    en "Help around the house"
+str cardLibrary
+    en "Library"
+str cardLibraryFx
+    en "Study  +1"
+str cardLibrarySub
+    en "Get ready for Friday"
+str cardHome
+    en "Home"
+str cardHomeFx
+    en "Rest"
+str cardHomeSub
+    en "Call Mom, sleep early"
+str cardNoMoney
+    en "Not enough money"
+
+// A planner card: art, name, effect, and a sub-line. An absent `$go` greys it
+// out (the `_off` art, grey ink, `$note` instead of `$sub`). Hover swaps the
+// art through `button hover=` (no `vn::card` scene var needed).
+ui card $art $artOn $artOff $title $fx $sub? $note? $go? modal=false
+    if $go?
+        button $art hover=$artOn click=$go
+        text $title pos=0,303 width=420 align=center size=40 outline=0 tint=0.956,0.855,0.716,1
+        text $fx pos=0,369 width=420 align=center size=34 outline=0 tint=0.905,0.672,0.305,1
+        text $sub??? pos=0,426 width=420 align=center size=26 font=nunito_semibold outline=0 tint=0.956,0.855,0.716,1
+    if $go? == false
+        image $artOff
+        text $title pos=0,303 width=420 align=center size=40 outline=0 tint=0.305,0.287,0.262,1
+        text $fx pos=0,369 width=420 align=center size=34 outline=0 tint=0.305,0.287,0.262,1
+        text $note??? pos=0,426 width=420 align=center size=26 font=nunito_semibold outline=0 tint=0.305,0.287,0.262,1
+
+ui planner modal=false
+    if vn::plan == 1
+        image plan_plate pos=580,120
+        if day::slot == 1 pos=580,141
+            text planAfternoon width=760 align=center size=40 outline=0 tint=0.956,0.855,0.716,1
+        if day::slot == 2 pos=580,141
+            text planEvening width=760 align=center size=40 outline=0 tint=0.956,0.855,0.716,1
+        if money::units == 0
+            $card art=card_cafe artOn=card_cafe_on artOff=card_cafe_off title=cardCafe fx=cardCafeFx sub=none note=cardNoMoney go=none pos=240,240
+        if money::units >= 1
+            $card art=card_cafe artOn=card_cafe_on artOff=card_cafe_off title=cardCafe fx=cardCafeFx sub=cardCafeSub note=none go=planCafe pos=240,240
+        if day::slot == 1
+            $card art=card_chores artOn=card_chores_on artOff=card_chores_off title=cardChores fx=cardChoresFx sub=cardChoresSub note=none go=planChores pos=750,240
+            $card art=card_library artOn=card_library_on artOff=card_library_off title=cardLibrary fx=cardLibraryFx sub=cardLibrarySub note=none go=planLibrary pos=1260,240
+        if day::slot == 2
+            $card art=card_library artOn=card_library_on artOff=card_library_off title=cardLibrary fx=cardLibraryFx sub=cardLibrarySub note=none go=planLibrary pos=750,240
+            $card art=card_home artOn=card_home_on artOff=card_home_off title=cardHome fx=cardHomeFx sub=cardHomeSub note=none go=planHome pos=1260,240
+
+func planCafe
+    dlg::pick = 1
+    dlg::picked = 1
+func planChores
+    dlg::pick = 2
+    dlg::picked = 1
+func planLibrary
+    dlg::pick = 3
+    dlg::picked = 1
+func planHome
+    dlg::pick = 4
+    dlg::picked = 1
+
+// The map with the cards; the pick runs its activity.
+func openPlanner
+    call fadeOut
+    call closeScenes
+    call clearChars
+    call boxOff
+    select bg
+    image 0 0 0 bg_map
+    vn::hudShown = 1
+    vn::plan = 1
+    vn::music = 2
+    call fadeIn
+    dlg::picked = 0
+    wait var::when dlg::picked == 1
+    mouse::active false
+    vn::plan = 0
+    sound sfx_select 0.6
+    switch dlg::pick
+        dlg::pick = 0
+        call cafeVisit
+        call doChores
+        call doLibrary
+        call doHome
+    end
+
+// --- the day loop --------------------------------------------------------------------
+func runDay
+    switch day::n
+        call day0
+        call weekday
+        call weekday
+        call weekday
+        call weekday
+        call weekday
+        call saturday
+    end
+
+func day0
+    call prologue
+    call nextDay
+    start runDay
+
+func weekday
+    day::slot = 0
+    switch day::n
+        dlg::pick = 0
+        call college1
+        call college2
+        call college3
+        call college4
+        call college5
+    end
+    day::slot = 1
+    call openPlanner
+    day::slot = 2
+    call openPlanner
+    day::slot = 3
+    call night
+    call nextDay
+    start runDay
+
+// Close every scene's block (only one is open at a time).
+func closeScenes
+    ui::hide sPro
+    ui::hide sCol
+    ui::hide sCafe
+    ui::hide sChore
+    ui::hide sLib
+    ui::hide sHome
+    ui::hide sEnd
+    dlg::line = 0
+    dlg::menu = 0

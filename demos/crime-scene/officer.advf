@@ -1,0 +1,176 @@
+// Officer Dooley: the uniform guarding the door. Idle blink loop, lipsync,
+// and the dialogue tree the detective opens with TALK TO.
+//
+// Sprite is 72x156 (36x78 art pixels drawn 2x) with the feet at (36,156).
+// Layer 1 = mouth overlay, layer 2 = closed-eyes overlay for the blink; both
+// are whole frames (transparent but for the face), drawn at `-36 -156` too.
+
+import detective
+
+anim officer_blink
+    duration 1
+        image 2 -36 -156 officer_blink
+    duration 1
+        noimage 2
+
+func officerIdle
+    wait random
+        nothing 2s
+        nothing 3s
+        nothing 4500ms
+        nothing 6s
+    end
+    select officer
+    wait play officer_blink 1 0.18s
+    start officerIdle
+
+func lips_officer
+    switch $1
+        image 1 -36 -156 off_mouth_0
+        image 1 -36 -156 off_mouth_1
+        image 1 -36 -156 off_mouth_2
+        image 1 -36 -156 off_mouth_3
+        image 1 -36 -156 off_mouth_4
+        image 1 -36 -156 off_mouth_5
+        image 1 -36 -156 off_mouth_6
+        image 1 -36 -156 off_mouth_0
+    end
+
+// --- dialogue ------------------------------------------------------------
+// crime::talking is 1 while the conversation is open; "That's all" sets it
+// back to 0 and the menu loop stops re-opening. A question's callback sets
+// its crime::asked* flag, and the menu hides it from then on.
+//
+// The menu draws through the dooleyMenu def: a dark box over the room and
+// the panel with the option list on top. The menu opens at z 9.99 (above the
+// portrait and the panel), so no shade actor is needed.
+
+str opWhat
+    en "What happened here?"
+str opWho
+    en "Who was Kessler?"
+str opWitness
+    en "Did anybody see anything?"
+str opLocked
+    en "Why is everything locked?"
+str opBye
+    en "Thanks, Dooley. That's all."
+
+// The dialogue box: a dark quad over the room and the panel, with the option
+// list over it. A `text $item.label` per option; the pick is the show's wake,
+// so the labels need no `click=` (hover_tint lights the hovered one).
+ui dooleyMenu
+    quad color=0,0,0,0.75 pos=0,270 size=640,210
+    grid items=$optionItems pos=20,280 size=600,34 cols=1 padding=4
+        text $item.label size=16 hover_tint=1,0.8,0.4,1
+
+// The loop: show the menu, and while the player has not said goodbye keep
+// re-showing it (a pick's callback runs to completion before the parked
+// `call officerMenu` resumes, so the next menu opens after the answer).
+func officerDialog
+    crime::talking = 1
+    call officerMenu
+    if crime::talking == 1
+        call officerDialog
+    end
+
+// Asked questions stop being offered (`opt*` sets the flags); "Thanks,
+// Dooley" is always offered, since it is the only way out.
+func officerMenu
+    if crime::askedWhat == 0
+        option opWhat optWhat
+    end
+    if crime::askedWho == 0
+        option opWho optWho
+    end
+    if crime::askedWitness == 0
+        option opWitness optWitness
+    end
+    if crime::askedLocked == 0
+        option opLocked optLocked
+    end
+    option opBye optBye
+    $selected = option::show ui=dooleyMenu
+
+func optWhat
+    crime::askedWhat = 1
+    wait sequence
+        talk AskWhat
+        talk OffWhat1
+        talk OffWhat2
+        talk What3
+    end
+
+func optWho
+    crime::askedWho = 1
+    wait sequence
+        talk AskWho
+        talk OffWho1
+        talk OffWho2
+        talk Who3
+    end
+
+func optWitness
+    crime::askedWitness = 1
+    wait sequence
+        talk AskWitness
+        talk OffWitness1
+        talk Witness2
+    end
+
+func optLocked
+    crime::askedLocked = 1
+    wait sequence
+        talk AskLocked
+        talk OffLocked1
+        talk OffLocked2
+    end
+
+func optBye
+    wait sequence
+        talk AskBye
+        talk OffBye
+    end
+    crime::talking = 0
+
+// --- officer voices --------------------------------------------------------
+voice OffIntro
+    en v_OffIntro "Evening, Detective Malone. Hell of a night to get dragged out of bed."
+    before
+        select officer
+voice OffGreet
+    en v_OffGreet "For you, Detective, I got all night."
+    before
+        select officer
+voice OffWhat1
+    en v_OffWhat1 "Landlady found him slumped over the desk at six. Needle in his arm."
+    before
+        select officer
+voice OffWhat2
+    en v_OffWhat2 "Coroner's calling it an overdose. Open and shut."
+    before
+        select officer
+voice OffWho1
+    en v_OffWho1 "Freelance reporter. Wrote for the Ledger till they canned him."
+    before
+        select officer
+voice OffWho2
+    en v_OffWho2 "Lately he was chasing some story about Halcyon. Called the station twice, said somebody was following him."
+    before
+        select officer
+voice OffWitness1
+    en v_OffWitness1 "Neighbor heard arguing around midnight. A woman's voice. Then a car, a nice one, idling in the alley."
+    before
+        select officer
+voice OffLocked1
+    en v_OffLocked1 "Wasn't us. The drawers were locked when we got here, and the key's gone."
+    before
+        select officer
+voice OffLocked2
+    en v_OffLocked2 "Whoever tossed this place was looking for something. Maybe they found it."
+    before
+        select officer
+voice OffBye
+    en v_OffBye "You got it, Detective. Holler if you need me."
+    before
+        select officer

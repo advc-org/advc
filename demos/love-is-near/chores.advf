@@ -1,0 +1,246 @@
+// Chores for Mrs. Sato, one per afternoon, in order: the stairwell, the
+// rooftop garden, walking Mochi (Luna is in the park once Kai has met her),
+// the recycling, the crooked shelf. Each pays $15.
+//
+// Lines: chore k at k01..; the park with Luna at 311..
+
+str cho101a
+    en "The stairs, Kai. All three floors. Dust is the enemy."
+str cho102a
+    en "Forty minutes and one broom later, the stairwell shines."
+str cho103a
+    en "Perfect! Fifteen dollars. Don't spend it all on coffee."
+str cho104a
+    en "(...I am absolutely going to spend it on coffee.)"
+
+str cho201a
+    en "Water my tomatoes, please. And talk to them. They grow better."
+str cho202a
+    en "Hello, tomatoes. You're looking very... red. Keep it up."
+str cho203a
+    en "From the roof he can see the whole bay, and the corner of the Moonbean's sign."
+
+str cho301a
+    en "Mochi needs her walk. Twice around the park, and no treats!"
+str cho302a
+    en "Mochi drags Kai twice around the pond at full speed. Someone on a bench waves at the dog. Kai is too out of breath to notice."
+str cho311a
+    en "On a bench by the pond, someone is sketching. A girl with a chestnut ponytail."
+str cho312a
+    en "Mochi! And... Kai? You walk Mochi?"
+str cho313a
+    en "For money. Mrs. Sato pays me. Mochi pays me in sneezes."
+str cho314a
+    en "Ha! I come here on my breaks. Mochi always says hi."
+str cho315a
+    en "They walk one more lap together. Mochi approves."
+
+str cho401a
+    en "Bottles, cans, paper. Separate! The city fines me if you mix them."
+str cho402a
+    en "Kai sorts the recycling for an hour and learns more about his neighbours than he ever wanted to know."
+str cho403a
+    en "Good boy. Here you go."
+
+str cho501a
+    en "That shelf. It has been crooked since 1998. Fix it."
+str cho502a
+    en "...Done! It's straight."
+str cho503a
+    en "It is not straight. Mrs. Sato pays him anyway, smiling."
+
+ui sChore modal=false
+    if dlg::line == 101
+        text cho101a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 102
+        text cho102a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 103
+        text cho103a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 104
+        text cho104a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 201
+        text cho201a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 202
+        text cho202a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 203
+        text cho203a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 301
+        text cho301a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 302
+        text cho302a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 311
+        text cho311a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 312
+        text cho312a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 313
+        text cho313a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 314
+        text cho314a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 315
+        text cho315a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 401
+        text cho401a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 402
+        text cho402a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 403
+        text cho403a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 501
+        text cho501a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 502
+        text cho502a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 503
+        text cho503a pos=252,827 width=1440 tint=0.78,0.86,1,1
+
+func doChores
+    call fadeOut
+    call closeScenes
+    call clearChars
+    vn::hudShown = 1
+    vn::music = 2
+    ui::show sChore z=4.5
+    call boxOn
+    switch chores::done
+        call choreStairs
+        call choreRoof
+        call choreMochi
+        call choreRecycle
+        call choreShelf
+        call choreShelf
+    end
+    call earn15
+    call chore1
+    wait nothing 400ms
+
+func satoIn
+    select chr1
+    image 0 0 0 sato_smile
+    call fadeIn
+    dlg::who = 4
+
+func choreStairs
+    select bg
+    image 0 0 0 bg_stairs
+    call satoIn
+    dlg::line = 101
+    call next
+    call clearChars
+    sound sfx_sweep 0.7
+    dlg::who = 0
+    dlg::line = 102
+    call next
+    select chr1
+    image 0 0 0 sato_smile
+    call popIn1
+    dlg::who = 4
+    dlg::line = 103
+    call next
+    dlg::who = 1
+    dlg::line = 104
+    call next
+
+func choreRoof
+    select bg
+    image 0 0 0 bg_rooftop
+    call satoIn
+    dlg::line = 201
+    call next
+    call clearChars
+    sound sfx_water 0.7
+    dlg::who = 1
+    dlg::line = 202
+    call next
+    dlg::who = 0
+    dlg::line = 203
+    call next
+
+func choreMochi
+    select bg
+    image 0 0 0 bg_building_day
+    select chr2
+    image 0 0 0 mochi
+    call satoIn
+    sound sfx_bark 0.6
+    dlg::line = 301
+    call next
+    call fadeOut
+    call clearChars
+    select bg
+    image 0 0 0 bg_park
+    select chr2
+    image 0 0 0 mochi
+    switch luna::met
+        call mochiAlone
+        call mochiLuna
+    end
+
+func mochiAlone
+    call fadeIn
+    dlg::who = 0
+    dlg::line = 302
+    call next
+
+func mochiLuna
+    call fadeIn
+    dlg::who = 0
+    dlg::line = 311
+    call next
+    select chr1
+    image 0 0 0 luna_surprised
+    call popIn1
+    sound sfx_bark 0.6
+    dlg::who = 2
+    dlg::line = 312
+    call next
+    dlg::who = 1
+    dlg::line = 313
+    call next
+    dlg::who = 2
+    select chr1
+    image 0 0 0 luna_laugh
+    dlg::line = 314
+    luna::park = 1
+    call gainLove
+    call next
+    dlg::who = 0
+    dlg::line = 315
+    call next
+
+func choreRecycle
+    select bg
+    image 0 0 0 bg_building_day
+    select chr1
+    image 0 0 0 sato_neutral
+    call fadeIn
+    dlg::who = 4
+    dlg::line = 401
+    call next
+    call clearChars
+    sound sfx_thud 0.5
+    dlg::who = 0
+    dlg::line = 402
+    call next
+    select chr1
+    image 0 0 0 sato_smile
+    call popIn1
+    dlg::who = 4
+    dlg::line = 403
+    call next
+
+func choreShelf
+    select bg
+    image 0 0 0 bg_sato_room
+    select chr1
+    image 0 0 0 sato_neutral
+    call fadeIn
+    dlg::who = 4
+    dlg::line = 501
+    call next
+    sound sfx_thud 0.6
+    dlg::who = 1
+    dlg::line = 502
+    call next
+    select chr1
+    image 0 0 0 sato_smile
+    dlg::who = 0
+    dlg::line = 503
+    call next

@@ -1,0 +1,219 @@
+// The bottom panel (y 352..480): VERBS bar, detective portrait, the EVIDENCE
+// tray (3x2 framed slots) and the CASE file with three clue lamps.
+//
+// The selected verb lives in crime::verb (0 walk, 1 look, 2 pick, 3 talk,
+// 4 pull); the `click=verbX` funcs set it, which re-renders the bar. Each
+// verb is one `ui verbSlot` slot: the component renders TWO reactive `button`s
+// under two `if`s on the verb-selection parameter (never one button with an
+// "on" image overlay on top: an opaque image without a click= would swallow
+// the click, ui_sync_hit). `if crime::verb == $sel` shows the "on" texture
+// (no hover=, so it stays lit), `if crime::verb != $sel` shows the "off"
+// texture with the auto hover-swap. `$sel` is a condition parameter: each
+// slot's constant (sel=0..4) inlines into its own instance (R10 —
+// EXPR.md), `button`/`hover=`/`click=` take the slot's texture and func
+// names. There is no hover variable (no crime::pointing any more).
+//
+// Evidence slots (icon top-left):  (249,379) (323,379) (397,379)
+//                                  (249,427) (323,427) (397,427)
+// The starting kit fills the top row; clues fill the bottom row in the order
+// they are found (crime::clues picks the slot).
+
+import detective
+
+// The bottom panel (y 352..480) as one non-modal `ui` block, in screen space,
+// drawn at the default `z` 9: VERBS (one `ui verbSlot` slot per verb — the
+// selected one lit from crime::verb, hover-swap for the rest), the EVIDENCE
+// tray (a grid over the inventory, in pickup order) and the CASE file's clue
+// lamps (lit from crime::clues). The portrait and the end card stay actors
+// drawn above it (z 9.5..9.6): the portrait is lip-synced with actor layers.
+// The officer's dialogue menu (officer.advf) opens above both at z 9.99.
+
+inventory
+    magnifier inv_magnifier click=useMagnifier
+    kit inv_kit click=useKit
+    notepad inv_notepad click=useNotepad
+    papers inv_papers click=useInvPapers
+    card inv_card click=useInvCard
+    needle inv_needle click=useInvNeedle
+
+// One verb slot: the selected side lights (its "on" button has no hover= so
+// it stays lit), the rest carry the hover-swap. The verb index is the
+// condition parameter `$sel` — each slot's `sel=<n>` inlines into that
+// instance's conditions (R10 slot-time substitution).
+ui verbSlot $off $on $go $sel
+    if crime::verb == $sel
+        button $on click=$go
+    if crime::verb != $sel
+        button $off hover=$on click=$go
+
+ui panel modal=false
+    image panel pos=0,352
+    $verbSlot off=verb_walk_off on=verb_walk_on go=verbWalk sel=0 pos=12,376
+    $verbSlot off=verb_look_off on=verb_look_on go=verbLook sel=1 pos=12,395
+    $verbSlot off=verb_pick_off on=verb_pick_on go=verbPick sel=2 pos=12,414
+    $verbSlot off=verb_talk_off on=verb_talk_on go=verbTalk sel=3 pos=12,433
+    $verbSlot off=verb_pull_off on=verb_pull_on go=verbPull sel=4 pos=12,452
+    grid items=$inventoryItems cols=3 size=68,42 padding=6 pos=243,373
+        image $item.image hit=rect click=$item.callback
+    if crime::clues >= 1 pos=534,446
+        image clue_lamp_on
+    if crime::clues >= 2 pos=564,446
+        image clue_lamp_on
+    if crime::clues >= 3 pos=594,446
+        image clue_lamp_on
+
+func evidencePanel
+    inventory::add magnifier
+    inventory::add kit
+    inventory::add notepad
+    // Re-show = hide first (step 2.2's replace spelling): the panel may
+    // already be open from evidencePanel re-entry.
+    ui::hide panel
+    ui::show panel
+    actor portrait, pos 150 362, z 9.5, image 0 0 0 portrait, hud, enable
+        mouse::area "image0"
+        mouse::click usePortrait
+    actor theEnd, pos 120 140, z 9.6, hud, enable, mouse::over false
+    mouse::icon cursor cursor_hot 7 7
+
+// --- verbs: click=verbX sets crime::verb (selection); the button's hover=
+// --- lights the hovered one (the swap is the button's own hover tracking). ---
+func verbWalk
+    crime::verb = 0
+func verbLook
+    crime::verb = 1
+func verbPick
+    crime::verb = 2
+func verbTalk
+    crime::verb = 3
+func verbPull
+    crime::verb = 4
+
+// --- portrait (the detective himself) ----------------------------------------
+func usePortrait
+    mouse::active false
+    switch crime::verb
+        call noop
+        call Look_Self
+        call cantPick
+        call Talk_Self
+        call cantPull
+    end
+    call actionDone
+func Look_Self
+    select detective
+    wait talk LookSelf
+func Talk_Self
+    select detective
+    wait talk TalkSelf
+
+// --- evidence: starting kit ---------------------------------------------------
+func haveIt
+    select detective
+    wait talk HaveIt
+
+func useMagnifier
+    mouse::active false
+    switch crime::verb
+        call noop
+        call Look_Magnifier
+        call haveIt
+        call cantTalk
+        call cantPull
+    end
+    call actionDone
+func Look_Magnifier
+    select detective
+    wait talk LookMagnifier
+
+func useKit
+    mouse::active false
+    switch crime::verb
+        call noop
+        call Look_Kit
+        call haveIt
+        call cantTalk
+        call cantPull
+    end
+    call actionDone
+func Look_Kit
+    select detective
+    wait talk LookKit
+
+func useNotepad
+    mouse::active false
+    switch crime::verb
+        call noop
+        call Look_Notepad
+        call haveIt
+        call cantTalk
+        call cantPull
+    end
+    call actionDone
+func Look_Notepad
+    select detective
+    wait talk LookNotepad
+
+// --- evidence: clues ------------------------------------------------------------
+func useInvPapers
+    mouse::active false
+    switch crime::verb
+        call noop
+        call Look_InvPapers
+        call haveIt
+        call cantTalk
+        call cantPull
+    end
+    call actionDone
+func Look_InvPapers
+    select detective
+    wait talk LookPapersInv
+
+func useInvCard
+    mouse::active false
+    switch crime::verb
+        call noop
+        call Look_InvCard
+        call haveIt
+        call cantTalk
+        call cantPull
+    end
+    call actionDone
+func Look_InvCard
+    select detective
+    wait talk LookCardInv
+
+func useInvNeedle
+    mouse::active false
+    switch crime::verb
+        call noop
+        call Look_InvNeedle
+        call haveIt
+        call cantTalk
+        call cantPull
+    end
+    call actionDone
+func Look_InvNeedle
+    select detective
+    wait talk LookNeedleInv
+
+// --- collecting a clue ------------------------------------------------------------
+// got<Clue> adds the clue to the inventory (the tray shows it in pickup order)
+// and `addClue` counts it (the lamps follow crime::clues). The third clue sets
+// crime::done so `actionDone` starts the finale instead of unlocking the mouse.
+func gotPapers
+    inventory::add papers
+    call addClue
+func gotCard
+    inventory::add card
+    call addClue
+func gotNeedle
+    inventory::add needle
+    call addClue
+
+func addClue
+    sound sfx_clue 0.6
+    crime::clues = crime::clues + 1
+    if crime::clues == 3
+        crime::done = 1
+    end

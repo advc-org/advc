@@ -1,0 +1,49 @@
+// The cover of the book, and starting a new adventure (from the cover, the
+// death page and the ending).
+
+str openBookLbl
+    en "Open the book"
+
+// The cover art is a full-screen actor (z 9); the HUD is closed meanwhile,
+// since its text would print over the cover.
+ui coverUi modal=false
+    if book::cover == 1
+        button btn_begin pos=700,1180 click=clickOpenBook hover=btn_begin_on
+            text openBookLbl pos=162,27 tint=1,0.88,0.55,1
+
+func showCover
+    mouse::active false
+    call closePages
+    call closeHud
+    book::fade = 0
+    book::reveal = 0
+    book::cbtn = 0
+    book::music = 1
+    book::cover = 1
+    select coverArt
+    image 0 0 0 cover
+    ui::show coverUi z=9.2
+    mouse::active true
+
+func clickOpenBook
+    mouse::active false
+    start openBook
+
+func openBook
+    sound sfx_door 0.5
+    book::cover = 0
+    ui::hide coverUi
+    select coverArt
+    noimage 0
+    call openHud
+    call to1
+
+// "Begin again" / "Read again from the beginning".
+func clickNewGame
+    mouse::active false
+    start newGame
+
+func newGame
+    call turnPage
+    call resetGame
+    call showCover

@@ -1,0 +1,533 @@
+// The book around the pages: the actors every page shares, the HUD (the
+// adventurer's stats, the sidebar buttons, the minimap and the inventory), the
+// page turn, the fader and flash, the line-by-line text reveal, the "you
+// found" banner and the music loop.
+//
+// Layout (1920x1440 canvas, see PLAN.md 2):
+//   sidebar x 20..420 | page x 440..1890, y 20..1100 | inventory y 1110..1420
+//   prose inset 455..1150 x 105..760, illustration 1170..1870 x 110..1090,
+//   choices box 470..1450 x 770..1100.
+//
+// Text placement: `pos=` is the top of the line box; IM FELL capitals start
+// ~4 px below it (and the ink ~2 px left of x).
+// Prose lines: title pos y 119, line k pos y 189+42k.
+//
+// Colours (`tint=` multiplies the white text): gold labels 0.95,0.75,0.4;
+// prose cream 1,0.92,0.78; titles amber 1,0.72,0.35; danger red 1,0.38,0.3.
+
+// --- HUD labels and captions -----------------------------------------------
+str adventurer
+    en "ADVENTURER"
+str stamina
+    en "STAMINA"
+str outOf
+    en "/ 10"
+str skill
+    en "SKILL"
+str skillVal
+    en "8"
+str journalLbl
+    en "JOURNAL"
+str mapLbl
+    en "MAP"
+str optionsLbl
+    en "OPTIONS"
+str hereLbl
+    en "YOU ARE HERE"
+str castleLbl
+    en "CASTLE ALDMOOR"
+str inventoryLbl
+    en "INVENTORY"
+str capHint
+    en "Rest the cursor on an item to examine it."
+str capSword
+    en "IRON SWORD. Plain, heavy and sharp. It has served you well in the practice yard."
+str capShield
+    en "WOODEN SHIELD. Oak boards bound in iron. It will turn a blade, but not fire."
+str capTorch
+    en "TORCH. Pitch-soaked rags on an ash stave. It lights your way into the dark."
+str capKey
+    en "RUSTY KEY. Taken from the skeleton's bones. What lock does it fit?"
+str capPotion
+    en "HEALING POTION. Restores all your STAMINA. Save it for your darkest hour."
+str capRelic
+    en "SWORD OF DAWN. The relic of King Aldric's house. Its blade shines like morning."
+str foundKey
+    en "A Rusty Iron Key"
+str foundPotion
+    en "A Healing Potion"
+str foundRelic
+    en "The Sword of Dawn"
+
+// --- choices box ---------------------------------------------------------------
+str whatDo
+    en "WHAT DO YOU DO?"
+str turn1
+    en "TURN TO 1"
+str turn4
+    en "TURN TO 4"
+str turn7
+    en "TURN TO 7"
+str turn13
+    en "TURN TO 13"
+str turn23
+    en "TURN TO 23"
+str turn54
+    en "TURN TO 54"
+str turn61
+    en "TURN TO 61"
+str turn88
+    en "TURN TO 88"
+str turn96
+    en "TURN TO 96"
+str turn142
+    en "TURN TO 142"
+str turn150
+    en "TURN TO 150"
+str turn160
+    en "TURN TO 160"
+str turn168
+    en "TURN TO 168"
+str turn200
+    en "TURN TO 200"
+
+// --- page chrome, as components -----------------------------------------------
+// Every page shares the numbered header (section number + title, revealed at
+// `book::reveal` step 1) and the choices box (the box, "WHAT DO YOU DO?" and
+// its bars). Both are components inlined by slots (COMPOSABLEUI.md 11); a
+// slot with no `pos=` leaves the component's own `pos=` literals in place, so
+// a page that slots them lays out exactly as the pre-migration blocks did.
+//
+// One `choices` component: the unused bars are passed `none` (optional
+// parameters, docs/src/reactive-ui.md "Optional parameters"), so one-line pages cover every bar count, and a
+// page with no TURN TO label on its bar passes `turn=none`. A page whose bars
+// depend on game state (p7, p54, p88, p150) slots `choicesBox` + `choiceBar`
+// directly instead, one bar per state branch.
+ui pageHead $section $title modal=false
+    if book::reveal >= 1
+        text $section pos=1047,41 width=240 align=center tint=0.95,0.75,0.4,1
+        text $title pos=455,119 width=695 align=center outline=0 tint=0.13,0.011,0.005,1
+
+ui choicesBox modal=false
+    image choices_box pos=470,770
+    text whatDo pos=471,785 width=840 align=center tint=0.95,0.75,0.4,1
+
+ui choiceBar $bar $barOn $choice $go $turn? modal=false
+    button $bar click=$go hover=$barOn
+        text $choice pos=100,19 tint=1,0.95,0.85,1
+        text $turn??? pos=565,19 tint=1,0.8,0.35,1
+
+ui choices $choice1 $go1 $turn1? $choice2? $go2? $turn2? $choice3? $go3? $turn3? modal=false
+    $choicesBox
+    $choiceBar bar=choice_1 barOn=choice_1_on choice=$choice1 go=$go1 turn=$turn1 pos=500,838
+    $choiceBar bar=choice_2 barOn=choice_2_on choice=$choice2??? go=$go2??? turn=$turn2 pos=500,926
+    $choiceBar bar=choice_3 barOn=choice_3_on choice=$choice3??? go=$go3??? turn=$turn3 pos=500,1014
+
+// --- the HUD ---------------------------------------------------------------------
+// Sidebar and inventory, open whenever the book is open (closed on the cover,
+// whose art would otherwise sit under the HUD's text). In order: the stats
+// (ten empty hearts always, a full one on top while STAMINA >= k), the sidebar
+// buttons (lit while hovered), the minimap legend (the minimap itself is
+// `ui minimap`, generated in artgeo.advf from the painted map), the inventory (fixed slots: found items appear, and
+// vanish when used) and the caption of the hovered item.
+// (Comments cannot go inside a `ui` block: the parser stops there.)
+ui hudBar modal=false
+    text adventurer pos=22,215 width=400 align=center tint=0.95,0.75,0.4,1
+    text stamina pos=62,279 tint=1,0.92,0.78,1
+    if hero::hp >= 10 pos=290,279
+        text hero::hp tint=1,0.92,0.78,1
+    if hero::hp < 10 pos=304,279
+        text hero::hp tint=1,0.92,0.78,1
+    text outOf pos=325,279 tint=1,0.92,0.78,1
+    image heart_empty pos=52,338
+    image heart_empty pos=86,338
+    image heart_empty pos=120,338
+    image heart_empty pos=154,338
+    image heart_empty pos=188,338
+    image heart_empty pos=222,338
+    image heart_empty pos=256,338
+    image heart_empty pos=290,338
+    image heart_empty pos=324,338
+    image heart_empty pos=358,338
+    if hero::hp >= 1 pos=52,338
+        image heart_full
+    if hero::hp >= 2 pos=86,338
+        image heart_full
+    if hero::hp >= 3 pos=120,338
+        image heart_full
+    if hero::hp >= 4 pos=154,338
+        image heart_full
+    if hero::hp >= 5 pos=188,338
+        image heart_full
+    if hero::hp >= 6 pos=222,338
+        image heart_full
+    if hero::hp >= 7 pos=256,338
+        image heart_full
+    if hero::hp >= 8 pos=290,338
+        image heart_full
+    if hero::hp >= 9 pos=324,338
+        image heart_full
+    if hero::hp >= 10 pos=358,338
+        image heart_full
+    text skill pos=62,389 tint=1,0.92,0.78,1
+    text skillVal pos=355,389 tint=1,0.92,0.78,1
+    button btn_journal pos=40,810 click=clickJournal hover=btn_journal_on
+        text journalLbl pos=110,21 tint=0.95,0.75,0.4,1
+    button btn_map pos=40,896 click=clickMap hover=btn_map_on
+        text mapLbl pos=110,21 tint=0.95,0.75,0.4,1
+    button btn_options pos=40,982 click=clickOptions hover=btn_options_on
+        text optionsLbl pos=110,21 tint=0.95,0.75,0.4,1
+    if map::here >= 1 pos=96,1349
+        text hereLbl tint=0.95,0.75,0.4,1
+    if map::here == 0 pos=66,1349
+        text castleLbl tint=0.95,0.75,0.4,1
+    text inventoryLbl pos=442,1119 width=1450 align=center tint=0.95,0.75,0.4,1
+    image inv_sword pos=531,1191 hit=rect
+        when
+            mouse_enter
+                book::inv = 1
+            mouse_leave
+                book::inv = 0
+    image inv_shield pos=701,1191 hit=rect
+        when
+            mouse_enter
+                book::inv = 2
+            mouse_leave
+                book::inv = 0
+    image inv_torch pos=871,1191 hit=rect
+        when
+            mouse_enter
+                book::inv = 3
+            mouse_leave
+                book::inv = 0
+    if hero::key == 1 pos=1041,1191
+        image inv_key hit=rect
+            when
+                mouse_enter
+                    book::inv = 4
+                mouse_leave
+                    book::inv = 0
+    if hero::potion == 1 pos=1211,1191
+        image inv_potion hit=rect
+            when
+                mouse_enter
+                    book::inv = 5
+                mouse_leave
+                    book::inv = 0
+    if hero::relic == 1 pos=1381,1191
+        image inv_relic hit=rect
+            when
+                mouse_enter
+                    book::inv = 6
+                mouse_leave
+                    book::inv = 0
+    switch book::inv pos=525,1349
+        text capHint tint=0.7,0.6,0.45,1
+        text capSword tint=1,0.92,0.78,1
+        text capShield tint=1,0.92,0.78,1
+        text capTorch tint=1,0.92,0.78,1
+        text capKey tint=1,0.92,0.78,1
+        text capPotion tint=1,0.92,0.78,1
+        text capRelic tint=1,0.92,0.78,1
+
+// --- page fader, flash, item banner -------------------------------------------------
+// The fader darkens only the page (the HUD's text would show through anything
+// else: the engine draws every text above every image).
+ui fader modal=false
+    if book::fade == 1 pos=440,20 size=1450,1080
+        quad color=0,0,0,0.25
+    if book::fade == 2 pos=440,20 size=1450,1080
+        quad color=0,0,0,0.5
+    if book::fade == 3 pos=440,20 size=1450,1080
+        quad color=0,0,0,0.75
+    if book::fade == 4 pos=440,20 size=1450,1080
+        quad color=0.02,0.01,0,0.92
+
+ui flashInset modal=false
+    if book::flash == 1 pos=0,0 size=1920,1440
+        quad color=0.75,0.04,0.02,0.12
+    if book::flash == 2 pos=0,0 size=1920,1440
+        quad color=1,0.85,0.4,0.07
+
+// Over the illustration (no prose there to show through the ribbon).
+ui banner modal=false
+    if book::found >= 1 pos=1176,330
+        image banner
+    if book::found == 1 pos=1405,403
+        text foundKey tint=1,0.88,0.55,1
+    if book::found == 2 pos=1406,403
+        text foundPotion tint=1,0.88,0.55,1
+    if book::found == 3 pos=1390,403
+        text foundRelic tint=1,0.88,0.55,1
+
+// --- shared actors ---------------------------------------------------------------------
+// The illustration and its sprites are generic slots each page fills: `scene`
+// (the picture), `spr1`/`spr2` (characters, props), `flame1`/`flame2`
+// (torches), `glint` and `fx1` (effects). `closePages` empties them.
+func bookActors
+    actor book, pos 0 0, z 0, image 0 0 0 book_bg, enable, mouse::over false
+    actor scene, pos 1170 110, z 2, enable, mouse::over false
+    actor spr1, pos 1400 470, z 3, enable, mouse::over false
+    actor spr2, pos 1400 470, z 3.5, enable, mouse::over false
+    actor flame1, pos 0 0, z 4, enable, mouse::over false
+    actor flame2, pos 0 0, z 4, enable, mouse::over false
+    actor fx1, pos 0 0, z 4.5, enable, mouse::over false
+    actor glint, pos 0 0, z 4.6, enable, mouse::over false
+    actor rune, pos 70 490, z 5, image 0 0 0 rune_0, enable, mouse::over false
+    actor vig, pos 0 0, z 5.5, enable, mouse::over false
+    actor die1, pos 485 625, z 8, enable, mouse::over false
+    actor die2, pos 565 625, z 8, enable, mouse::over false
+    actor sparkle, pos 0 0, z 8, enable, mouse::over false
+    actor curl, pos 440 20, z 8.5, enable, mouse::over false
+    actor coverArt, pos 0 0, z 9, enable, mouse::over false
+
+func openHud
+    ui::show hudBar z=6
+    ui::show minimap z=6
+
+func closeHud
+    ui::hide hudBar
+    ui::hide minimap
+
+// --- ambient anims -------------------------------------------------------------------------
+anim runeGlowAnim
+    duration 1
+        image 0 0 0 rune_0
+    duration 1
+        image 0 0 0 rune_1
+    duration 2
+        image 0 0 0 rune_2
+    duration 1
+        image 0 0 0 rune_1
+
+func runeGlow
+    select rune
+    play runeGlowAnim 99999 4s
+
+anim glintAnim
+    duration 3
+        noimage 0
+    duration 1
+        image 0 0 0 glint_0
+    duration 1
+        image 0 0 0 glint_1
+    duration 1
+        noimage 0
+
+// --- page turn -------------------------------------------------------------------------------
+// Every choice's click func (go<N>, one per page: the page's scene setup, the
+// standard turn and the reveal) runs, on its own thread: turnPage (lock the
+// mouse, hide the text, curl + fade the page), closePages, the page opens its
+// block, then fadeIn, revealText and showChoices.
+anim curlTurn
+    duration 1
+        image 0 0 0 curl_0
+    duration 1
+        image 0 0 0 curl_1
+    duration 1
+        image 0 0 0 curl_2
+    duration 1
+        image 0 0 0 curl_3
+    duration 1
+        noimage 0
+
+func turnPage
+    mouse::active false
+    book::hover = 0
+    book::reveal = 0
+    select die1
+    noimage 0
+    select die2
+    noimage 0
+    sound sfx_page 0.8
+    select curl
+    play curlTurn 1 0.45s
+    call fadeOut
+
+func fadeOut
+    book::fade = 1
+    wait nothing 60ms
+    book::fade = 2
+    wait nothing 60ms
+    book::fade = 3
+    wait nothing 60ms
+    book::fade = 4
+    wait nothing 120ms
+
+func fadeIn
+    book::fade = 3
+    wait nothing 60ms
+    book::fade = 2
+    wait nothing 60ms
+    book::fade = 1
+    wait nothing 60ms
+    book::fade = 0
+
+// Reveal 1 shows the section number and title; 2..14 are the steps of the
+// thirteen 42 px prose rows, and each paragraph (one wrapped `text`) appears at
+// the step of its first row; showChoices (99) shows the choices box and gives
+// control back.
+func revealText
+    book::reveal = 1
+    wait nothing 160ms
+    book::reveal = 2
+    wait nothing 70ms
+    book::reveal = 3
+    wait nothing 70ms
+    book::reveal = 4
+    wait nothing 70ms
+    book::reveal = 5
+    wait nothing 70ms
+    book::reveal = 6
+    wait nothing 70ms
+    book::reveal = 7
+    wait nothing 70ms
+    book::reveal = 8
+    wait nothing 70ms
+    book::reveal = 9
+    wait nothing 70ms
+    book::reveal = 10
+    wait nothing 70ms
+    book::reveal = 11
+    wait nothing 70ms
+    book::reveal = 12
+    wait nothing 70ms
+    book::reveal = 13
+    wait nothing 70ms
+    book::reveal = 14
+    wait nothing 200ms
+
+func showChoices
+    book::reveal = 99
+    mouse::active true
+
+// The standard ending of a page turn, for pages without a scripted event.
+func openPage
+    call fadeIn
+    call revealText
+    call showChoices
+
+// Close every page block and empty the picture's actors.
+func closePages
+    ui::hide p1
+    ui::hide p4
+    ui::hide p7
+    ui::hide p13
+    ui::hide p23
+    ui::hide p54
+    ui::hide p61
+    ui::hide p88
+    ui::hide p96
+    ui::hide p142
+    ui::hide p150
+    ui::hide p160
+    ui::hide p168
+    ui::hide p200
+    ui::hide combatInset
+    book::dying = 0
+    combat::result = 0
+    combat::heroRoll = 0
+    combat::foeRoll = 0
+    select scene
+    noimage 0
+    select spr1
+    stopall
+    noimage 0
+    select spr2
+    stopall
+    noimage 0
+    select flame1
+    stopall
+    noimage 0
+    select flame2
+    stopall
+    noimage 0
+    select fx1
+    stopall
+    noimage 0
+    select glint
+    stopall
+    noimage 0
+    select vig
+    stopall
+    noimage 0
+    select die1
+    noimage 0
+    select die2
+    noimage 0
+
+// --- found items -------------------------------------------------------------------------------
+anim sparkleAnim
+    duration 1
+        image 0 0 0 sparkle_0
+    duration 1
+        image 0 0 0 sparkle_1
+    duration 1
+        image 0 0 0 sparkle_2
+    duration 1
+        image 0 0 0 sparkle_3
+    duration 1
+        noimage 0
+
+// The banner over the picture, a chime, then a sparkle on the item's slot.
+func showFound
+    sound sfx_item 0.8
+    wait nothing 1.4s
+    select sparkle
+    wait play sparkleAnim 1 0.5s
+    wait nothing 0.4s
+    book::found = 0
+
+func giveKey
+    quest::keyFound = 1
+    book::found = 1
+    hero::key = 1
+    select sparkle
+    pos 1025 1175
+    call showFound
+
+func givePotion
+    book::found = 2
+    hero::potion = 1
+    select sparkle
+    pos 1195 1175
+    call showFound
+
+func giveRelic
+    book::found = 3
+    hero::relic = 1
+    select sparkle
+    pos 1365 1175
+    call showFound
+
+// --- flashes ----------------------------------------------------------------------------------
+func flashRed
+    book::flash = 1
+    wait nothing 110ms
+    book::flash = 0
+
+func flashGold
+    book::flash = 2
+    wait nothing 220ms
+    book::flash = 0
+
+// --- music ------------------------------------------------------------------------------------
+// One loop for the whole game: it reads book::music before each repeat, so a
+// new track starts when the current one ends (the engine cannot stop a sound).
+func musicLoop
+    switch book::music
+        wait nothing 1s
+        wait sound mus_title 0.35
+        wait sound mus_dungeon 0.45
+        wait sound mus_battle 0.4
+        wait sound mus_victory 0.4
+    end
+    start musicLoop
+
+// --- sidebar buttons --------------------------------------------------------------------------
+func clickJournal
+    start journalFlow
+func clickMap
+    start mapFlow
+func clickOptions
+    start optionsFlow

@@ -1,0 +1,398 @@
+// Detective Frank Malone: walk cycles, standing poses, pick/crouch anims,
+// facing helpers, the walk/pose/lipsync funcs bound on the actor, and the
+// scaling func driven by the walk map's depth rect.
+//
+// Sprites are 72x156 (36x78 art pixels drawn 2x) with the feet at (36,156), so
+// layer 0 is always drawn at `-36 -156`. Layer 1 is the talking-mouth overlay
+// (only while talking; every body anim clears it): a whole frame, transparent
+// but for the mouth, so it is drawn at the same `-36 -156` (tools/chars.py
+// finds the painted mouth). detective::facing holds the 8-way compass value the
+// walk funcs receive (N=0 clockwise: N NE E SE S SW W NW), and
+// detective::walkanim the walk-cycle group currently playing (0 N / 1 E-side
+// / 2 S / 3 W-side; -1 none): walkDetective only restarts the cycle when the
+// group changes, so NE->E->SE turns don't snap him back to the passing pose
+// (#11). The face/pose helpers reset it (they stopall as well).
+
+var detective
+    var facing = 4
+    var walkanim = -1
+
+// --- standing poses ---------------------------------------------------
+anim det_stand_n
+    duration 1
+        image 0 -36 -156 det_stand_n
+        noimage 1
+anim det_stand_e
+    duration 1
+        image 0 -36 -156 det_stand_e
+        noimage 1
+anim det_stand_s
+    duration 1
+        image 0 -36 -156 det_stand_s
+        noimage 1
+anim det_stand_w
+    duration 1
+        image 0 -36 -156 det_stand_e flipx
+        noimage 1
+
+// --- walk cycles (8 frames each) ----------------------------------------
+anim det_walk_n
+    duration 1
+        image 0 -36 -156 det_walk_n_0
+        noimage 1
+    duration 1
+        image 0 -36 -156 det_walk_n_1
+    duration 1
+        image 0 -36 -156 det_walk_n_2
+    duration 1
+        image 0 -36 -156 det_walk_n_3
+    duration 1
+        image 0 -36 -156 det_walk_n_4
+    duration 1
+        image 0 -36 -156 det_walk_n_5
+    duration 1
+        image 0 -36 -156 det_walk_n_6
+    duration 1
+        image 0 -36 -156 det_walk_n_7
+anim det_walk_e
+    duration 1
+        image 0 -36 -156 det_walk_e_0
+        noimage 1
+    duration 1
+        image 0 -36 -156 det_walk_e_1
+    duration 1
+        image 0 -36 -156 det_walk_e_2
+    duration 1
+        image 0 -36 -156 det_walk_e_3
+    duration 1
+        image 0 -36 -156 det_walk_e_4
+    duration 1
+        image 0 -36 -156 det_walk_e_5
+    duration 1
+        image 0 -36 -156 det_walk_e_6
+    duration 1
+        image 0 -36 -156 det_walk_e_7
+anim det_walk_s
+    duration 1
+        image 0 -36 -156 det_walk_s_0
+        noimage 1
+    duration 1
+        image 0 -36 -156 det_walk_s_1
+    duration 1
+        image 0 -36 -156 det_walk_s_2
+    duration 1
+        image 0 -36 -156 det_walk_s_3
+    duration 1
+        image 0 -36 -156 det_walk_s_4
+    duration 1
+        image 0 -36 -156 det_walk_s_5
+    duration 1
+        image 0 -36 -156 det_walk_s_6
+    duration 1
+        image 0 -36 -156 det_walk_s_7
+anim det_walk_w
+    duration 1
+        image 0 -36 -156 det_walk_e_0 flipx
+        noimage 1
+    duration 1
+        image 0 -36 -156 det_walk_e_1 flipx
+    duration 1
+        image 0 -36 -156 det_walk_e_2 flipx
+    duration 1
+        image 0 -36 -156 det_walk_e_3 flipx
+    duration 1
+        image 0 -36 -156 det_walk_e_4 flipx
+    duration 1
+        image 0 -36 -156 det_walk_e_5 flipx
+    duration 1
+        image 0 -36 -156 det_walk_e_6 flipx
+    duration 1
+        image 0 -36 -156 det_walk_e_7 flipx
+
+// --- interaction anims -------------------------------------------------
+// Reach over the desk for the papers (back view). The papers prop is hidden
+// on the "grab" keyframe, then the detective is re-selected for the rest.
+anim det_take_papers
+    duration 1
+        image 0 -36 -156 det_reach_n_0
+        noimage 1
+    duration 2
+        image 0 -36 -156 det_reach_n_1
+    duration 1
+        select deskPapers
+        noimage 0
+        select detective
+        image 0 -36 -156 det_reach_n_1
+    duration 1
+        image 0 -36 -156 det_reach_n_0
+    duration 1
+        image 0 -36 -156 det_stand_n
+
+// Crouch down and pick the syringe off the floor (facing east).
+anim det_take_needle
+    duration 1
+        image 0 -36 -156 det_crouch_e_0
+        noimage 1
+    duration 2
+        image 0 -36 -156 det_crouch_e_1
+    duration 1
+        select needle
+        noimage 0
+        select detective
+        image 0 -36 -156 det_crouch_e_1
+    duration 1
+        image 0 -36 -156 det_crouch_e_0
+    duration 1
+        image 0 -36 -156 det_stand_e
+
+// The west-facing twin (#6): the same crouch mirrored at draw time (the
+// east frames with flipx -- the pick-up spot is east of the syringe, so he
+// bends down facing west without stepping over it).
+anim det_take_needle_w
+    duration 1
+        image 0 -36 -156 det_crouch_e_0 flipx
+        noimage 1
+    duration 2
+        image 0 -36 -156 det_crouch_e_1 flipx
+    duration 1
+        select needle
+        noimage 0
+        select detective
+        image 0 -36 -156 det_crouch_e_1 flipx
+    duration 1
+        image 0 -36 -156 det_crouch_e_0 flipx
+    duration 1
+        image 0 -36 -156 det_stand_e flipx
+
+// Dig through the trash can (facing east, at walkto 536 292): bend, dig with
+// the hand inside the can (trashFront, the can's painted front, is drawn over
+// him so the hand disappears below the rim) while a paper ball flies out
+// (trashPaper), pull the business card out and look at it. Weights: 12 units.
+anim det_search
+    duration 1
+        image 0 -36 -156 det_search_0
+        noimage 1
+        select trashFront
+        image 0 0 0 trash_front
+        select detective
+    duration 1
+        image 0 -36 -156 det_search_1
+        select trashPaper
+        image 0 0 0 trash_paper_0
+        select detective
+    duration 1
+        image 0 -36 -156 det_search_2
+        select trashPaper
+        image 0 0 0 trash_paper_1
+        select detective
+    duration 1
+        image 0 -36 -156 det_search_1
+        select trashPaper
+        image 0 0 0 trash_paper_2
+        select detective
+    duration 1
+        image 0 -36 -156 det_search_2
+        select trashPaper
+        noimage 0
+        select detective
+    duration 1
+        image 0 -36 -156 det_search_1
+    duration 2
+        image 0 -36 -156 det_search_3
+        select trashFront
+        noimage 0
+        select detective
+    duration 3
+        image 0 -36 -156 det_search_4
+    duration 1
+        image 0 -36 -156 det_stand_e
+
+// Reach out and yank a drawer handle (back view, short).
+anim det_yank
+    duration 1
+        image 0 -36 -156 det_reach_n_0
+        noimage 1
+    duration 2
+        image 0 -36 -156 det_stand_n
+    duration 1
+        image 0 -36 -156 det_reach_n_0
+    duration 1
+        image 0 -36 -156 det_stand_n
+
+// --- facing helpers ------------------------------------------------------
+// Every helper stops all anims, so each one also resets walkanim (#11):
+// the next walk must restart its cycle from the new stand.
+func faceN
+    detective::facing = 0
+    detective::walkanim = -1
+    select detective
+    stopall
+    play det_stand_n 1 0s
+func faceE
+    detective::facing = 2
+    detective::walkanim = -1
+    select detective
+    stopall
+    play det_stand_e 1 0s
+func faceS
+    detective::facing = 4
+    detective::walkanim = -1
+    select detective
+    stopall
+    play det_stand_s 1 0s
+func faceW
+    detective::facing = 6
+    detective::walkanim = -1
+    select detective
+    stopall
+    play det_stand_w 1 0s
+
+// Walk-cycle func bound by `walkat officewalk walkDetective`. $1 = compass
+// direction (N=0 clockwise). Diagonals use the side views. Runs synchronously
+// inside the motion loop, so it only issues instant commands (no `call`) —
+// and on a fresh dispatch each turn, hence the scene var for the cycle
+// group (a `$` local would be re-created every turn).
+func walkDetective
+    select detective
+    detective::facing = $1
+    if $1 == 0 && detective::walkanim != 0
+        detective::walkanim = 0
+        stopall
+        play det_walk_n 999 0.8s
+    end
+    if $1 >= 1 && $1 <= 3 && detective::walkanim != 1
+        detective::walkanim = 1
+        stopall
+        play det_walk_e 999 0.8s
+    end
+    if $1 == 4 && detective::walkanim != 2
+        detective::walkanim = 2
+        stopall
+        play det_walk_s 999 0.8s
+    end
+    if $1 >= 5 && $1 <= 7 && detective::walkanim != 3
+        detective::walkanim = 3
+        stopall
+        play det_walk_w 999 0.8s
+    end
+
+// Arrival pose bound by `pose poseDetective`: $1 = last step's direction.
+// Resets walkanim (#11): the next walk starts a fresh cycle.
+func poseDetective
+    select detective
+    stopall
+    detective::facing = $1
+    detective::walkanim = -1
+    switch $1
+        play det_stand_n 1 0s
+        play det_stand_e 1 0s
+        play det_stand_e 1 0s
+        play det_stand_e 1 0s
+        play det_stand_s 1 0s
+        play det_stand_w 1 0s
+        play det_stand_w 1 0s
+        play det_stand_w 1 0s
+    end
+
+// Depth scaling: `inside officewalk depth scaleDetective` calls this every
+// frame the detective is inside the rect, with $2 = 0..1 from back to front.
+// At the back (1.0) he is ~150 px tall: 85% of the door frame, twice the desk.
+func scaleDetective
+    $scale = 1 + ((1.15 - 1) * $2), scale $scale
+
+// Room light: `inside officewalk <zone> lightDetective` (roomgeo.advf's
+// roomLight) calls this every frame he stands in a light zone, with $3 $4 $5 =
+// the zone's colour (tools/light.py, measured on the painted room). Walking
+// into another zone fades him to its light; `tint` ignores the same colour
+// asked for again, so the fade runs to the end.
+func lightDetective
+    tint $3 $4 $5 600ms
+
+// Lipsync: `lipsync lips_detective`. $1 = viseme class (0 closed, 1 round,
+// 2 teeth, 3 open, 4 L, 5 F/V, 6 CH). The mouth overlay follows the facing
+// (none from behind), and the panel portrait mouths along with him.
+func lips_detective
+    switch detective::facing
+        noimage 1
+        switch $1
+            image 1 -36 -156 det_mouth_e_0
+            image 1 -36 -156 det_mouth_e_1
+            image 1 -36 -156 det_mouth_e_2
+            image 1 -36 -156 det_mouth_e_3
+            image 1 -36 -156 det_mouth_e_4
+            image 1 -36 -156 det_mouth_e_5
+            image 1 -36 -156 det_mouth_e_6
+            image 1 -36 -156 det_mouth_e_0
+        end
+        switch $1
+            image 1 -36 -156 det_mouth_e_0
+            image 1 -36 -156 det_mouth_e_1
+            image 1 -36 -156 det_mouth_e_2
+            image 1 -36 -156 det_mouth_e_3
+            image 1 -36 -156 det_mouth_e_4
+            image 1 -36 -156 det_mouth_e_5
+            image 1 -36 -156 det_mouth_e_6
+            image 1 -36 -156 det_mouth_e_0
+        end
+        switch $1
+            image 1 -36 -156 det_mouth_e_0
+            image 1 -36 -156 det_mouth_e_1
+            image 1 -36 -156 det_mouth_e_2
+            image 1 -36 -156 det_mouth_e_3
+            image 1 -36 -156 det_mouth_e_4
+            image 1 -36 -156 det_mouth_e_5
+            image 1 -36 -156 det_mouth_e_6
+            image 1 -36 -156 det_mouth_e_0
+        end
+        switch $1
+            image 1 -36 -156 det_mouth_s_0
+            image 1 -36 -156 det_mouth_s_1
+            image 1 -36 -156 det_mouth_s_2
+            image 1 -36 -156 det_mouth_s_3
+            image 1 -36 -156 det_mouth_s_4
+            image 1 -36 -156 det_mouth_s_5
+            image 1 -36 -156 det_mouth_s_6
+            image 1 -36 -156 det_mouth_s_0
+        end
+        switch $1
+            image 1 -36 -156 det_mouth_e_0 flipx
+            image 1 -36 -156 det_mouth_e_1 flipx
+            image 1 -36 -156 det_mouth_e_2 flipx
+            image 1 -36 -156 det_mouth_e_3 flipx
+            image 1 -36 -156 det_mouth_e_4 flipx
+            image 1 -36 -156 det_mouth_e_5 flipx
+            image 1 -36 -156 det_mouth_e_6 flipx
+            image 1 -36 -156 det_mouth_e_0 flipx
+        end
+        switch $1
+            image 1 -36 -156 det_mouth_e_0 flipx
+            image 1 -36 -156 det_mouth_e_1 flipx
+            image 1 -36 -156 det_mouth_e_2 flipx
+            image 1 -36 -156 det_mouth_e_3 flipx
+            image 1 -36 -156 det_mouth_e_4 flipx
+            image 1 -36 -156 det_mouth_e_5 flipx
+            image 1 -36 -156 det_mouth_e_6 flipx
+            image 1 -36 -156 det_mouth_e_0 flipx
+        end
+        switch $1
+            image 1 -36 -156 det_mouth_e_0 flipx
+            image 1 -36 -156 det_mouth_e_1 flipx
+            image 1 -36 -156 det_mouth_e_2 flipx
+            image 1 -36 -156 det_mouth_e_3 flipx
+            image 1 -36 -156 det_mouth_e_4 flipx
+            image 1 -36 -156 det_mouth_e_5 flipx
+            image 1 -36 -156 det_mouth_e_6 flipx
+            image 1 -36 -156 det_mouth_e_0 flipx
+        end
+    end
+    select portrait
+    switch $1
+        image 1 0 0 portrait_mouth_0
+        image 1 0 0 portrait_mouth_1
+        image 1 0 0 portrait_mouth_2
+        image 1 0 0 portrait_mouth_3
+        image 1 0 0 portrait_mouth_4
+        image 1 0 0 portrait_mouth_5
+        image 1 0 0 portrait_mouth_6
+        image 1 0 0 portrait_mouth_0
+    end

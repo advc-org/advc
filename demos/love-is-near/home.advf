@@ -1,0 +1,108 @@
+// Evenings at home (Mom calls the first time and sends $5) and the end of
+// every day.
+
+str hom1a
+    en "Kai! You never call. Are you eating? Are you sleeping?"
+str hom2a
+    en "Yes, Mom. Both. Sometimes at the same time."
+str hom3a
+    en "I sent you a little something. Buy yourself something nice. Or buy someone something nice. Hmm?"
+str hom4a
+    en "Mom!"
+str hom5a
+    en "Kai plays a game, eats instant noodles and is asleep by nine. Thrilling."
+
+str ngt1a
+    en "Monday night. Kai's legs ache from the hills, and his head is full of stars."
+str ngt2a
+    en "Tuesday night. Somewhere below the window, a cafe is closing up."
+str ngt3a
+    en "Wednesday night. The rain drums on the roof. Kai can't sleep."
+str ngt4a
+    en "Thursday night. Kai counts his money twice. Then a third time."
+str ngt5a
+    en "Friday night. Tomorrow is the Star Festival."
+
+ui sHome modal=false
+    if dlg::line == 1
+        text hom1a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 2
+        text hom2a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 3
+        text hom3a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 4
+        text hom4a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 5
+        text hom5a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 11
+        text ngt1a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 12
+        text ngt2a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 13
+        text ngt3a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 14
+        text ngt4a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 15
+        text ngt5a pos=252,827 width=1440 tint=0.78,0.86,1,1
+
+func homeOpen
+    call fadeOut
+    call closeScenes
+    call clearChars
+    vn::hudShown = 1
+    vn::music = 2
+    ui::show sHome z=4.5
+    call boxOn
+
+func doHome
+    call homeOpen
+    select bg
+    image 0 0 0 bg_room_eve
+    call fadeIn
+    switch home::called
+        call momCall
+        call quietNight
+    end
+
+func momCall
+    select prop
+    image 0 0 0 phone
+    call popInProp
+    sound sfx_phone 0.6
+    wait nothing 1200ms
+    dlg::who = 5
+    dlg::line = 1
+    call next
+    dlg::who = 1
+    dlg::line = 2
+    call next
+    dlg::who = 5
+    dlg::line = 3
+    call earn5
+    home::called = 1
+    call next
+    dlg::who = 1
+    dlg::line = 4
+    call next
+
+func quietNight
+    dlg::who = 0
+    dlg::line = 5
+    call next
+
+// The end of a weekday: the room at night, one line.
+func night
+    call homeOpen
+    select bg
+    image 0 0 0 bg_room_night
+    dlg::who = 0
+    switch day::n
+        dlg::line = 11
+        dlg::line = 11
+        dlg::line = 12
+        dlg::line = 13
+        dlg::line = 14
+        dlg::line = 15
+    end
+    call fadeIn
+    call next

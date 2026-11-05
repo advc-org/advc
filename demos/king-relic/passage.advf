@@ -1,0 +1,182 @@
+// Room 1, the Cursed Passage: the skeleton rises (#23), the fight (#54) and
+// the hub among its bones, where the rusty key is found (#61).
+//
+// The picture is the empty passage; the skeleton is the `spr1` sprite cut from
+// the painting with it (artgeo.advf places it and the torch flicker). Its anims
+// and the combat rounds are in combat.advf.
+
+func passageScene
+    select scene
+    image 0 0 0 ill_passage
+    call geo_passage
+    map::hall = 1
+    map::here = 2
+
+// --- #23 The Cursed Passage ---------------------------------------------------------
+str n23
+    en "23"
+str t23
+    en "The Cursed Passage"
+str p23a
+    en "The air grows cold and damp as you descend into the ancient passage. Water drips in the darkness. Your torchlight flickers across the walls, revealing carvings of grinning skulls, and then you see it."
+str p23f
+    en "A SKELETON WARRIOR"
+str p23g
+    en "rusted blade in hand, its empty sockets burning with a cold blue light."
+str p23i
+    en "Beyond it the passage runs on, to an iron-banded door in the west and to great bronze doors in the north."
+str p23f2
+    en "rises from the dark,"
+str c23a
+    en "Fight the skeleton."
+str cFlee
+    en "Flee back up the stairs."
+
+ui p23 modal=false
+    $pageHead section=n23 title=t23
+    if book::reveal >= 2 pos=500,189
+        text p23a width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 8 pos=500,441
+        text p23f width=640 outline=0 tint=0.26,0.009,0.006,1
+    if book::reveal >= 9 pos=500,483
+        text p23g width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 12 pos=500,609
+        text p23i width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 8 pos=889,441
+        text p23f2 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 99
+        $choices choice1=c23a go1=go54 turn1=turn54 choice2=cFlee go2=go7 turn2=turn7 choice3=none go3=none turn3=none
+
+// The click: lock the mouse and run the page turn; the bones rattle as the
+// skeleton rises.
+func go23
+    mouse::active false
+    start to23
+
+func to23
+    call turnPage
+    call closePages
+    call show23
+    call fadeIn
+    sound sfx_bones 0.6
+    call revealText
+    call showChoices
+
+func show23
+    call passageScene
+    call skelIdleLoop
+    book::music = 3
+    ui::show p23 z=7
+
+// --- #54 Skeleton Warrior ------------------------------------------------------------
+// Fleeing and coming back finds it whole again (STAMINA 3).
+str n54
+    en "54"
+str t54
+    en "Skeleton Warrior"
+str p54a
+    en "The skeleton lurches toward you, bones clacking, its notched blade raised high."
+str p54c
+    en "Roll two dice and add your SKILL to find your attack strength. If yours is higher, you wound it. If its attack is higher, it wounds you. Reduce its STAMINA to nothing to win."
+str c54a
+    en "Attack!"
+str c54b
+    en "Search the bones."
+
+ui p54 modal=false
+    $pageHead section=n54 title=t54
+    if book::reveal >= 2 pos=500,189
+        text p54a width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 5 pos=500,315
+        text p54c width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 99
+        $choicesBox
+        if quest::skeleton == 0
+            $choiceBar bar=choice_1 barOn=choice_1_on choice=c54a go=clickAttack turn=none pos=500,838
+            $choiceBar bar=choice_2 barOn=choice_2_on choice=cFlee go=go7 turn=turn7 pos=500,926
+        if quest::skeleton == 1
+            $choiceBar bar=choice_1 barOn=choice_1_on choice=c54b go=go61 turn=turn61 pos=500,838
+
+// The click: lock the mouse and run the page turn.
+func go54
+    mouse::active false
+    start to54
+
+func to54
+    call turnPage
+    call closePages
+    call show54
+    call openPage
+
+// The page's setup opens the combat box with the page.
+func show54
+    call passageScene
+    call skelIdleLoop
+    combat::foe = 1
+    combat::foeHp = 3
+    combat::result = 0
+    book::music = 3
+    ui::show p54 z=7
+    ui::hide combatInset
+    ui::show combatInset z=7
+
+// --- #61 Among the Bones ------------------------------------------------------------
+// The first visit gives the rusty key.
+str n61
+    en "61"
+str t61
+    en "Among the Bones"
+str p61a
+    en "The skeleton lies in a scattered heap of bones, the blue light gone from its skull."
+str p61c
+    en "Among its ribs you found a rusty iron key."
+str p61c2
+    en "Its bones have nothing more to give you."
+str p61d
+    en "The passage runs on into the dark. To the west, an iron-banded door stands ajar. To the north, great bronze doors are scorched black, as if by fire. Behind you, the stair climbs back toward the evening air."
+str c61a
+    en "Take the iron-banded door west."
+str c61b
+    en "Open the scorched bronze doors."
+str c61c
+    en "Climb the stairs to the surface."
+
+ui p61 modal=false
+    $pageHead section=n61 title=t61
+    if book::reveal >= 2 pos=500,189
+        text p61a width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 4
+        if quest::chest == 0 pos=500,273
+            text p61c width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 4
+        if quest::chest == 1 pos=500,273
+            text p61c2 width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 6 pos=500,357
+        text p61d width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 99
+        $choices choice1=c61a go1=go88 turn1=turn88 choice2=c61b go2=go142 turn2=turn142 choice3=c61c go3=go7 turn3=turn7
+
+// The click: lock the mouse and run the page turn; the first visit finds
+// the rusty key.
+func go61
+    mouse::active false
+    start to61
+
+func to61
+    call turnPage
+    call closePages
+    call show61
+    call fadeIn
+    call revealText
+    switch quest::keyFound
+        call giveKey
+        nothing 0s
+    end
+    call showChoices
+
+func show61
+    call passageScene
+    select spr1
+    image 0 0 0 skel_fall_2
+    book::music = 2
+    ui::show p61 z=7

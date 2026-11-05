@@ -1,0 +1,413 @@
+// Combat: the combat box (a block the combat pages open), the dice, the
+// skeleton's rounds (#54) and the dragon's two scripted exchanges (#150 the
+// fire that leaves you dying, #160 the killing blow).
+//
+// Attack totals are two dice + SKILL 8 for you, a fixed roll for the foe. A
+// round picks one preset outcome at random (two hits in three against the
+// skeleton) and shows the matching dice faces and totals.
+
+str foeSkeleton
+    en "SKELETON WARRIOR"
+str foeDragon
+    en "SKARTHAX"
+str you
+    en "YOU"
+str vs
+    en "vs"
+str foeShortSkel
+    en "SKELETON"
+str foeShortDragon
+    en "DRAGON"
+str r0
+    en "Roll two dice and add your SKILL of 8."
+str r1
+    en "You strike the skeleton!"
+str r2
+    en "Its rusty blade cuts you!"
+str r3
+    en "You catch its blade on your shield."
+str r4
+    en "The skeleton falls apart!"
+str r5
+    en "Your blade glances off its scales!"
+str r6
+    en "Dragonfire engulfs you!"
+str r7
+    en "Your blade finds the dragon's heart!"
+str r8
+    en "Your STAMINA is restored!"
+
+// Inside the prose inset, below the prose (combat pages keep to 8 lines).
+//   box 460..1145 x 545..755: foe + STAMINA pips, dice + totals, result line
+ui combatInset modal=false
+    if book::reveal >= 1 pos=460,545
+        image combat_box
+    if book::reveal >= 1
+        switch combat::foe pos=485,560
+            text foeSkeleton tint=1,0.38,0.3,1
+            text foeSkeleton tint=1,0.38,0.3,1
+            text foeDragon tint=1,0.38,0.3,1
+        text stamina pos=850,560 tint=0.95,0.75,0.4,1
+        image pip_off pos=1010,562
+        image pip_off pos=1045,562
+        image pip_off pos=1080,562
+        if combat::foeHp >= 1 pos=1010,562
+            image pip_on
+        if combat::foeHp >= 2 pos=1045,562
+            image pip_on
+        if combat::foeHp >= 3 pos=1080,562
+            image pip_on
+        if combat::heroRoll >= 1
+            text you pos=670,637 tint=1,0.92,0.78,1
+            text combat::heroRoll pos=765,637 tint=1,0.92,0.78,1
+            text vs pos=825,637 tint=0.7,0.6,0.45,1
+            switch combat::foe pos=870,637
+                text foeShortSkel tint=1,0.92,0.78,1
+                text foeShortSkel tint=1,0.92,0.78,1
+                text foeShortDragon tint=1,0.92,0.78,1
+            text combat::foeRoll pos=1070,637 tint=1,0.92,0.78,1
+        switch combat::result pos=485,704
+            text r0 tint=0.7,0.6,0.45,1
+            text r1 tint=1,0.88,0.55,1
+            text r2 tint=1,0.38,0.3,1
+            text r3 tint=1,0.88,0.55,1
+            text r4 tint=1,0.88,0.55,1
+            text r5 tint=1,0.38,0.3,1
+            text r6 tint=1,0.38,0.3,1
+            text r7 tint=1,0.88,0.55,1
+            text r8 tint=1,0.88,0.55,1
+
+// --- dice ------------------------------------------------------------------------
+anim tumbleAnim
+    duration 1
+        image 0 0 0 die_blur_0
+    duration 1
+        image 0 0 0 die_3
+    duration 1
+        image 0 0 0 die_blur_1
+    duration 1
+        image 0 0 0 die_6
+    duration 1
+        image 0 0 0 die_blur_0
+    duration 1
+        image 0 0 0 die_2
+    duration 1
+        image 0 0 0 die_blur_1
+
+func tumble
+    sound sfx_dice 0.8
+    wait all
+        call tumble1
+        call tumble2
+    end
+func tumble1
+    select die1
+    wait play tumbleAnim 1 0.7s
+func tumble2
+    select die2
+    wait play tumbleAnim 1 0.6s
+
+// faces <a> <b> as funcs (an image name cannot come from a variable)
+func faces54
+    select die1
+    image 0 0 0 die_5
+    select die2
+    image 0 0 0 die_4
+func faces63
+    select die1
+    image 0 0 0 die_6
+    select die2
+    image 0 0 0 die_3
+func faces44
+    select die1
+    image 0 0 0 die_4
+    select die2
+    image 0 0 0 die_4
+func faces23
+    select die1
+    image 0 0 0 die_2
+    select die2
+    image 0 0 0 die_3
+func faces14
+    select die1
+    image 0 0 0 die_1
+    select die2
+    image 0 0 0 die_4
+func faces32
+    select die1
+    image 0 0 0 die_3
+    select die2
+    image 0 0 0 die_2
+func faces33
+    select die1
+    image 0 0 0 die_3
+    select die2
+    image 0 0 0 die_3
+func faces66
+    select die1
+    image 0 0 0 die_6
+    select die2
+    image 0 0 0 die_6
+
+// --- the skeleton (#54) ----------------------------------------------------------
+anim skelIdle
+    duration 1
+        image 0 0 0 skel_idle_0
+    duration 1
+        image 0 0 0 skel_idle_1
+anim skelHitAnim
+    duration 1
+        image 0 0 0 skel_hit
+    duration 1
+        image 0 0 0 skel_hit
+    duration 1
+        image 0 0 0 skel_hit
+anim skelAttackAnim
+    duration 1
+        image 0 0 0 skel_idle_0
+    duration 2
+        image 0 0 0 skel_attack
+    duration 1
+        image 0 0 0 skel_idle_0
+anim skelFallAnim
+    duration 1
+        image 0 0 0 skel_fall_0
+    duration 1
+        image 0 0 0 skel_fall_1
+    duration 2
+        image 0 0 0 skel_fall_2
+
+func skelIdleLoop
+    select spr1
+    play skelIdle 99999 1.4s
+
+func clickAttack
+    mouse::active false
+    start skeletonRound
+
+func skeletonRound
+    book::hover = 0
+    combat::result = 0
+    combat::heroRoll = 0
+    wait random
+        call hitA
+        call hitB
+        call hitC
+        call hitA
+        call hitB
+        call hitC
+        call missA
+        call missB
+        call missC
+    end
+    switch combat::foeHp
+        call skeletonDies
+        call skelIdleLoop
+        call skelIdleLoop
+        call skelIdleLoop
+    end
+    mouse::active true
+
+func hitA
+    call tumble
+    call faces54
+    combat::heroRoll = 17
+    combat::foeRoll = 12
+    call strikeSkeleton
+func hitB
+    call tumble
+    call faces63
+    combat::heroRoll = 17
+    combat::foeRoll = 14
+    call strikeSkeleton
+func hitC
+    call tumble
+    call faces44
+    combat::heroRoll = 16
+    combat::foeRoll = 11
+    call strikeSkeleton
+func missA
+    call tumble
+    call faces23
+    combat::heroRoll = 13
+    combat::foeRoll = 15
+    call skeletonCuts
+func missB
+    call tumble
+    call faces14
+    combat::heroRoll = 13
+    combat::foeRoll = 16
+    call skeletonCuts
+func missC
+    call tumble
+    call faces32
+    combat::heroRoll = 13
+    combat::foeRoll = 14
+    call skeletonCuts
+
+func strikeSkeleton
+    combat::result = 1
+    sound sfx_sword 0.7
+    sound sfx_skel_hit 0.8
+    select spr1
+    stopall
+    wait play skelHitAnim 1 0.45s
+    switch combat::foeHp
+        combat::foeHp = 0
+        combat::foeHp = 0
+        combat::foeHp = 1
+        combat::foeHp = 2
+    end
+
+// The skeleton cannot take you below STAMINA 5: from 5 down you parry.
+func skeletonCuts
+    select spr1
+    stopall
+    wait play skelAttackAnim 1 0.5s
+    switch hero::hp
+        call parried
+        call parried
+        call parried
+        call parried
+        call parried
+        call parried
+        call cut
+        call cut
+        call cut
+        call cut
+        call cut
+    end
+func cut
+    combat::result = 2
+    sound sfx_hurt 0.8
+    call hurt1
+    call flashRed
+func parried
+    combat::result = 3
+    sound sfx_sword 0.5
+
+func skeletonDies
+    combat::result = 4
+    quest::skeleton = 1
+    sound sfx_bones 0.9
+    select spr1
+    stopall
+    wait play skelFallAnim 1 0.9s
+    book::music = 2
+
+// --- the dragon (#150, #160) ----------------------------------------------------
+anim dragonIdle
+    duration 1
+        image 0 0 0 dragon_idle_0
+    duration 1
+        image 0 0 0 dragon_idle_1
+anim fireAnim
+    duration 1
+        image 0 0 0 fire_0
+    duration 1
+        image 0 0 0 fire_1
+    duration 1
+        image 0 0 0 fire_2
+anim dragonFall
+    duration 1
+        image 0 0 0 dragon_fall_0
+    duration 1
+        image 0 0 0 dragon_fall_1
+    duration 2
+        image 0 0 0 dragon_slain
+anim vigPulse
+    duration 1
+        image 0 0 0 vignette_0
+    duration 1
+        image 0 0 0 vignette_1
+
+func dragonIdleLoop
+    select spr1
+    play dragonIdle 99999 2.4s
+
+// #150: your blow glances off, the fire leaves you at STAMINA 1, dying.
+func dragonFire
+    wait nothing 300ms
+    call tumble
+    call faces33
+    combat::heroRoll = 14
+    combat::foeRoll = 21
+    combat::result = 5
+    sound sfx_sword 0.6
+    wait nothing 700ms
+    select spr1
+    stopall
+    image 0 0 0 dragon_roar
+    sound sfx_roar 0.9
+    wait nothing 600ms
+    combat::result = 6
+    wait all
+        call fireBurst
+        call burn
+    end
+    call dragonIdleLoop
+    book::dying = 1
+    select vig
+    play vigPulse 99999 1.1s
+    start heartLoop
+
+func fireBurst
+    sound sfx_fire 0.9
+    select fx1
+    wait play fireAnim 4 0.3s
+    noimage 0
+func burn
+    call flashRed
+    call drainToOne
+
+func heartLoop
+    switch book::dying
+        nothing 0s
+        call heartBeat
+    end
+func heartBeat
+    wait sound sfx_heart 0.8
+    start heartLoop
+
+// #160: the potion, then the killing blow (the page's "Strike" choice).
+func drinkPotion
+    wait nothing 300ms
+    sound sfx_gulp 0.9
+    wait nothing 900ms
+    hero::potion = 0
+    sound sfx_heal 0.8
+    call flashGold
+    call fillToFull
+    combat::result = 8
+
+func clickStrike
+    mouse::active false
+    start strikeHeart
+
+func strikeHeart
+    book::hover = 0
+    call tumble
+    call faces66
+    combat::heroRoll = 20
+    combat::foeRoll = 13
+    combat::result = 7
+    sound sfx_sword 0.9
+    call flashGold
+    select spr1
+    stopall
+    image 0 0 0 dragon_roar
+    sound sfx_roar 0.9
+    wait nothing 900ms
+    sound sfx_bones 0.6
+    select flame1
+    stopall
+    noimage 0
+    select flame2
+    stopall
+    noimage 0
+    select spr1
+    wait play dragonFall 1 0.8s
+    combat::foeHp = 0
+    quest::dragon = 1
+    wait nothing 1.2s
+    call to168

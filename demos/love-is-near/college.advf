@@ -1,0 +1,301 @@
+// Monday to Friday mornings at Kaminato University. Daichi drops a hint about
+// Luna every day; Friday is Professor Ueda's quiz (passed with 2 study).
+//
+// Lines: Monday 101.., Tuesday 201.., Wednesday 301.., Thursday 401..,
+// Friday 501.. (pass 511.., fail 521..). Narration pale blue, speech cream.
+
+str col101a
+    en "Monday. Kaminato University, first day. The campus is enormous."
+str col102a
+    en "In the lecture hall, the only free seat is next to a guy in a mustard hoodie."
+str col103a
+    en "Yo! New face. I'm Daichi. Daichi Mori. You lost too?"
+str col104a
+    en "Kai. I just moved here. Hikari Street, Sato House."
+str col105a
+    en "No way, Hikari Street? Then you live next to the Moonbean Cafe! Best coffee in Kaminato. And the prettiest barista, too. Luna."
+str col106a
+    en "L-Luna? I mean... I might have seen her. Through the window. Once."
+str col107a
+    en "Ha! You've got it bad already. We went to the same high school, you know. Astronomy club. She was the only one who actually showed up at night."
+str col108a
+    en "Mr. Mori, if you are quite finished, ASTR 101 would like to begin. A reminder for everyone: there is a quiz on Friday."
+str col109a
+    en "...Friday already? Ugh. Study for it, Kai. Ueda's quizzes are brutal."
+
+str col201a
+    en "Tuesday. Professor Ueda spends ninety minutes on the summer triangle."
+str col202a
+    en "Hey, Kai. Tip from an old astronomy club member. If Luna ever asks what you like about this city, don't say the food."
+str col203a
+    en "Say the stars over the harbour. She'll talk your ear off. Trust me."
+str col204a
+    en "The stars over the harbour. Got it. ...Why are you helping me?"
+str col205a
+    en "Because you look like a lost puppy, and lost puppies deserve coffee. Also, you owe me lunch now."
+str col206a
+    en "Friday's quiz covers chapters one to three. The library is open until nine."
+
+str col301a
+    en "Wednesday. Grey clouds roll in over the bay."
+str col302a
+    en "You know Luna draws, right? On her breaks. Always in the same old sketchbook."
+str col303a
+    en "Word of advice: never grab it. A guy tried that in high school. She didn't speak to him for a year."
+str col304a
+    en "Noted. Ask, don't grab."
+str col305a
+    en "She goes to art school at night. Wants to illustrate books, I think. Don't tell her I told you."
+
+str col401a
+    en "Thursday. Posters all over campus: STAR FESTIVAL, SATURDAY, HILL OBSERVATORY."
+str col402a
+    en "The Star Festival! Lanterns, food stalls, and the big telescope open all night."
+str col403a
+    en "Tickets are ten dollars each. Twenty for two... if you were, say, inviting someone."
+str col404a
+    en "Twenty dollars. Right. (...I should check my wallet.)"
+str col405a
+    en "Ask her soon, Kai. Saturday comes fast."
+
+str col501a
+    en "Friday. The quiz. Professor Ueda hands out the papers in silence."
+str col511a
+    en "Question one: name the brightest star of the summer triangle. Kai smiles and writes it down. Vega."
+str col512a
+    en "You passed? Traitor! I thought we were going to fail together."
+str col521a
+    en "Question one... Question one... Kai stares at the page until it stares back."
+str col522a
+    en "Don't look at me like that. I failed too. Noodles? My treat. Your treat."
+
+ui sCol modal=false
+    if dlg::line == 101
+        text col101a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 102
+        text col102a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 103
+        text col103a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 104
+        text col104a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 105
+        text col105a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 106
+        text col106a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 107
+        text col107a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 108
+        text col108a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 109
+        text col109a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 201
+        text col201a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 202
+        text col202a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 203
+        text col203a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 204
+        text col204a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 205
+        text col205a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 206
+        text col206a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 301
+        text col301a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 302
+        text col302a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 303
+        text col303a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 304
+        text col304a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 305
+        text col305a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 401
+        text col401a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 402
+        text col402a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 403
+        text col403a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 404
+        text col404a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 405
+        text col405a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 501
+        text col501a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 511
+        text col511a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 512
+        text col512a pos=252,827 width=1440 tint=1,0.96,0.9,1
+    if dlg::line == 521
+        text col521a pos=252,827 width=1440 tint=0.78,0.86,1,1
+    if dlg::line == 522
+        text col522a pos=252,827 width=1440 tint=1,0.96,0.9,1
+
+// The lecture hall with Daichi, after a glimpse of the campus.
+func campusOpen
+    call fadeOut
+    call closeScenes
+    call clearChars
+    select bg
+    image 0 0 0 bg_campus
+    vn::hudShown = 1
+    vn::music = 3
+    ui::show sCol z=4.5
+    call boxOn
+    dlg::who = 0
+
+func toLecture
+    call fadeOut
+    select bg
+    image 0 0 0 bg_lecture
+    select chr1
+    image 0 0 0 daichi_grin
+    sound sfx_school 0.5
+    call fadeIn
+
+func college1
+    call campusOpen
+    dlg::line = 101
+    call fadeIn
+    call next
+    select bg
+    image 0 0 0 bg_lecture
+    sound sfx_school 0.5
+    dlg::line = 102
+    call next
+    select chr1
+    image 0 0 0 daichi_grin
+    call popIn1
+    dlg::who = 3
+    dlg::line = 103
+    call next
+    dlg::who = 1
+    dlg::line = 104
+    call next
+    dlg::who = 3
+    dlg::line = 105
+    call next
+    dlg::who = 1
+    dlg::line = 106
+    call next
+    dlg::who = 3
+    dlg::line = 107
+    call next
+    dlg::who = 6
+    select chr1
+    image 0 0 0 daichi_worried
+    dlg::line = 108
+    call next
+    dlg::who = 3
+    dlg::line = 109
+    call next
+
+func college2
+    call campusOpen
+    call toLecture
+    dlg::who = 0
+    dlg::line = 201
+    call next
+    dlg::who = 3
+    dlg::line = 202
+    call next
+    dlg::line = 203
+    call next
+    dlg::who = 1
+    dlg::line = 204
+    call next
+    dlg::who = 3
+    dlg::line = 205
+    call next
+    dlg::who = 6
+    select chr1
+    image 0 0 0 daichi_neutral
+    dlg::line = 206
+    call next
+
+func college3
+    call campusOpen
+    call toLecture
+    dlg::who = 0
+    dlg::line = 301
+    call next
+    dlg::who = 3
+    select chr1
+    image 0 0 0 daichi_neutral
+    dlg::line = 302
+    call next
+    select chr1
+    image 0 0 0 daichi_worried
+    dlg::line = 303
+    call next
+    dlg::who = 1
+    dlg::line = 304
+    call next
+    dlg::who = 3
+    select chr1
+    image 0 0 0 daichi_grin
+    dlg::line = 305
+    call next
+
+func college4
+    call campusOpen
+    dlg::line = 401
+    call fadeIn
+    call next
+    select chr1
+    image 0 0 0 daichi_grin
+    call popIn1
+    dlg::who = 3
+    dlg::line = 402
+    call next
+    dlg::line = 403
+    call next
+    dlg::who = 1
+    dlg::line = 404
+    call next
+    dlg::who = 3
+    dlg::line = 405
+    call next
+
+// The quiz: 2 or more study passes.
+func college5
+    call campusOpen
+    call toLecture
+    select chr1
+    noimage 0
+    dlg::who = 0
+    dlg::line = 501
+    call next
+    switch study::pts
+        call quizFail
+        call quizFail
+        call quizPass
+        call quizPass
+    end
+
+func quizPass
+    dlg::line = 511
+    quiz::passed = 1
+    vn::toast = 7
+    sound sfx_pass 0.6
+    start showToast
+    call next
+    select chr1
+    image 0 0 0 daichi_worried
+    call popIn1
+    dlg::who = 3
+    dlg::line = 512
+    call next
+
+func quizFail
+    dlg::line = 521
+    vn::toast = 8
+    sound sfx_fail 0.6
+    start showToast
+    call next
+    select chr1
+    image 0 0 0 daichi_worried
+    call popIn1
+    dlg::who = 3
+    dlg::line = 522
+    call next

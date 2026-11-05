@@ -1,0 +1,227 @@
+// Room 3, the Dragon's Lair: Skarthax on its hoard (#142), its fire (#150),
+// the potion and the killing blow (#160) and the Sword of Dawn (#168).
+//
+// The picture is the empty cavern; the dragon is the `spr1` sprite cut from the
+// painting with it (on #168 dead and without the sword), its fire `fx1`
+// (artgeo.advf places them). The scripted exchanges are in combat.advf.
+
+func lairScene
+    select scene
+    image 0 0 0 ill_lair
+    call geo_lair
+    map::lair = 1
+    map::here = 4
+
+// --- #142 The Dragon's Lair -------------------------------------------------------------
+str n142
+    en "142"
+str t142
+    en "The Dragon's Lair"
+str p142a
+    en "The bronze doors grind open onto a vast cavern. Heat rolls over you like a wave. Gold lies heaped in drifts, and upon it, coiled like a sleeping mountain, lies"
+str p142e
+    en "SKARTHAX THE DRAGON."
+str p142f
+    en "One great golden eye slides open."
+str p142g
+    en "There, standing upright in the hoard, a white blade gleams: the Sword of Dawn."
+str p142i
+    en "'Another little thief,' the dragon rumbles, and smoke curls from its nostrils."
+str c142a
+    en "Attack the dragon!"
+str c142b
+    en "Retreat to the passage."
+
+ui p142 modal=false
+    $pageHead section=n142 title=t142
+    if book::reveal >= 2 pos=500,189
+        text p142a width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 6 pos=500,357
+        text p142e width=640 outline=0 tint=0.26,0.009,0.006,1
+    if book::reveal >= 7 pos=500,399
+        text p142f width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 9 pos=500,483
+        text p142g width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 12 pos=500,609
+        text p142i width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 99
+        $choices choice1=c142a go1=go150 turn1=turn150 choice2=c142b go2=go61 turn2=turn61 choice3=none go3=none turn3=none
+
+// The click: lock the mouse and run the page turn; the roar as the dragon
+// stirs.
+func go142
+    mouse::active false
+    start to142
+
+func to142
+    call turnPage
+    call closePages
+    call show142
+    call fadeIn
+    sound sfx_roar 0.5
+    call revealText
+    call showChoices
+
+func show142
+    call lairScene
+    call dragonIdleLoop
+    select glint
+    play glintAnim 99999 2s
+    book::music = 3
+    ui::show p142 z=7
+
+// --- #150 Dragonfire ----------------------------------------------------------------------
+str n150
+    en "150"
+str t150
+    en "Dragonfire"
+str p150a
+    en "You charge across the shifting gold and swing with all your strength. SKARTHAX rears up, and the cavern fills with fire."
+str p150e
+    en "When the flames pass, you lie in the gold, burned and bleeding. Your sword arm will"
+str p150g
+    en "barely obey you. You are dying."
+str c150a
+    en "Drink the healing potion."
+str c150b
+    en "Attack again, whatever the cost."
+str c150c
+    en "Crawl back to the passage."
+
+ui p150 modal=false
+    $pageHead section=n150 title=t150
+    if book::reveal >= 2 pos=500,189
+        text p150a width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 7 pos=500,399
+        text p150e width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 9 pos=500,483
+        text p150g width=640 outline=0 tint=0.26,0.009,0.006,1
+    if book::reveal >= 99
+        $choicesBox
+        if hero::potion == 1
+            $choiceBar bar=choice_1 barOn=choice_1_on choice=c150a go=go160 turn=turn160 pos=500,838
+            $choiceBar bar=choice_2 barOn=choice_2_on choice=c150b go=go13 turn=turn13 pos=500,926
+            $choiceBar bar=choice_3 barOn=choice_3_on choice=c150c go=go61 turn=turn61 pos=500,1014
+        if hero::potion == 0
+            $choiceBar bar=choice_1 barOn=choice_1_on choice=c150b go=go13 turn=turn13 pos=500,838
+            $choiceBar bar=choice_2 barOn=choice_2_on choice=c150c go=go61 turn=turn61 pos=500,926
+
+// The click: lock the mouse and run the page turn; the dragonfire strikes
+// while the page reveals.
+func go150
+    mouse::active false
+    start to150
+
+func to150
+    call turnPage
+    call closePages
+    call show150
+    call fadeIn
+    call revealText
+    call dragonFire
+    call showChoices
+
+func show150
+    call lairScene
+    call dragonIdleLoop
+    combat::foe = 2
+    combat::foeHp = 3
+    book::music = 3
+    ui::show p150 z=7
+    ui::hide combatInset
+    ui::show combatInset z=7
+
+// --- #160 Strength Returns ---------------------------------------------------------------
+str n160
+    en "160"
+str t160
+    en "Strength Returns"
+str p160a
+    en "With trembling fingers you pull the wax stopper and drink. The potion burns like sunlight in your veins. Your wounds close, and your strength floods back."
+str p160e
+    en "The dragon draws breath for another blast of fire. Now is your moment!"
+str c160a
+    en "Strike at the dragon's heart!"
+
+ui p160 modal=false
+    $pageHead section=n160 title=t160
+    if book::reveal >= 2 pos=500,189
+        text p160a width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 7 pos=500,399
+        text p160e width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 99
+        $choices choice1=c160a go1=clickStrike turn1=turn168 choice2=none go2=none turn2=none choice3=none go3=none turn3=none
+
+// The click: lock the mouse and run the page turn; the potion is drunk
+// while the page reveals.
+func go160
+    mouse::active false
+    start to160
+
+func to160
+    call turnPage
+    call closePages
+    call show160
+    call fadeIn
+    call revealText
+    call drinkPotion
+    call showChoices
+
+func show160
+    call lairScene
+    call dragonIdleLoop
+    combat::foe = 2
+    combat::foeHp = 3
+    book::music = 3
+    ui::show p160 z=7
+    ui::hide combatInset
+    ui::show combatInset z=7
+
+// --- #168 The Dragon Falls -----------------------------------------------------------------
+// Reached from the killing blow (strikeHeart), not from a choice.
+str n168
+    en "168"
+str t168
+    en "The Dragon Falls"
+str p168a
+    en "Your blade bites deep beneath the dragon's scales. SKARTHAX shrieks, and the whole mountain seems to shake. Then it falls, and lies still at last."
+str p168e
+    en "You climb the hoard and grip the hilt of the Sword of Dawn. It slides free as if it had waited for you, and its blade shines with a light like morning."
+str c168a
+    en "Return to King Aldric."
+
+ui p168 modal=false
+    $pageHead section=n168 title=t168
+    if book::reveal >= 2 pos=500,189
+        text p168a width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 7 pos=500,399
+        text p168e width=640 outline=0 tint=0.034,0.016,0.007,1
+    if book::reveal >= 99
+        $choices choice1=c168a go1=go200 turn1=turn200 choice2=none go2=none turn2=none choice3=none go3=none turn3=none
+
+// The page turn for this page: reached from the killing blow (strikeHeart
+// calls it), not from a choice; reaching it gives the relic.
+func to168
+    call turnPage
+    call closePages
+    call show168
+    call fadeIn
+    call revealText
+    switch hero::relic
+        call giveRelic
+        nothing 0s
+    end
+    call showChoices
+
+func show168
+    call lairScene
+    select spr1
+    image 0 0 0 dragon_slain_nosword
+    select flame1
+    stopall
+    noimage 0
+    select flame2
+    stopall
+    noimage 0
+    book::music = 4
+    ui::show p168 z=7

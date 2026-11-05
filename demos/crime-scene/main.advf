@@ -1,0 +1,21 @@
+// CRIME SCENE -- a one-room noir point-and-click.
+// Detective Frank Malone walks the ransacked office of murdered reporter
+// Arthur Kessler, collects three clues pointing at Halcyon Pharmaceuticals,
+// and leaves with a lead. See PLAN.md.
+import room
+
+// 640x480 canvas in a 1280x960 window: every canvas pixel is drawn 2x2 (pixel
+// art stays crisp, subtitles render at the window's resolution), and on a
+// Retina screen the window is 640x480 points instead of a quarter of that.
+default window 1280 960
+
+// ESC pause menu: the screen dimmed by 30% (a black quad as big as the
+// screen) under the engine-provided Save / Load / Exit list.
+ui optionsMenu
+    quad color=0,0,0,0.3
+    grid items=$options cols=1 anchor=center padding=20
+        text $item.label click=$item.callback
+
+func entry
+    font efmi
+    call crimeScene
