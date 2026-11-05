@@ -340,3 +340,54 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
   padding-left: 14px;
   color: #94a3b8;
 }
+
+/* ─── devlog v2: the reading layout ─── */
+.devlog-page { padding: 56px 0 96px; }
+.devlog-body.rendered { padding: 0; }
+.devlog-body.rendered h1 {
+  font-size: clamp(2.6rem, 6vw, 4.2rem);
+  letter-spacing: -0.02em;
+  margin: 18px 0 34px;
+}
+.devlog-body.rendered h2 {
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #f9a8d4;
+  border: none;
+  padding: 56px 0 22px;
+}
+.devlog-body.rendered h2::after {
+  content: "";
+  display: block;
+  width: 92px;
+  height: 2px;
+  margin-top: 14px;
+  background: #ec4899;
+}
+.devlog-body.rendered p, .devlog-body.rendered li {
+  font-size: 1.13rem;
+  line-height: 1.85;
+  margin: 0 0 26px;
+  max-width: 66ch;
+}
+.devlog-body.rendered ul {
+  margin: 0 0 34px;
+  padding-left: 22px;
+}
+.devlog-body.rendered li { margin-bottom: 16px; }
+.devlog-body.rendered li::marker { color: #ec4899; }
+.devlog-body.rendered code {
+  font-size: 0.88em;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: rgba(236, 72, 153, 0.10);
+  border: 1px solid color-mix(in oklab, #ec4899 22%, transparent);
+}
+.devlog-body.rendered b { color: #f1f5f9; }
+.devlog-body.rendered hr {
+  border: none;
+  height: 1px;
+  margin: 48px auto 44px;
+  background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.35), transparent);
+}
