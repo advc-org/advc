@@ -53,9 +53,12 @@
 
 <!-- marked 18.1.3, pinned by exact version + SRI (subresource integrity):
      the browser refuses the script if one byte differs from this hash. -->
+<!-- No crossorigin on this classic script: SRI enforces integrity without
+     CORS, and an anonymous CORS request to a file:// page is what made the
+     integrity check fail on devlog.html opened straight from disk. -->
 <script src="https://unpkg.com/marked@18.1.3/lib/marked.umd.js"
         integrity="sha384-b69fecc988602be15e555af3d923e680a5f96ad559f0ff2145e02f38f527e7c336eb954dcb521b76664063b266774805"
-        crossorigin="anonymous" defer></script>
+        defer></script>
 <script>
 window.addEventListener("DOMContentLoaded", () => {
     // marked (deferred) is up before this inline handler? — a deferred script
@@ -74,8 +77,11 @@ window.addEventListener("DOMContentLoaded", () => {
             document.querySelector("[data-devlog]").innerHTML = marked.parse(md);
         })
         .catch((e) => {
+            const hint = location.protocol === "file:"
+                ? "this page is opened from disk — serve it over http (python3 -m http.server) so it can fetch devlog.md"
+                : "";
             document.querySelector("[data-devlog]").textContent =
-                `the devlog could not be loaded (${e.message}).`;
+                `the devlog could not be loaded (${e.message}).${hint ? " " + hint : ""}`;
         });
 });
 </script>
