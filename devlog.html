@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>advc — devlog</title>
+<meta name="description" content="The advc devlog: what shipped, in the compiler's own words.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23111018'/%3E%3Cpath d='m9 11 5 5-5 5M16 21h7' stroke='%23ec4899' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="landing.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html" aria-label="advc home">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6 8 4 4-4 4M12.5 16h5.5"/></svg></span>
+      <span class="brand-name">advc</span>
+    </a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="index.html">← advc.dev</a>
+      <a href="docs/index.html">Docs</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-sm btn-primary" href="https://github.com/advc-org/advc">GitHub</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="sec devlog-page">
+    <div class="wrap">
+      <div class="sec-head left">
+        <span class="kicker">// devlog</span>
+        <h2>What shipped, and when.</h2>
+        <p>This page renders <code>devlog.md</code> — the same file the repository carries — in the browser. The markdown parser is <a href="https://www.npmjs.com/package/marked" rel="noopener">marked</a>, pinned by exact version and integrity; the text is fetched from this folder at load time.</p>
+      </div>
+      <article class="devlog-body" data-devlog>
+        <p class="devlog-loading">loading the devlog…</p>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-bottom"><span>© 2026 advc</span><span class="mono">rendered from devlog.md with marked@18.1.3</span></div>
+</footer>
+
+<!-- marked 18.1.3, pinned by exact version + SRI (subresource integrity):
+     the browser refuses the script if one byte differs from this hash. -->
+<script src="https://unpkg.com/marked@18.1.3/lib/marked.umd.js"
+        integrity="sha384-b69fecc988602be15e555af3d923e680a5f96ad559f0ff2145e02f38f527e7c336eb954dcb521b76664063b266774805"
+        crossorigin="anonymous" defer></script>
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+    // marked (deferred) is up before this inline handler? — a deferred script
+    // runs before DOMContentLoaded, so `window.marked` is already here.
+    if (!window.marked) {
+        document.querySelector("[data-devlog]").textContent =
+            "the markdown library failed its integrity check — the devlog did not render.";
+        return;
+    }
+    fetch("devlog.md", { cache: "no-store" })
+        .then((r) => {
+            if (!r.ok) throw new Error(`http ${r.status}`);
+            return r.text();
+        })
+        .then((md) => {
+            document.querySelector("[data-devlog]").innerHTML = marked.parse(md);
+        })
+        .catch((e) => {
+            document.querySelector("[data-devlog]").textContent =
+                `the devlog could not be loaded (${e.message}).`;
+        });
+});
+</script>
+
+</body>
+</html>
