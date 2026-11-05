@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>advc — the adventure game compiler</title>
+<title>advc · the adventure game compiler</title>
 <meta name="description" content="advc compiles ADVL, a small language for point & click adventures, gamebooks and visual novels, into native games. Scripted tests, video recording and one-command publishing included.">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23111018'/%3E%3Cpath d='m9 11 5 5-5 5M16 21h7' stroke='%23ec4899' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -48,7 +48,7 @@
     <div class="hero-copy">
       <a class="pill" href="#how"><span class="pill-tag">v0.0.1</span> Try us! <span aria-hidden="true">→</span></a>
       <h1>Write adventures as code.<br><span class="grad">Compile them into games.</span></h1>
-      <p class="lead">advc is a compiler for narrative games: point &amp; click adventures, gamebooks, visual novels. Write scenes, dialogue and puzzles in <b>ADVL</b>, a small indentation-based language, and advc turns them into one native executable. No editor to fight. No engine to ship.</p>
+      <p class="lead">advc is a compiler for narrative games: point &amp; click adventures, gamebooks, visual novels. Write scenes, dialogue and puzzles in <b>ADVL</b>, a small indentation-based language, and advc turns them into one native executable</p>
       <div class="cta-row">
         <a class="btn btn-primary btn-lg" href="#install">Install advc</a>
         <a class="btn btn-ghost btn-lg" href="docs/index.html">Read the docs <span aria-hidden="true">→</span></a>
@@ -205,20 +205,20 @@ exit</pre>
       <li class="stage">
         <span class="st-n">01</span>
         <h3><code>*.advf</code></h3>
-        <p>Scenes, actors, animations, voices and UI as indented text — like our demos today. Diff it, review it, grep it, merge it.</p>
+        <p>Scenes, actors, animations, voices and UI as indented text · like our demos today. Diff it, review it, grep it, merge it.</p>
       </li>
       <li class="stage">
         <span class="st-n">02</span>
         <h3>Bake &amp; pack</h3>
-        <p>Run <code>advc</code>: images become GPU textures, audio gets packed, and the whole game links into one native executable plus a single <code>.pak</code>.</p>
+        <p>All your assets become one single <code>.pak</code> file.</p>
       </li>
       <li class="stage">
         <span class="st-n">03</span>
         <h3>Test it with play files</h3>
-        <p>Drive the compiled game with a <code>.play</code> script: it clicks, waits on your game state and fails loudly — headless in CI, or recorded in a window.</p>
+        <p>Drive the compiled game with a <code>.play</code> script: it clicks, waits on your game state and fails loudly · headless in CI, or recorded in a window.</p>
       </li>
     </ol>
-    <div class="out-line"><span class="prompt">→</span> <code>target/release/my-game</code> <span class="dim">+</span> <code>my-game.pak</code> <span class="dim">· ready to run, test, record or publish</span></div>
+    <div class="out-line"><span class="prompt">→</span> <code>target/release/my-game</code> <span class="dim">+</span> <code>my-game.pak</code> <span class="dim">· ready to run or test</span></div>
   </div>
 </section>
 
@@ -271,17 +271,17 @@ inside officewalk depth scaleDetective</pre>
       <article class="card wide err-card">
         <div class="card-copy">
           <h3>User-friendly errors</h3>
-          <p>A typo'd name, a wrong argument, an undeclared variable, a duplicate declaration: located in your source, colored and readable, with a "did you mean" when one fits — before the first playtest.</p>
+          <p>A typo'd name, a wrong argument, an undeclared variable, a duplicate declaration: located in your source, colored and readable, with a "did you mean" when one fits · before the first playtest.</p>
         </div>
         <pre class="err-sample"><span class="e-h">error: unknown command `walktoo`</span>
 <span class="e-loc">--> main.advf:2</span>
 <span class="e-n">1</span> <span class="e-sep">|</span> <span class="e-c">func entry</span>
 <span class="e-n">2</span> <span class="e-sep">|</span> <span class="e-c">walktoo 210 306</span>
-              <span class="e-mark">^^^^^^^</span> <span class="e-note">unknown command, did you mean `walkto`?</span></pre>
+    <span class="e-mark">^^^^^^^</span> <span class="e-note">did you mean `walkto`?</span></pre>
       </article>
       <article class="card">
         <h3>Assets that ship small</h3>
-        <p>BC7 GPU textures, FLAC audio and a single packfile. Release builds keep no names: not of actors, scenes or files.</p>
+        <p>Assets as optimized as possible: one single <code>.pak</code> next to the executable.</p>
       </article>
     </div>
   </div>
@@ -293,7 +293,7 @@ inside officewalk depth scaleDetective</pre>
     <div class="split-copy">
       <span class="kicker">// testing &amp; recording</span>
       <h2>Your game is its own test runner.</h2>
-      <p>A <code>.play</code> script drives the compiled game: it clicks actors and UI by name, waits on game state and fails with a line number when a step doesn't happen. Run it headless in CI. Run it in a window and record an MP4.</p>
+      <p>A <code>.play</code> script drives the compiled game: it clicks actors and UI by name, waits on game state and fails with a line number when a step doesn't happen. Run it in a window or headless in CI, recorded to MP4 if you ask.</p>
       <ul class="checks">
         <li><b>Deterministic.</b> <code>ADVC_SEED</code> fixes every random choice, so a failing run repeats.</li>
         <li><b>Fast.</b> Headless runs skip the clock: a full walkthrough takes a fraction of a second.</li>
@@ -329,8 +329,7 @@ inside officewalk depth scaleDetective</pre>
         <span class="tool-ic"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h13"/></svg></span>
         <h3>Language server</h3>
         <p>Semantic highlighting for functions, thread arguments and namespaced commands, plus a tree-sitter grammar for Zed.</p>
-        <a class="btn btn-sm btn-ghost soon-btn" aria-disabled="true">download — coming soon</a>
-        <a class="btn btn-sm btn-ghost soon-btn" aria-disabled="true">download — coming soon</a>
+        <a class="btn btn-sm btn-ghost soon-btn" aria-disabled="true">download · coming soon</a>
       </div>
       <div class="tool">
         <span class="tool-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></span>
@@ -353,10 +352,10 @@ inside officewalk depth scaleDetective</pre>
       <div class="publish-copy">
         <span class="kicker">// build → ship</span>
         <h2>One command. <span class="grad">A game you can ship.</span></h2>
-        <p><code>advc --release</code> gives you one native executable and one packed asset file — two files, ready to copy anywhere: a website, a store page, a zip in a chat. <b>advland — the home for your published builds — is coming soon.</b></p>
+        <p><code>advc --release</code> gives you one native executable and one packed asset file · two files, ready to copy anywhere: a zip in your Discord channel… or publish directly to <b>advland</b>! <b>Coming soon.</b></p>
         <span class="soon" role="note" aria-label="advland coming soon"><b>advland</b> is <b>coming soon</b>.</span>
         <ol class="steps">
-          <li><span>1</span><div><b>Start a project</b><p>A folder with <code>main.advf</code> and <code>assets/</code> — the <a href="docs/getting-started.html">getting started</a> page writes one with you.</p></div></li>
+          <li><span>1</span><div><b>Start a project</b><p>A folder with <code>main.advf</code> and <code>assets/</code> · the <a href="docs/getting-started.html">getting started</a> page writes one with you.</p></div></li>
           <li><span>2</span><div><b>Iterate</b><p><code>advc</code> compiles; the compiled game runs, tests and records itself.</p></div></li>
           <li><span>3</span><div><b>Ship</b><p>Zip the release build and hand it over. Nothing to install for a player: unpack and double-click.</p></div></li>
         </ol>
@@ -386,7 +385,7 @@ inside officewalk depth scaleDetective</pre>
     </div>
     <div class="show">
       <a class="show-card" href="https://github.com/advc-org/advc/tree/master/demos/king-relic">
-        <div class="show-media"><img src="media/kr-cover.webp" alt="The King's Relic cover" loading="lazy"></div>
+        <div class="show-media"><video src="media/kr-dragon.mp4" poster="media/kr-lair.webp" muted loop playsinline preload="none" data-hoverplay aria-label="The King's Relic, the dragon fight"></video></div>
         <div class="show-body">
           <span class="tag">Gamebook</span>
           <h3>The King's Relic</h3>
@@ -404,7 +403,7 @@ inside officewalk depth scaleDetective</pre>
         </div>
       </a>
       <a class="show-card" href="https://github.com/advc-org/advc/tree/master/demos/love-is-near">
-        <div class="show-media"><img src="media/genres/lifesimulator.webp" alt="Love is Near cover" loading="lazy"></div>
+        <div class="show-media"><img src="media/ln-evening.webp" alt="Love is Near: an evening in the apartment" loading="lazy"></div>
         <div class="show-body">
           <span class="tag">Life sim</span>
           <h3>Love is Near</h3>
@@ -458,7 +457,7 @@ inside officewalk depth scaleDetective</pre>
       <div><h4>Community</h4><a href="https://github.com/advc-org/advc">GitHub</a><a href="docs/index.html">Docs</a><a href="#showcase">Showcase</a></div>
     </div>
   </div>
-  <div class="wrap foot-bottom"><span>© 2026 advc</span><span class="mono">built with plain HTML, CSS and JS</span></div>
+  <div class="wrap foot-bottom"><span>© 2026 advc</span></div>
 </footer>
 
 </body>

@@ -472,3 +472,14 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
 /* ─── the pipeline: 3 stages, roomier ─── */
 .pipeline { gap: 22px; }
 .pipeline .stage { padding: 26px 26px 30px; }
+
+/* ─── the tooling grid: 3 tools now, the 4th cell was empty ─── */
+.tools { grid-template-columns: repeat(3, 1fr) !important; }
+
+/* ─── the error sample: fits the half card, the caret aligned ─── */
+.err-sample {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  width: 100%;
+  box-sizing: border-box;
+}
