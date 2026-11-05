@@ -278,3 +278,16 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .reveal{opacity:1;transform:none}
 }
+
+/* ─── coming-soon banner (the store) ─── */
+.soon {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 10px 16px;
+  border: 1px dashed color-mix(in oklab, #ec4899 45%, transparent);
+  border-radius: 10px;
+  background: color-mix(in oklab, #ec4899 8%, transparent);
+  color: #f9a8d4;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}

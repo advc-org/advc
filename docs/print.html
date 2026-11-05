@@ -37,7 +37,7 @@
             const path_to_root = "";
             const default_light_theme = "navy";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-1915e4d6.js";
+            window.path_to_searchindex_js = "searchindex-35ff5431.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-2265370e.js"></script>
@@ -271,15 +271,16 @@ specification.</li>
 <h1 id="getting-started"><a class="header" href="#getting-started">Getting started</a></h1>
 <h2 id="install-the-cli"><a class="header" href="#install-the-cli">Install the CLI</a></h2>
 <p>The <code>advc</code> command-line tool contains the compiler, the runtime, and the test
-driver — everything you need to build and play a game. Download it from the
-<a href="https://github.com/advc/advc/releases">advc releases page</a> (macOS, Linux and
-Windows builds are provided as a single archive), unzip it, and put something
-like this in your shell profile:</p>
-<pre><code class="language-sh">export PATH="$HOME/bin/advc:$PATH"
+driver — everything you need to build and play a game. Install it with one
+command (macOS; Apple Silicon):</p>
+<pre><code class="language-sh">$ curl -fsSL https://github.com/advc-org/advc/raw/master/install.sh | sh
 </code></pre>
-<p>That’s the whole toolchain: an editor, a folder, and this one binary. (If you
-use Zed or another editor with an LSP, install the <code>advl-lsp</code> language server
-that ships alongside it — completions and go-to-definition for <code>.advf</code> files.)</p>
+<p>The installer asks GitHub for the newest release for your architecture,
+unpacks both packs (the compiler and the runtime) into <code>~/.cache/advc/</code>, and
+puts the executable in <code>/usr/local/bin</code> (it falls back to <code>~/.local/bin</code> and
+prints a <code>PATH</code> line when it has no administrator rights). A specific version
+is <code>--version 0.0.1</code>; <code>advc --version</code> prints what is running.</p>
+<p>Linux and Windows builds are planned but not shipped today.</p>
 <p>That’s the whole toolchain: an editor, a folder, and this one binary. (If you
 use Zed or another editor with an LSP, install the <code>advl-lsp</code> language server
 that ships alongside it — completions and go-to-definition for <code>.advf</code> files.)</p>
@@ -290,7 +291,8 @@ add a source file:</p>
 ├── main.advf
 └── assets/            ← images and sounds live here later
 </code></pre>
-<p>Every <code>.advf</code> file in the folder is a scene file. Open <code>main.advf</code> and write:</p>
+<p><code>main.advf</code> is the game’s scene file; other <code>.advf</code> files are pulled in by
+the <code>import</code> statements inside it. Open <code>main.advf</code> and write:</p>
 <pre><code class="language-advc">func entry
     print "hello, adventure"
 </code></pre>
@@ -343,7 +345,7 @@ ransacked office at 1:40 a.m., pokes at the evidence with the five classic
 verbs — <em>Walk to · Look at · Pick up · Talk to · Pull</em> — and turns lamps on
 his evidence panel as the clues mount up.</p>
 <p>The finished game lives in the sample repository
-<a href="https://github.com/advc/games/crime-scene">github.com/advc/games/crime-scene</a>.
+<a href="https://github.com/advc-org/advc/tree/master/demos/crime-scene">github.com/advc-org/advc/tree/master/demos/crime-scene</a>.
 There it is one room of 960×352 px in a 640×480 canvas with a follow-camera,
 an officer you can interrogate, rain on the windows, and a “to be continued”.
 We will build a working slice of it: the room, one clickable hotspot, the
@@ -570,7 +572,7 @@ skeleton fight; fifteen sections lead from the ruined keep to a dragon’s lair
 and a knighthood — or a death page, which lets you step back through the
 book.</p>
 <p>The finished game lives in the sample repository
-<a href="https://github.com/advc/games/king-relic">github.com/advc/games/king-relic</a>.
+<a href="https://github.com/advc-org/advc/tree/master/demos/king-relic">github.com/advc-org/advc/tree/master/demos/king-relic</a>.
 Here you build its core: one page, the shared page furniture, the page-turn
 machinery, and the choices. The book art (parchment, choice bars, dice faces,
 illustrations) is assumed to be in <code>assets/</code>.</p>
@@ -751,7 +753,7 @@ afternoons and evenings you pick from a weekly planner — the Moonbean Café
 (where Luna works) or chores, library, home — earning money and affection, and
 on Saturday the Star Festival settles one of four endings on the week.</p>
 <p>The finished game lives in the sample repository
-<a href="https://github.com/advc/games/love-is-near">github.com/advc/games/love-is-near</a>.
+<a href="https://github.com/advc-org/advc/tree/master/demos/love-is-near">github.com/advc-org/advc/tree/master/demos/love-is-near</a>.
 Here you build two of its centerpiece pieces: the <strong>activity planner</strong> — a
 screen of cards that grey themselves out when you can’t afford them — and the
 <strong>café scene</strong>, where dialogue is played line by line. The art (backgrounds,
@@ -2565,11 +2567,11 @@ error is printed with its line number and the game exits with status 1.</p>
 <tr><td><code>wait var &lt;path&gt; &lt;op&gt; &lt;n&gt;</code></td><td>Until a variable compares true: <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code> (an unset variable reads 0).</td></tr>
 <tr><td><code>wait ui &lt;def&gt; hovered/left</code></td><td>Until the cursor is over (mirror: over no element of) an open instance of the def — a <code>button</code> quad or a clickable/menu text label. Released already when the cursor’s state matches at the arm (an earlier batch’s <code>move</code> is the same as an earlier batch’s var write), and re-checked per tick.</td></tr>
 <tr><td><code>wait ui &lt;def&gt; opened/closed</code></td><td>Until the def has (mirror: has no) an open instance. The same contract: the level at the arm, or the open/close transition since it.</td></tr>
-<tr><td><code>wait screenshot &lt;path&gt;</code></td><td>Registers the capture <strong>at the wait’s arm</strong> and releases only once the PNG is <strong>written</strong> — so the captured frame is the state as of the wait’s batch, and the queue continues only after the capture exists. Windowed only: headless fails the script immediately (<code>screenshot &lt;path&gt;</code> without <code>wait</code> stays the asynchronous next-frame capture).</td></tr>
+<tr><td><code>wait screenshot &lt;path&gt;</code></td><td>Registers the capture <strong>at the wait’s arm</strong> and releases only once the PNG is <strong>written</strong> — so the captured frame is the state as of the wait’s batch, and the queue continues only after the capture exists. Works headless too: the headless run renders its frames offscreen and writes the same PNG (<code>screenshot &lt;path&gt;</code> without <code>wait</code> stays the asynchronous next-frame capture).</td></tr>
 <tr><td><code>… timeout=&lt;duration&gt;</code></td><td>After any wait but a duration: how long it may take. A capture that can never complete fails loudly at its <code>timeout=</code> (the default) instead of hanging.</td></tr>
 <tr><td><code>play &lt;file&gt;</code></td><td>Runs the file’s lines next.</td></tr>
 <tr><td><code>screenshot &lt;path&gt;</code></td><td>Saves the next drawn frame as a PNG — windowed the next presented frame (eventually consistent); headless the run renders one offscreen frame of the current state at the capture’s tick.</td></tr>
-<tr><td><code>start-video &lt;path&gt;</code></td><td>Records to an <code>.mp4</code> from the next frame (window only).</td></tr>
+<tr><td><code>start-video &lt;path&gt;</code></td><td>Records to an <code>.mp4</code> from the next frame on — windowed or headless (the headless run renders its frames offscreen).</td></tr>
 <tr><td><code>stop-video</code></td><td>Writes the recording.</td></tr>
 <tr><td><code>echo &lt;text&gt;</code></td><td>Prints <code>[script] &lt;text&gt;</code> — a marker in the log.</td></tr>
 <tr><td><code>esc</code>, <code>save</code>, <code>load</code>, <code>exit</code></td><td>The pause menu, save, load, quit.</td></tr>

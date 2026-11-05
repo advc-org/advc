@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "navy";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-1915e4d6.js";
+            window.path_to_searchindex_js = "searchindex-35ff5431.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-2265370e.js"></script>
@@ -181,15 +181,16 @@
                         <h1 id="getting-started"><a class="header" href="#getting-started">Getting started</a></h1>
 <h2 id="install-the-cli"><a class="header" href="#install-the-cli">Install the CLI</a></h2>
 <p>The <code>advc</code> command-line tool contains the compiler, the runtime, and the test
-driver — everything you need to build and play a game. Download it from the
-<a href="https://github.com/advc/advc/releases">advc releases page</a> (macOS, Linux and
-Windows builds are provided as a single archive), unzip it, and put something
-like this in your shell profile:</p>
-<pre><code class="language-sh">export PATH="$HOME/bin/advc:$PATH"
+driver — everything you need to build and play a game. Install it with one
+command (macOS; Apple Silicon):</p>
+<pre><code class="language-sh">$ curl -fsSL https://github.com/advc-org/advc/raw/master/install.sh | sh
 </code></pre>
-<p>That’s the whole toolchain: an editor, a folder, and this one binary. (If you
-use Zed or another editor with an LSP, install the <code>advl-lsp</code> language server
-that ships alongside it — completions and go-to-definition for <code>.advf</code> files.)</p>
+<p>The installer asks GitHub for the newest release for your architecture,
+unpacks both packs (the compiler and the runtime) into <code>~/.cache/advc/</code>, and
+puts the executable in <code>/usr/local/bin</code> (it falls back to <code>~/.local/bin</code> and
+prints a <code>PATH</code> line when it has no administrator rights). A specific version
+is <code>--version 0.0.1</code>; <code>advc --version</code> prints what is running.</p>
+<p>Linux and Windows builds are planned but not shipped today.</p>
 <p>That’s the whole toolchain: an editor, a folder, and this one binary. (If you
 use Zed or another editor with an LSP, install the <code>advl-lsp</code> language server
 that ships alongside it — completions and go-to-definition for <code>.advf</code> files.)</p>
@@ -200,7 +201,8 @@ add a source file:</p>
 ├── main.advf
 └── assets/            ← images and sounds live here later
 </code></pre>
-<p>Every <code>.advf</code> file in the folder is a scene file. Open <code>main.advf</code> and write:</p>
+<p><code>main.advf</code> is the game’s scene file; other <code>.advf</code> files are pulled in by
+the <code>import</code> statements inside it. Open <code>main.advf</code> and write:</p>
 <pre><code class="language-advc">func entry
     print "hello, adventure"
 </code></pre>

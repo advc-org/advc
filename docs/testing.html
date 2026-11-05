@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "navy";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-1915e4d6.js";
+            window.path_to_searchindex_js = "searchindex-35ff5431.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-2265370e.js"></script>
@@ -215,11 +215,11 @@ error is printed with its line number and the game exits with status 1.</p>
 <tr><td><code>wait var &lt;path&gt; &lt;op&gt; &lt;n&gt;</code></td><td>Until a variable compares true: <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code> (an unset variable reads 0).</td></tr>
 <tr><td><code>wait ui &lt;def&gt; hovered/left</code></td><td>Until the cursor is over (mirror: over no element of) an open instance of the def — a <code>button</code> quad or a clickable/menu text label. Released already when the cursor’s state matches at the arm (an earlier batch’s <code>move</code> is the same as an earlier batch’s var write), and re-checked per tick.</td></tr>
 <tr><td><code>wait ui &lt;def&gt; opened/closed</code></td><td>Until the def has (mirror: has no) an open instance. The same contract: the level at the arm, or the open/close transition since it.</td></tr>
-<tr><td><code>wait screenshot &lt;path&gt;</code></td><td>Registers the capture <strong>at the wait’s arm</strong> and releases only once the PNG is <strong>written</strong> — so the captured frame is the state as of the wait’s batch, and the queue continues only after the capture exists. Windowed only: headless fails the script immediately (<code>screenshot &lt;path&gt;</code> without <code>wait</code> stays the asynchronous next-frame capture).</td></tr>
+<tr><td><code>wait screenshot &lt;path&gt;</code></td><td>Registers the capture <strong>at the wait’s arm</strong> and releases only once the PNG is <strong>written</strong> — so the captured frame is the state as of the wait’s batch, and the queue continues only after the capture exists. Works headless too: the headless run renders its frames offscreen and writes the same PNG (<code>screenshot &lt;path&gt;</code> without <code>wait</code> stays the asynchronous next-frame capture).</td></tr>
 <tr><td><code>… timeout=&lt;duration&gt;</code></td><td>After any wait but a duration: how long it may take. A capture that can never complete fails loudly at its <code>timeout=</code> (the default) instead of hanging.</td></tr>
 <tr><td><code>play &lt;file&gt;</code></td><td>Runs the file’s lines next.</td></tr>
 <tr><td><code>screenshot &lt;path&gt;</code></td><td>Saves the next drawn frame as a PNG — windowed the next presented frame (eventually consistent); headless the run renders one offscreen frame of the current state at the capture’s tick.</td></tr>
-<tr><td><code>start-video &lt;path&gt;</code></td><td>Records to an <code>.mp4</code> from the next frame (window only).</td></tr>
+<tr><td><code>start-video &lt;path&gt;</code></td><td>Records to an <code>.mp4</code> from the next frame on — windowed or headless (the headless run renders its frames offscreen).</td></tr>
 <tr><td><code>stop-video</code></td><td>Writes the recording.</td></tr>
 <tr><td><code>echo &lt;text&gt;</code></td><td>Prints <code>[script] &lt;text&gt;</code> — a marker in the log.</td></tr>
 <tr><td><code>esc</code>, <code>save</code>, <code>load</code>, <code>exit</code></td><td>The pause menu, save, load, quit.</td></tr>

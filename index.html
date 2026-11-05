@@ -32,7 +32,7 @@
       <a href="docs/index.html">Docs</a>
     </nav>
     <div class="nav-cta">
-      <a class="gh" href="https://github.com/" aria-label="advc on GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg><span>GitHub</span></a>
+      <a class="gh" href="https://github.com/advc-org/advc" aria-label="advc on GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg><span>GitHub</span></a>
       <a class="btn btn-sm btn-primary" href="#install">Install</a>
     </div>
   </div>
@@ -45,7 +45,7 @@
   <div class="hero-glow" aria-hidden="true"></div>
   <div class="wrap">
     <div class="hero-copy">
-      <a class="pill" href="#how"><span class="pill-tag">v0.9</span> Release builds: LLVM O3, name-free executables <span aria-hidden="true">→</span></a>
+      <a class="pill" href="#how"><span class="pill-tag">v0.0.1</span> Release builds: LLVM O3, name-free executables <span aria-hidden="true">→</span></a>
       <h1>Write adventures as code.<br><span class="grad">Compile them into games.</span></h1>
       <p class="lead">advc is a compiler for narrative games: point &amp; click adventures, gamebooks, visual novels. Write scenes, dialogue and puzzles in <b>ADVL</b>, a small indentation-based language, and advc turns them into one native executable. No editor to fight. No engine to ship.</p>
       <div class="cta-row">
@@ -53,8 +53,8 @@
         <a class="btn btn-ghost btn-lg" href="docs/index.html">Read the docs <span aria-hidden="true">→</span></a>
       </div>
       <div class="install" id="install">
-        <code><span class="prompt">$</span> curl -fsSL https://advc.dev/install.sh | sh</code>
-        <button class="copy" data-copy="curl -fsSL https://advc.dev/install.sh | sh" aria-label="Copy install command">
+        <code><span class="prompt">$</span> curl -fsSL https://github.com/advc-org/advc/raw/master/install.sh | sh</code>
+        <button class="copy" data-copy="curl -fsSL https://github.com/advc-org/advc/raw/master/install.sh | sh" aria-label="Copy install command">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>Copy</span>
         </button>
       </div>
@@ -278,12 +278,12 @@ inside officewalk depth scaleDetective</pre>
         <p>Every variable, actor and running thread is saved and restored exactly. Players get a pause menu with save and load for free.</p>
       </article>
       <article class="card">
-        <h3>Hot reload</h3>
-        <p>Edit a scene or a line of dialogue and see it live, in place, without restarting the game or losing your spot.</p>
+        <h3>Errors that fail the build</h3>
+        <p>A typo'd name, a wrong argument, an undeclared variable, a duplicate declaration: located in your source, with a "did you mean" when one fits — before the first playtest.</p>
       </article>
       <article class="card">
-        <h3>Desktop, web, mobile</h3>
-        <p>One project, many targets: native desktop builds on Metal, Vulkan and DirectX, plus web and mobile runtimes.</p>
+        <h3>Native macOS, through and through</h3>
+        <p>One target today: macOS on Apple Silicon, rendered through Metal via wgpu. Text files in, native binary out — the same source builds any machine the runtime is ported to.</p>
       </article>
       <article class="card">
         <h3>Assets that ship small</h3>
@@ -360,24 +360,26 @@ inside officewalk depth scaleDetective</pre>
   <div class="wrap">
     <div class="publish">
       <div class="publish-copy">
-        <span class="kicker">// from script to store</span>
-        <h2>One command. <span class="grad">Live on advland.</span></h2>
-        <p><code>advc publish</code> builds a release, signs it and puts it on <a href="https://advland.store">advland</a>, the store for narrative games, where players find it, buy it and play it. No release pipeline to babysit.</p>
+        <span class="kicker">// build → ship</span>
+        <h2>One command. <span class="grad">A game you can ship.</span></h2>
+        <p><code>advc --release</code> gives you one native executable and one packed asset file — two files, ready to copy anywhere: a website, a store page, a zip in a chat. <b>Publishing to an advc store is coming soon.</b></p>
+        <span class="soon" role="note" aria-label="advland coming soon">advland — a store for narrative games built with advc — is <b>coming soon</b>. There is nothing there today: no page, no sign-up, and nothing ships to it from this install.</span>
         <ol class="steps">
-          <li><span>1</span><div><b>Start a project</b><p><code>advc init</code> lays out a game folder with a first scene.</p></div></li>
-          <li><span>2</span><div><b>Iterate</b><p><code>advc run</code> rebuilds and hot-reloads as you write.</p></div></li>
-          <li><span>3</span><div><b>Ship</b><p><code>advc publish</code> and you have a store page.</p></div></li>
+          <li><span>1</span><div><b>Start a project</b><p>A folder with <code>main.advf</code> and <code>assets/</code> — the <a href="docs/getting-started.html">getting started</a> page writes one with you.</p></div></li>
+          <li><span>2</span><div><b>Iterate</b><p><code>advc</code> compiles; the compiled game runs, tests and records itself.</p></div></li>
+          <li><span>3</span><div><b>Ship</b><p>Zip the release build and hand it over. Nothing to install for a player: unpack and double-click.</p></div></li>
         </ol>
       </div>
       <div class="term big" data-term data-typing>
-<pre><span class="t-p">~/king-relic $</span> <span class="t-c">advc publish</span>
-<span class="t-d">  ▸ compiling 13 files .............. ok</span>
-<span class="t-d">  ▸ linking with LLVM (O3) .......... ok</span>
-<span class="t-d">  ▸ baking 156 assets → .pak ........ ok</span>
-<span class="t-d">  ▸ running walkthrough.play ........ ok</span>
-<span class="t-d">  ▸ uploading 52 MB to advland ...... ok</span>
-<span class="t-ok">  ● published</span>
-<span class="t-u">    https://advland.store/game/the-kings-relic</span></pre>
+<pre><span class="t-p">~/king-relic $</span> <span class="t-c">advc --release</span>
+<span class="t-d">[advc]   bake assets (threaded) ...</span>
+<span class="t-d">[advc]   lower game module ... 4.93s</span>
+<span class="t-d">[advc]   codegen game.o ... 0.27s</span>
+<span class="t-d">[advc]   cc link done ... 0.08s</span>
+<span class="t-ok">built target/release/king-relic</span>
+<span class="t-p">~/king-relic $</span> <span class="t-c">./target/release/king-relic</span>
+<span class="t-d">[runtime] game_start entry · 13 .advf modules · 156 assets</span>
+<span class="t-ok">● the game window opens</span></pre>
       </div>
     </div>
   </div>
@@ -389,10 +391,10 @@ inside officewalk depth scaleDetective</pre>
     <div class="sec-head">
       <span class="kicker">// showcase</span>
       <h2>Built with advc.</h2>
-      <p>Two complete games written in ADVL, from the same compiler you install. Both are on advland.</p>
+      <p>Two complete games written in ADVL, from the same compiler you install. Both live in this repository, ready to build.</p>
     </div>
     <div class="show">
-      <a class="show-card" href="https://advland.store/game/the-kings-relic">
+      <a class="show-card" href="https://github.com/advc-org/advc/tree/master/demos/king-relic">
         <div class="show-media"><img src="media/kr-cover.webp" alt="The King's Relic cover" loading="lazy"></div>
         <div class="show-body">
           <span class="tag">Gamebook</span>
@@ -401,7 +403,7 @@ inside officewalk depth scaleDetective</pre>
           <dl><div><dt>Source</dt><dd>13 files · 3,070 lines</dd></div><div><dt>Release</dt><dd>4.7 MB + 47 MB pak</dd></div></dl>
         </div>
       </a>
-      <a class="show-card" href="https://advland.store/game/malone-case-4471">
+      <a class="show-card" href="https://github.com/advc-org/advc/tree/master/demos/crime-scene">
         <div class="show-media"><video src="media/cs-papers.mp4" poster="media/cs-papers.jpg" muted loop playsinline preload="none" data-hoverplay aria-label="Malone: Case #4471 gameplay"></video></div>
         <div class="show-body">
           <span class="tag">Point &amp; click</span>
@@ -436,7 +438,7 @@ inside officewalk depth scaleDetective</pre>
       <details><summary>Do I need to know Rust, C++ or LLVM?</summary><p>No. You write ADVL and drop PNGs and WAVs into <code>assets/</code>. The compiler, the runtime and LLVM are implementation details you never touch.</p></details>
       <details><summary>Which genres does it fit?</summary><p>Anything built from scenes, choices and state: point &amp; click with verbs and inventories, first-person node-based adventures, gamebooks, visual novels, puzzle boxes and small life sims.</p></details>
       <details><summary>How do I test a game?</summary><p>Write a <code>.play</code> script and run the release binary with <code>ADVC_HEADLESS=1 ADVC_STDIN=1</code>. It exits with status 1 and the failing line if a step doesn't happen in time, so it slots straight into CI. See <a href="docs/testing.html">Scripted play and recording</a>.</p></details>
-      <details><summary>How do players get my game?</summary><p><code>advc publish</code> puts it on advland with a store page. You can also ship the executable and its <code>.pak</code> anywhere you like.</p></details>
+      <details><summary>How do players get my game?</summary><p>Today you ship the executable and its <code>.pak</code> anywhere you like — a zip with two files. A dedicated advc store is coming soon; it will be optional, like the zip path.</p></details>
       <details><summary>Can I bring my own art and audio?</summary><p>Yes: every image and sound is a file you name explicitly in ADVL. The showcase games use hand-painted and AI-generated art, synthesized sound effects and recorded voices.</p></details>
     </div>
   </div>
@@ -446,16 +448,16 @@ inside officewalk depth scaleDetective</pre>
 <section class="final">
   <div class="wrap">
     <h2>Your adventure is <span class="grad">one command</span> away.</h2>
-    <p>Install advc, write your first scene, and ship it to advland when it's ready.</p>
+    <p>Install advc, write your first scene, and ship the release build anywhere it's ready for.</p>
     <div class="install center">
-      <code><span class="prompt">$</span> curl -fsSL https://advc.dev/install.sh | sh</code>
-      <button class="copy" data-copy="curl -fsSL https://advc.dev/install.sh | sh" aria-label="Copy install command">
+      <code><span class="prompt">$</span> curl -fsSL https://github.com/advc-org/advc/raw/master/install.sh | sh</code>
+      <button class="copy" data-copy="curl -fsSL https://github.com/advc-org/advc/raw/master/install.sh | sh" aria-label="Copy install command">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>Copy</span>
       </button>
     </div>
     <div class="cta-row center">
       <a class="btn btn-primary btn-lg" href="docs/getting-started.html">Get started</a>
-      <a class="btn btn-ghost btn-lg" href="https://advland.store">Browse advland <span aria-hidden="true">→</span></a>
+      <a class="btn btn-ghost btn-lg" href="https://github.com/advc-org/advc/tree/master/demos">Browse the demos <span aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
@@ -466,12 +468,12 @@ inside officewalk depth scaleDetective</pre>
   <div class="wrap foot-in">
     <div class="foot-brand">
       <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6 8 4 4-4 4M12.5 16h5.5"/></svg></span><span class="brand-name">advc</span></a>
-      <p>The adventure game compiler. Games built with it live on <a href="https://advland.store">advland</a>.</p>
+      <p>The adventure game compiler. Demo games live in the <a href="https://github.com/advc-org/advc/tree/master/demos">repository</a>.</p>
     </div>
     <div class="foot-cols">
       <div><h4>Product</h4><a href="#how">How it works</a><a href="#features">Features</a><a href="#testing">Testing</a><a href="#publish">Publish</a></div>
       <div><h4>Docs</h4><a href="docs/getting-started.html">Getting started</a><a href="docs/overview.html">Language</a><a href="docs/reactive-ui.html">Reactive UI</a><a href="docs/testing.html">Testing</a></div>
-      <div><h4>Community</h4><a href="https://github.com/">GitHub</a><a href="https://advland.store">advland</a><a href="#showcase">Showcase</a></div>
+      <div><h4>Community</h4><a href="https://github.com/advc-org/advc">GitHub</a><a href="docs/index.html">Docs</a><a href="#showcase">Showcase</a></div>
     </div>
   </div>
   <div class="wrap foot-bottom"><span>© 2026 advc</span><span class="mono">built with plain HTML, CSS and JS</span></div>
