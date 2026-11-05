@@ -3,13 +3,8 @@
 #
 #   curl -fsSL https://github.com/advc-org/advc/raw/master/install.sh | sh
 #
-# Downloads both packs (the compiler + the runtime) for the host
-# architecture from the releases, extracts them into the expected cache
-# folder (~/.cache/advc — `advc --install`'s install layout), and installs
-# the `advc` executable into /usr/local/bin (sudo; falls back to
-# ~/.local/bin, which needs a PATH export).
+#   curl -fsSL https://github.com/advc-org/advc/raw/master/install.sh | sh -s -- --uninstall
 #
-# Options:
 #   --version <x>     install a specific version (default: the newest release)
 #   --bin-dir <dir>   where the `advc` executable goes (default: /usr/local/bin)
 #   --cache-dir <dir> where the packs extract (default: $HOME/.cache/advc)
@@ -19,12 +14,26 @@
 #   --help            this text
 #
 # The tool override for the GitHub checkout (tests): ADVC_GITHUB_REPO.
+
 GITHUB_REPO="${ADVC_GITHUB_REPO:-advc-org/advc}"
 API_BASE="${ADVC_API_BASE:-https://api.github.com}"
 BIN_DIR="/usr/local/bin"
 VERSION=""
+
+banner() {
+    echo "        __       __"
+    echo "  __ _| |__ __| |__"
+    echo " / _\` | '_ \ _| '_ \\"
+    echo " \\__,_|_.__/\\__|_.__/"
+    echo " the adventure game compiler"
+    echo
+}
+
 while [ $# -gt 0 ]; do
     case "$1" in
+        -s)
+            shift
+            ;;
         --version)
             shift
             [ $# -gt 0 ] || { echo "install.sh: --version needs a value (e.g. --version 0.0.1)" >&2; exit 1; }
@@ -44,7 +53,8 @@ while [ $# -gt 0 ]; do
             UNINSTALL=1
             ;;
         -h|--help)
-            sed -n '2,23p' "$0" 2>/dev/null | sed 's/^#//;s/^ //'
+            banner
+            sed -n '20,33p' "$0" 2>/dev/null | sed 's/^#//;s/^ //'
             exit 0
             ;;
         *)
@@ -63,21 +73,71 @@ CACHE="${CACHE_DIR_ARG:-$HOME/.cache/advc}"
 case "$(uname -s)" in
     Darwin) triple="apple-darwin" ;;
     Linux)  triple="unknown-linux-gnu" ;;
-    *) echo "install.sh: unsupported OS `uname -s` — the packs ship for macOS and Linux" >&2; exit 1 ;;
+    *) banner; echo "install.sh: unsupported OS `uname -s` — the packs ship for macOS and Linux" >&2; exit 1 ;;
 esac
 case "$(uname -m)" in
     arm64|aarch64) triple="aarch64-$triple" ;;
     x86_64)        triple="x86_64-$triple" ;;
-    *) echo "install.sh: unsupported architecture `uname -m`" >&2; exit 1 ;;
+    *) banner; echo "install.sh: unsupported architecture `uname -m`" >&2; exit 1 ;;
 esac
-echo "install.sh: host triple $triple"
+
+banner
 
 # ─── uninstall: careful, default-off, one no aborts ──────────────────────
-# Every removal is PRINTED first and confirmed with an explicit y (or yes);
-# pressing Enter (the default) or answering anything else runs nothing and
-# ABORTS the whole uninstall — already-confirmed removals stay (they were
-# genuinely confirmed).
 if [ "${UNINSTALL:-0}" = 1 ]; then
+    # Discover everything FIRST, so the plan is complete before any rm.
+    found_bin=""
+    for b in "$BIN_DIR/advc" /usr/local/bin/advc "$HOME/.local/bin/advc" /bin/advc; do
+        if [ -x "$b" ]; then
+            found_bin="$b"
+            break
+        fi
+    done
+    cache_entries=""
+    n_entries=0
+    n_bytes=0
+    if [ -d "$CACHE" ]; then
+        for entry in "$CACHE"/*; do
+            [ -e "$entry" ] || break
+            cache_entries="$cache_entries
+$entry"
+            n_entries=$((n_entries + 1))
+            entry_bytes=$(du -sk "$entry" | cut -f1)
+            n_bytes=$((n_bytes + entry_bytes))
+        done
+    fi
+
+    # The summary/what-will-go.
+    echo "  uninstalling advc ($triple)"
+    echo
+    echo "  what will be removed, ONE by ONE (each printed + confirmed; the"
+    echo "  default answer is NO and the first no aborts the whole uninstall;"
+    echo "  anything explicitly confirmed before it stays removed):"
+    echo
+    if [ -n "$found_bin" ]; then
+        echo "    the executable:  $found_bin"
+    else
+        echo "    the executable:  none found in $BIN_DIR, /usr/local/bin, ~/.local/bin"
+    fi
+    if [ "$n_entries" -gt 0 ]; then
+        echo "    the cache:       $n_entries item(s) under $CACHE (~${n_bytes} MB)"
+        printf '%s\n' "$cache_entries" | while IFS= read -r e; do
+            [ -n "$e" ] && echo "                     $e"
+        done
+    else
+        echo "    the cache:       nothing under $CACHE"
+    fi
+    echo
+    printf 'Proceed? [y/N] '
+    IFS= read -r answer </dev/tty 2>/dev/null || answer=""
+    case "$answer" in
+        y|Y|yes|YES) ;;
+        *) echo "uninstall cancelled — nothing was removed (answer '$answer')" >&2; exit 1 ;;
+    esac
+    echo
+
+    # The removals, one by one, CONFIRMED individually — the y above only
+    # opened the phase. The same default: Enter or anything else = abort.
     confirm() {
         printf '%s\nRemove this? [y/N] ' "$1"
         IFS= read -r answer </dev/tty 2>/dev/null || answer=""
@@ -87,35 +147,25 @@ if [ "${UNINSTALL:-0}" = 1 ]; then
         esac
     }
     run_rm() {
-        # $1 = the rm command line (quoted); echo + CONFIRM + run.
         if confirm "rm -rf $1"; then
-            eval "rm -rf $1"
-            echo "  → removed"
+            if eval "rm -rf $1" 2>/dev/null; then
+                echo "  → removed"
+            elif sudo rm -rf "$1" 2>/dev/null; then
+                # A root-owned path (the /usr/local/bin default) needs the
+                # admin rights the user just proved by confirming.
+                echo "  → removed (with sudo)"
+            else
+                echo "  → FAILED — the item stays; check its permissions" >&2
+                exit 1
+            fi
         else
             exit 1
         fi
     }
 
-    echo "The advc uninstall removes, ONE BY ONE, each of the following (the"
-    echo "first no aborts; anything already confirmed stays):"
-    echo "  - the advc executable in $BIN_DIR (and the common alternates)"
-    echo "  - every installed version dir + tool file under $CACHE"
-
-    # 1. The executable, wherever it is.
-    found_bin=""
-    for b in "$BIN_DIR/advc" /usr/local/bin/advc "$HOME/.local/bin/advc" /bin/advc; do
-        if [ -x "$b" ]; then
-            found_bin="$b"
-            break
-        fi
-    done
     if [ -n "$found_bin" ]; then
         run_rm "'$found_bin'"
-    else
-        echo "no advc executable found in $BIN_DIR, /usr/local/bin, ~/.local/bin — nothing to remove there"
     fi
-
-    # 2. The cache's entries, one file/folder at a time.
     if [ -d "$CACHE" ]; then
         for entry in "$CACHE"/*; do
             [ -e "$entry" ] || break
@@ -124,21 +174,17 @@ if [ "${UNINSTALL:-0}" = 1 ]; then
         if [ -e "$CACHE" ] && confirm "rmdir $CACHE"; then
             rmdir "$CACHE" && echo "  → removed" || { echo "  → kept (not empty)"; exit 1; }
         fi
-    else
-        echo "no cache at $CACHE — nothing to remove there"
     fi
 
-    echo "uninstall done."
+    echo
+    echo "  uninstall done. any kept items stay exactly where they are."
     exit 0
 fi
 
 # ─── install: the newest (or the --version) release for this triple ──────
-# The GitHub API (unauthenticated, the releases endpoint), parsed without
-# jq: the release tags + the assets' browser_download_urls per release.
-echo "querying $API_BASE/repos/$GITHUB_REPO/releases …"
+echo "  [1/5] resolving the release to install$([ -n "$VERSION" ] && echo " (pinned: $VERSION)") for $triple …"
 releases_json=$(curl -fsSL "$API_BASE/repos/$GITHUB_REPO/releases?per_page=100") \
     || { echo "install.sh: could not reach GitHub (curl $?)" >&2; exit 1; }
-# The rate-limit / not-found shape: an empty "browser_download_url" set.
 if ! printf '%s' "$releases_json" | grep -q browser_download_url; then
     echo "install.sh: no releases published at $GITHUB_REPO yet" >&2
     exit 1
@@ -146,10 +192,8 @@ fi
 
 # The pack pickers: each runs its OWN pipeline from the JSON (the releases
 # list is newest-first, so `head -1` = the newest release's asset for this
-# triple). The COMPILER pack's name is `advc-<semver>-…`; the RUNTIME
-# pack's is `advc-runtime-<semver>-…` (its own pattern — the compiler
-# pattern alone never matches it). Two separate pipelines: two greps on one
-# shared pipe race the buffered input.
+# triple). The compiler pack's name is `advc-<semver>-…`; the runtime pack's
+# is `advc-runtime-<semver>-…`.
 pick_compiler() {
     printf '%s' "$releases_json" | grep -oE '"browser_download_url": *"[^"]*"' \
         | cut -d'"' -f4 \
@@ -164,11 +208,8 @@ pick_runtime() {
 }
 compiler_url=$(pick_compiler)
 runtime_url=$(pick_runtime)
-compiler_url=$(pick_compiler)
-runtime_url=$(pick_runtime)
 
 if [ "$VERSION" != "" ]; then
-    # A pinned version: that release's own assets only.
     compiler_url=$(printf '%s' "$compiler_url" | grep "/advc-$VERSION-" || true)
     runtime_url=$(printf '%s' "$runtime_url" | grep "/advc-runtime-$VERSION-" || true)
     [ -n "$compiler_url" ] || { echo "install.sh: no release asset for version $VERSION with triple $triple" >&2; exit 1; }
@@ -178,50 +219,84 @@ else
     [ -n "$runtime_url" ] || { echo "install.sh: no runtime pack for triple $triple in the releases" >&2; exit 1; }
 fi
 
-echo "compiler pack: $compiler_url"
-echo "runtime pack:  $runtime_url"
+compiler_name=$(basename "$compiler_url" .tar.gz)
+runtime_name=$(basename "$runtime_url" .tar.gz)
+version_from_name=$(printf '%s' "$compiler_name" | sed "s/^advc-//; s/-$triple\$//")
+
+echo "  [2/5] downloading the packs"
+echo "        compiler pack: $compiler_name.tar.gz  (~21 MB)"
+echo "        runtime pack:  $runtime_name.tar.gz  (~37 MB)"
 
 # Download both packs into a temp dir (cleaned up however the script ends).
+# curl '#' = one quiet progress bar per download.
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT INT TERM
 compiler_tgz="$tmp/$(basename "$compiler_url")"
 runtime_tgz="$tmp/$(basename "$runtime_url")"
-curl -fSLo "$compiler_tgz" "$compiler_url" || { echo "install.sh: download failed ($compiler_url)" >&2; exit 1; }
-curl -fSLo "$runtime_tgz" "$runtime_url" || { echo "install.sh: download failed ($runtime_url)" >&2; exit 1; }
+echo "        [compiler]"
+curl -#fSL -o "$compiler_tgz" "$compiler_url" || { echo "install.sh: download failed ($compiler_url)" >&2; exit 1; }
+echo "        [runtime]"
+curl -#fSL -o "$runtime_tgz" "$runtime_url" || { echo "install.sh: download failed ($runtime_url)" >&2; exit 1; }
 
-# Extract into the expected cache folder: the packs' entries are
-# `<name>-<version>-<triple>/…` dirs, so they land as
-# `~/.cache/advc/<name>-<version>-<triple>/…`.
+echo "  [3/5] extracting into $CACHE"
 mkdir -p "$CACHE"
 tar -xzf "$compiler_tgz" -C "$CACHE" || exit 1
 tar -xzf "$runtime_tgz" -C "$CACHE" || exit 1
-echo "extracted packs into $CACHE"
+echo "        the packs extracted into $CACHE:"
 
-# The advc version directory of this install (the compiler pack's extracted
-# layout) — for the post-install hint only.
-version_from_name=$(basename "$compiler_tgz" .tar.gz | sed "s/^advc-//; s/-$triple\$//")
+# The executable into BIN_DIR. /usr/local/bin is root-owned: the copy asks
+# for the admin password through sudo — the y/N/[S]kip confirm below is
+# where the user decides. y = copy now; S = skip (the compiler stays in the
+# cache and works via the full path, the instructions print); N/default =
+# cancel the installation.
+echo
+echo "  [4/5] the executable"
+echo "        copying \"advc\" ($version_from_name) into $BIN_DIR"
+echo "        — this folder is root-owned, so sudo may ask for your password."
+printf '        install it there? [y=install / S=skip / N=cancel] '
+IFS= read -r answer </dev/tty 2>/dev/null || answer=""
+case "$answer" in
+    y|Y|yes|YES)
+        src="$CACHE/advc-$version_from_name-$triple/advc"
+        mkdir -p "$BIN_DIR" 2>/dev/null || true
+        if [ -w "$BIN_DIR" ]; then
+            cp "$src" "$BIN_DIR/advc" && chmod +x "$BIN_DIR/advc"
+        elif command -v sudo >/dev/null 2>&1 && sudo -v; then
+            # A root-owned bin dir (the /usr/local/bin default): sudo prompts
+            # for the password on the terminal.
+            sudo cp "$src" "$BIN_DIR/advc" && sudo chmod +x "$BIN_DIR/advc"
+        else
+            echo "        → no sudo available; installing to $HOME/.local/bin instead"
+            BIN_DIR="$HOME/.local/bin"
+            mkdir -p "$BIN_DIR"
+            cp "$src" "$BIN_DIR/advc" && chmod +x "$BIN_DIR/advc"
+            echo "        → add it to your PATH:  export PATH=\"$BIN_DIR:\$PATH\""
+        fi
+        if [ -n "$BIN_DIR" ] && [ -x "$BIN_DIR/advc" ]; then
+            echo "        → installed at $BIN_DIR/advc"
+        fi
+        ;;
+    s|S)
+        echo "        → skipped. the compiler stays in the cache; run it directly for now:"
+        echo "           $CACHE/advc-$version_from_name-$triple/advc --version"
+        echo "           and copy it to your PATH whenever you're ready."
+        ;;
+    *)
+        echo "        → cancelled. nothing more was installed (answer '$answer')"
+        echo "        the packs extracted into $CACHE remain; run this installer again"
+        echo "        whenever you're ready."
+        exit 0
+        ;;
+esac
 
-# The executable into BIN_DIR. /usr/local/bin is root-owned: sudo; when no
-# sudo password can be had (a non-interactive curl|sh), fall back to
-# ~/.local/bin and print the PATH export the user needs.
-install_bin() {
-    src="$CACHE/advc-$version_from_name-$triple/advc"
-    if [ -w "$BIN_DIR" ]; then
-        cp "$src" "$BIN_DIR/advc"
-    elif command -v sudo >/dev/null 2>&1 && sudo -v; then
-        # /bin-style dirs are root-owned; sudo prompts on the terminal
-        # (`curl … | sh` still reaches the user's terminal through it).
-        sudo cp "$src" "$BIN_DIR/advc"
-    else
-        BIN_DIR="$HOME/.local/bin"
-        mkdir -p "$BIN_DIR"
-        cp "$src" "$BIN_DIR/advc"
-        echo "install.sh: no sudo — installed to $BIN_DIR/advc instead; add it to your PATH:"
-        echo "  export PATH=\"$BIN_DIR:\$PATH\""
-    fi
-    chmod +x "$BIN_DIR/advc"
-}
-install_bin
-echo "installed $BIN_DIR/advc"
-echo "advc --version:"
-"$BIN_DIR/advc" --version || true
+echo
+echo "  [5/5] verifying"
+echo
+"$CACHE/advc-$version_from_name-$triple/advc" --version || true
+echo
+if [ -n "$BIN_DIR" ] && [ -x "$BIN_DIR/advc" ]; then
+    echo "all set — `advc --version` now works from any folder."
+else
+    echo "installed in the cache; the executable is at"
+    echo "  $CACHE/advc-$version_from_name-$triple/advc"
+fi
