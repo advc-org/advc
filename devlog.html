@@ -35,13 +35,10 @@
 <main id="main">
   <section class="sec devlog-page">
     <div class="wrap">
-      <div class="sec-head left">
-        <span class="kicker">// devlog</span>
-        <h2>What shipped, and when.</h2>
-        <p>This page renders <code>devlog.md</code> — the same file the repository carries — in the browser. The markdown parser is <a href="https://www.npmjs.com/package/marked" rel="noopener">marked</a>, pinned by exact version and integrity; the text is fetched from this folder at load time.</p>
-      </div>
-      <article class="devlog-body" data-devlog>
-        <p class="devlog-loading">loading the devlog…</p>
+      <!-- The loader: replaced by the rendered markdown once it arrives. -->
+      <article class="devlog-body loading" data-devlog>
+        <span class="devlog-spin" aria-hidden="true"></span>
+        <p>loading the devlog…</p>
       </article>
       <!-- The publish embeds devlog.md here (base64). This copy carries the
            placeholder: the page tries the fetch first and falls back to this
@@ -55,27 +52,23 @@
   <div class="wrap foot-bottom"><span>© 2026 advc</span><span class="mono">rendered from devlog.md with marked@18.1.3</span></div>
 </footer>
 
-<!-- marked 18.1.3, pinned by exact version + SRI (subresource integrity):
-     the browser refuses the script if one byte differs from this hash. -->
-<!-- No crossorigin on this classic script: SRI enforces integrity without
-     CORS, and an anonymous CORS request to a file:// page is what made the
-     integrity check fail on devlog.html opened straight from disk. -->
+<!-- marked 18.1.3, pinned by exact version + subresource integrity.
+     crossorigin="anonymous" is required: a cross-origin resource with an
+     integrity attribute must be fetched in CORS mode (unpkg answers
+     Access-Control-Allow-Origin: *).
+     TWO digests: unpkg's brotli precompress serves stale bytes to browsers
+     (Accept-Encoding: br) — the second digest is what the browser computed
+     for those, from its own console error. The browser accepts either.
+     If both miss (a future re-precompress), the page falls back to its own
+     mini renderer over the embedded markdown: never raw, never blank. -->
 <script src="https://unpkg.com/marked@18.1.3/lib/marked.umd.js"
-        integrity="sha384-b69fecc988602be15e555af3d923e680a5f96ad559f0ff2145e02f38f527e7c336eb954dcb521b76664063b266774805"
-        defer></script>
+        integrity="sha384-b69fecc988602be15e555af3d923e680a5f96ad559f0ff2145e02f38f527e7c336eb954dcb521b76664063b266774805 sha384-tp/syYhgK+FeVVrz2SPmgKX5atVZ8P8hReAvOPUn58M265VNy1IbdmZAY7Jmd0gF"
+        crossorigin="anonymous" defer></script>
 <script>
 window.addEventListener("DOMContentLoaded", () => {
-    // marked (deferred) is up before this inline handler? — a deferred script
-    // runs before DOMContentLoaded, so `window.marked` is already here.
-    if (!window.marked) {
-        document.querySelector("[data-devlog]").textContent =
-            "the markdown library failed its integrity check — the devlog did not render.";
-        return;
-    }
-    // A minimal fallback renderer: the CDN's marked is what makes this page
-    // pretty; if the CDN is unreachable or its integrity check fails, this
-    // still renders the devlog's structure (headings, code, lists, bold) so
-    // the page is never raw markdown.
+    // A minimal fallback renderer: if the CDN'smarked never loads (offline,
+    // integrity mismatch beyond both pinned digests), the devlog still
+    // renders its structure — headings, lists, code, bold — never raw.
     const mini = (md) => md
         .split(/\n\n+/)
         .map((block) => {
@@ -93,14 +86,22 @@ window.addEventListener("DOMContentLoaded", () => {
             return `<p>${inline.replace(/\n/g, "<br>")}</p>`;
         })
         .join("");
+
+    // render(): removes the loading screen, styles the article, and writes
+    // the markdown — the loader is gone the moment the content exists.
     const render = (md) => {
-        if (window.marked) {
-            document.querySelector("[data-devlog]").innerHTML = marked.parse(md);
-        } else {
-            document.querySelector("[data-devlog]").innerHTML = mini(md);
-            console.warn("[devlog] rendered with the fallback renderer (marked was not loaded)");
-        }
+        const box = document.querySelector("[data-devlog]");
+        box.classList.remove("loading");
+        box.classList.add("rendered");
+        box.innerHTML = window.marked ? marked.parse(md) : mini(md);
     };
+    const fail = (why) => {
+        const box = document.querySelector("[data-devlog]");
+        box.classList.remove("loading");
+        box.classList.add("rendered");
+        box.innerHTML = `<p class="devlog-loading">${why}</p>`;
+    };
+
     // Source 1: the devlog.md next to the page (the freshest, over http).
     fetch("devlog.md", { cache: "no-store" })
         .then((r) => {
@@ -111,19 +112,18 @@ window.addEventListener("DOMContentLoaded", () => {
         .catch(() => {
             // Source 2: the embedded copy — publish-repo base64-encodes
             // devlog.md into this page, so it renders even from disk with no
-            // server, and even if marked never loads.
+            // server, and even if marked never loads from the CDN.
             const holder = document.querySelector("[data-devlog-md]");
             let md = "";
             if (holder) {
                 md = holder.dataset.enc === "base64"
                     ? atob(holder.textContent.replace(/\s+/g, ""))
-                    : (holder.textContent === "<!--devlog-md-->" ? "" : holder.textContent);
+                    : "";
             }
             if (md.trim()) {
                 render(md);
             } else {
-                document.querySelector("[data-devlog]").textContent =
-                    "the devlog could not be loaded — embed it (just publish-repo) or serve this folder over http.";
+                fail("the devlog could not be loaded — embed it (just publish-repo) or serve this folder over http.");
             }
         });
 });
