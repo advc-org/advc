@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>advc — devlog</title>
+<title>advc · devlog</title>
 <meta name="description" content="The advc devlog: what shipped, in the compiler's own words.">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23111018'/%3E%3Cpath d='m9 11 5 5-5 5M16 21h7' stroke='%23ec4899' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
@@ -43,7 +43,7 @@
       <!-- The publish embeds devlog.md here (base64). This copy carries the
            placeholder: the page tries the fetch first and falls back to this
            content when fetch cannot run (file://, no server). -->
-      <script type="text/markdown" data-devlog-md data-enc="base64">IyBkZXZsb2cKCiMjIDIwMjYtMTEtMDUgLSAwLjAuMSDigJQgSGVsbG8KCkhlbGxvLAoKV2UgYXJlIG5ldyBoZXJlLiBBbmQgd2Ugd291bGQgbGlrZSB0byBpbnRyb2R1Y2Ugb3Vyc2VsdmVzOgoKYWR2YyBpcyBhIGNvbXBpbGVyIGZvciBuYXJyYXRpdmUgZ2FtZXM6IHBvaW50ICYgY2xpY2sgYWR2ZW50dXJlcywgZ2FtZWJvb2tzLAp2aXN1YWwgbm92ZWxzLiBZb3Ugd3JpdGUgc2NlbmVzLCBkaWFsb2d1ZSBhbmQgVUkgaW4gKipBRFZMKiosIG91cgppbmRlbnRhdGlvbi1iYXNlZCBsYW5ndWFnZSwgYW5kIGBhZHZjIC0tcmVsZWFzZWAgaGFuZHMgeW91ICoqb25lIG5hdGl2ZQpleGVjdXRhYmxlIHBsdXMgb25lIHBhY2tlZCBhc3NldCBmaWxlKiouCgpGZWVsIGZyZWUgdG8gdHJ5IHVzOgoKYGBgCmN1cmwgLWZzU0wgaHR0cHM6Ly9naXRodWIuY29tL2FkdmMtb3JnL2FkdmMvcmF3L21hc3Rlci9pbnN0YWxsLnNoIHwgc2gKYGBgCg==</script>
+      <script type="text/markdown" data-devlog-md data-enc="base64">IyBkZXZsb2cKCiMjIDIwMjYtMTEtMDUgLSAwLjAuMSDCtyBIZWxsbwoKSGVsbG8sCgpXZSBhcmUgbmV3IGhlcmUuIEFuZCB3ZSB3b3VsZCBsaWtlIHRvIGludHJvZHVjZSBvdXJzZWx2ZXM6CgphZHZjIGlzIGEgY29tcGlsZXIgZm9yIG5hcnJhdGl2ZSBnYW1lczogcG9pbnQgJiBjbGljayBhZHZlbnR1cmVzLCBnYW1lYm9va3MsCnZpc3VhbCBub3ZlbHMuIFlvdSB3cml0ZSBzY2VuZXMsIGRpYWxvZ3VlIGFuZCBVSSBpbiAqKkFEVkwqKiwgb3VyCmluZGVudGF0aW9uLWJhc2VkIGxhbmd1YWdlLCBhbmQgYGFkdmMgLS1yZWxlYXNlYCBoYW5kcyB5b3UgKipvbmUgbmF0aXZlCmV4ZWN1dGFibGUgcGx1cyBvbmUgcGFja2VkIGFzc2V0IGZpbGUqKi4KCkZlZWwgZnJlZSB0byB0cnkgdXM6CgpgYGAKY3VybCAtZnNTTCBodHRwczovL2dpdGh1Yi5jb20vYWR2Yy1vcmcvYWR2Yy9yYXcvbWFzdGVyL2luc3RhbGwuc2ggfCBzaApgYGAK</script>
     </div>
   </section>
 </main>
@@ -57,7 +57,7 @@
      integrity attribute must be fetched in CORS mode (unpkg answers
      Access-Control-Allow-Origin: *).
      TWO digests: unpkg's brotli precompress serves stale bytes to browsers
-     (Accept-Encoding: br) — the second digest is what the browser computed
+     (Accept-Encoding: br) · the second digest is what the browser computed
      for those, from its own console error. The browser accepts either.
      If both miss (a future re-precompress), the page falls back to its own
      mini renderer over the embedded markdown: never raw, never blank. -->
@@ -68,7 +68,7 @@
 window.addEventListener("DOMContentLoaded", () => {
     // A minimal fallback renderer: if the CDN'smarked never loads (offline,
     // integrity mismatch beyond both pinned digests), the devlog still
-    // renders its structure — headings, lists, code, bold — never raw.
+    // renders its structure · headings, lists, code, bold · never raw.
     const mini = (md) => md
         .split(/\n\n+/)
         .map((block) => {
@@ -88,7 +88,7 @@ window.addEventListener("DOMContentLoaded", () => {
         .join("");
 
     // render(): removes the loading screen, styles the article, and writes
-    // the markdown — the loader is gone the moment the content exists.
+    // the markdown · the loader is gone the moment the content exists.
     const render = (md) => {
         const box = document.querySelector("[data-devlog]");
         box.classList.remove("loading");
@@ -110,7 +110,7 @@ window.addEventListener("DOMContentLoaded", () => {
         })
         .then(render)
         .catch(() => {
-            // Source 2: the embedded copy — publish-repo base64-encodes
+            // Source 2: the embedded copy · publish-repo base64-encodes
             // devlog.md into this page, so it renders even from disk with no
             // server, and even if marked never loads from the CDN.
             const holder = document.querySelector("[data-devlog-md]");
@@ -123,7 +123,7 @@ window.addEventListener("DOMContentLoaded", () => {
             if (md.trim()) {
                 render(md);
             } else {
-                fail("the devlog could not be loaded — embed it (just publish-repo) or serve this folder over http.");
+                fail("the devlog could not be loaded · embed it (just publish-repo) or serve this folder over http.");
             }
         });
 });
