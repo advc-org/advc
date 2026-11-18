@@ -1,0 +1,449 @@
+<!DOCTYPE HTML>
+<html lang="en" class="navy sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Save migration - advc — language reference</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Documentation for advc, the adventure game engine language">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-e96d0476.css">
+        <link rel="stylesheet" href="../css/chrome-d279d366.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/advc-160d1159.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "navy";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex-a369f19e.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc-ac15305f.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('navy')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">advc — language reference</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/advc/advc" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="reference-save-migration-advc-save-migration"><a class="header" href="#reference-save-migration-advc-save-migration">Reference: save migration (<code>advc save-migration</code>)</a></h1>
+<p>A save file stores <em>where each thread is parked</em> — a block of a function. When
+you ship a new version of a game, the blocks of an edited function change, so a
+save made by the old version can point into code that no longer exists.
+<code>advc save-migration</code> compares two released versions and writes a file
+proposing, for every saved position of the old version, where it should resume
+in the new one.</p>
+<p>The compiler <strong>reads</strong> these files: a game built with a <code>migrations/</code> folder
+carries the migration inside it, and a save made by an older build is carried
+across when it is loaded (see <a href="#using-the-file">Using the file</a>).</p>
+<h2 id="usage"><a class="header" href="#usage">Usage</a></h2>
+<p>Run it inside the game folder, which must be inside a git repository:</p>
+<pre><code class="language-sh">cd tests/crime-scene
+advc save-migration v1.0 v1.1
+</code></pre>
+<p><code>&lt;from&gt;</code> and <code>&lt;to&gt;</code> are any git commit-ish: a tag (<code>v1.0</code>, <code>crime-scene/v1.0</code>),
+a branch, or a sha. A <code>/</code> in a ref becomes <code>_</code> in file names.</p>
+<p>For each ref the command makes a temporary git worktree that checks out <strong>only
+the game folder</strong>, compiles it with the <strong>current</strong> compiler up to the control
+flow graphs (no LLVM build, no link), and keeps a snapshot under
+<code>target/save-migrations/&lt;ref&gt;/</code>. The worktree is always removed afterwards.</p>
+<p>It then writes <code>migrations/&lt;from&gt;.&lt;to&gt;.advm</code> in the game folder and prints a
+summary:</p>
+<pre><code>wrote migrations/v1.0.v1.1.advm (1 unit(s), 1 proposed row(s), 1 needing a decision, 1 kept from the previous file)
+</code></pre>
+<p>Running the command again is safe: the file is <strong>merged</strong>, not overwritten.
+Only the <code>remap</code> rows are yours — the <code>from</code> line, the sections and their
+comments always come from the fresh diff:</p>
+<ul>
+<li>A row where you <strong>replaced the <code>?</code></strong> (a decision) survives, in the fresh
+proposal’s place; the comment you wrote rides along. A row you added for a
+block the diff proposes none for survives too, in its function’s section (a
+section is added for a function the fresh file has none for).</li>
+<li>A decided row whose block or target no longer exists in the fresh diff
+(the code changed under it, the old ref moved, the function was removed) is
+<strong>commented out</strong> as <code>// &lt;your row&gt; // [GONE] &lt;why&gt;</code> — the block then falls
+back to its default, or the build asks for a row, and you decide again. The
+report counts them: <code>N marked [GONE]</code>.</li>
+<li>A <code>?</code> row you left undecided regenerates with today’s candidates; a
+proposal you deleted comes back. An untouched file is rewritten byte for
+byte.</li>
+</ul>
+<p>What the merge cannot tell: whether a kept decision is still right. If the
+fresh diff has changed underneath it and the target still exists, your row
+stays — read the [GONE] marks and re-run before re-committing the file.</p>
+<h2 id="the-advm-file"><a class="header" href="#the-advm-file">The <code>.advm</code> file</a></h2>
+<p>The file holds only what you may need to decide: the <code>from</code> line naming the two
+builds by their <strong>build id</strong>, and <code>remap</code> rows, each under the section of the function it is about.
+Everything else is a comment for you to read. Example for a game where two lines
+of a dialogue swapped places:</p>
+<pre><code>from 3f2a9c…64 hex chars… -&gt; 8d41b7…64 hex chars…
+
+// main.advf
+// func optWhat
+//    func optWhat
+//        crime::askedWhat = 1   // b0 = a0
+//        wait sequence
+//            talk AskWhat       // b1 = a1
+//  -         talk OffWhat1      // b2
+//  -         talk OffWhat2      // b3
+//  +         talk OffWhat2      // a2
+//  +         talk OffWhat1      // a3
+//            talk What3         // b4 = a4
+//        end                    // b5 = a5
+//        crime::talking = 0     // b6 = a6
+remap b2 to a2 // proposed
+remap b3 to ? // proposed candidates: a2, a4
+</code></pre>
+<ul>
+<li><strong><code>from &lt;build id&gt; -&gt; &lt;build id&gt;</code>.</strong> The two builds, each named by its <strong>build
+id</strong>: a hash of the game’s source (every <code>.advf</code> it reads, with comments and
+blank lines ignored) and of the names of the files in <code>assets/</code>. A save records
+the id of the build that wrote it; this is how the game knows which saves the
+file applies to. No git tag or commit is written in the file (the file <em>name</em>
+keeps the refs you typed). Edit a comment, add a blank line, commit the file or
+anything else in the repository, and the id stays the same; change the game and
+it changes.</li>
+<li><strong>Section header.</strong> The file the function lives in (relative to the game
+folder), then <code>// func &lt;name&gt;</code>. A renamed function reads <code>// func old → new</code>; a
+removed one is tagged <code>// func &lt;name&gt;  [REMOVED]</code>. The rows below a header are
+about that function. (Do not write a <code>// func …</code> line of your own: it would
+start a new section.)</li>
+<li><strong>The diff.</strong> The function’s source, with the block ids on each line. <code>bN</code> is
+block number <code>N</code> of the function in the first ref, <code>aM</code> block number <code>M</code> in the
+second. A removed line (<code>-</code>) shows only its <code>bN</code>, an added line (<code>+</code>) only its
+<code>aM</code>. On an unchanged line, <code>bN = aM</code> is the <strong>default</strong>: where a save parked
+at <code>bN</code> resumes when no row says otherwise. On a line that reads <code>b1,b2 = a1,a2 · a4,a5</code>, the
+defaults of this line’s old blocks are on another line, and <code>a4,a5</code> are the new
+blocks on this one. The ids belong to this one comparison.</li>
+<li><strong>Rows.</strong> <code>remap bN to aM // proposed</code> says “a save parked at old block <code>bN</code>
+should resume at new block <code>aM</code>”, overriding the default for that block.
+<code>remap bN to none</code> means the thread ends there.</li>
+</ul>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Old position</th><th>Written as</th></tr>
+</thead>
+<tbody>
+<tr><td>resumes at its default (unchanged, moved, or <strong>only its literals changed</strong> — a retyped subtitle, another volume or duration)</td><td>nothing</td></tr>
+<tr><td>resumes at a different new block</td><td><code>remap bN to aM // proposed</code></td></tr>
+<tr><td>has no counterpart, the surviving block down its chain is found</td><td><code>remap bN to aM // proposed</code></td></tr>
+<tr><td>has no counterpart, nothing follows</td><td><code>remap bN to none // proposed</code></td></tr>
+<tr><td>ambiguous</td><td><code>remap bN to ? // proposed candidates: …</code> — a live row whose <code>?</code> target must be replaced by hand; until then the file is not valid</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Nothing for you to do means nothing in the file.</strong> Where each function’s
+blocks sit in each build, which functions moved because an earlier one grew,
+which were renamed or removed, and every block’s default are not written: the
+build <strong>recomputes</strong> them from the two builds on the <code>from</code> line. A function
+that only moved, or changed only in literals, has no section; a removed
+function’s threads end, so it has a section (to tell you) but no rows; new
+functions have no old positions and do not appear.</p>
+<h2 id="using-the-file"><a class="header" href="#using-the-file">Using the file</a></h2>
+<p>The file does nothing until a build includes it. The workflow:</p>
+<ol>
+<li>Tag the version you shipped (<code>v1.0</code>) and the one you are about to ship
+(<code>v1.1</code>).</li>
+<li><code>advc save-migration v1.0 v1.1</code> writes <code>migrations/v1.0.v1.1.advm</code>.</li>
+<li>Review it. Every <code>remap … to ?</code> is a position the tool could not decide: pick
+one of the candidates (or <code>none</code>) and replace the <code>?</code>. You may also change any
+other row.</li>
+<li>Commit it and build the game. Committing the file does not change the build,
+so the build of the commit that ships it is the build the file names.
+<strong>The build embeds every <code>migrations/*.advm</code></strong>: it finds the sources of both
+builds of each file (only the game folder), recomputes the same comparison,
+applies your rows, and turns the result into a table from old dispatch ids to
+new ones, so the shipped game carries its own migrations. Each build is found
+by its id: first among the snapshots cached under <code>target/save-migrations/</code>
+(the ones <code>advc save-migration</code> made are reused), and on a fresh clone, where
+there are none, by searching the game folder’s git history for the commit
+that builds to that id. The build therefore needs the repository’s history
+(not a shallow clone), and the first build after a clone takes longer.</li>
+</ol>
+<p>When a save is loaded, the game compares the build id the save was written with
+to its own. A release that only touched comments is the same build, so its older
+saves load with no file at all. If they differ and the game ships a chain of migrations from that build
+to this one (<code>1.0 → 1.1 → 1.2</code> chains), every position the save holds — each
+parked thread, each timer, each saved function reference — is carried across it.
+<strong>Otherwise the load is refused</strong>: a save from a build the game has no migration
+from (or one that does not say which build wrote it) is not loaded wrong; it is not
+loaded at all. The game keeps running exactly as it was, and the reason is printed
+(<code>[load] FAILED, nothing was loaded: …</code>, naming both build ids). In a stdin script, a
+refused <code>load</code> fails the script with exit status 1. Every other failure to load —
+a missing file, a file that is not a save, a truncated one — is the same: nothing
+is loaded, nothing changes.</p>
+<p>The build <strong>fails</strong> when a file cannot be used, listing each problem with its
+line: a <code>?</code> still waiting for a decision, a block number that does not exist, a
+section that does not match the recomputed comparison (the file is stale), an old
+block with no counterpart and no row, a line that does not parse. It only <strong>warns</strong> when no file in <code>migrations/</code> leads
+to the build being compiled (saves from older builds are then refused): the
+usual cause is that the sources changed after the migration was generated — run
+<code>advc save-migration</code> again for the version you are building. Every build has an
+id, whether or not the game folder is a clean git checkout: uncommitted changes
+change the id like any other edit to the sources, and nothing else about git
+does.</p>
+<h2 id="spoken-lines-in-flight"><a class="header" href="#spoken-lines-in-flight">Spoken lines in flight</a></h2>
+<p>A <code>talk &lt;voice&gt;</code> line playing at the moment of a save is not a position to
+remap. The game keeps each line as one unit — its subtitle, its lip-sync, its
+recording and the thread waiting for it all end together — and the save stores
+that unit whole, with the text it was showing. When the new version loads the
+save it <strong>checks</strong> the line against the new build: the same recording (same
+length and sample rate), the same lip-sync animation, the speaking actor still
+there. If it all matches, the line carries on from where it was. If anything
+changed — the recording was replaced or removed, the lip-sync was regenerated —
+the line is <strong>dropped as if it had just finished</strong>: no subtitle, no sound, and
+the story continues past it. A line is never replayed half-changed, and it never
+leaves the game waiting for a recording that is gone.</p>
+<p>So a retyped subtitle (the old text finishes over the old recording) and a
+replaced recording (the line ends at once) both need nothing from this file.
+A re-recorded line with exactly the same length and sample rate is not noticed
+as changed.</p>
+<h2 id="errors"><a class="header" href="#errors">Errors</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Message</th><th>Cause</th></tr>
+</thead>
+<tbody>
+<tr><td><code>not inside a git repository</code></td><td>the current folder is not in a repo</td></tr>
+<tr><td><code>unknown ref v1.0</code></td><td>the ref does not resolve to a commit</td></tr>
+<tr><td>(at build) <code>no commit in the last … of this game folder's history builds to the id …</code></td><td>the file names a build that is not in this repository’s history (a shallow clone, or the id belongs to sources that were never committed)</td></tr>
+<tr><td><code>the game folder … does not exist at v1.0</code></td><td>the folder (or its <code>main.advf</code>) is not in that commit</td></tr>
+<tr><td>a parse/validation error after <code>[advc] save-migration: compiling v1.1 …</code></td><td>that ref no longer compiles with the current compiler; the line names which ref</td></tr>
+<tr><td>(at build) <code>the save migration file(s) in migrations/ cannot be used</code></td><td>a row still says <code>?</code>, or a line/number in a file is wrong; each problem is listed with its line</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="limits"><a class="header" href="#limits">Limits</a></h2>
+<ul>
+<li>The <strong>current</strong> compiler compiles both refs. A grammar change since an old
+tag can make it fail, or lower differently.</li>
+<li>A game’s <code>assets/</code> must be tracked in git at both refs.</li>
+<li>Animation units are skipped: an animation slot saves a frame index, not a
+block position.</li>
+<li><strong>Only the positions are migrated.</strong> The table carries where each parked thread
+is and which function each saved reference points at. The other things a save
+holds by number — variables, actors, assets, animations, strings, items — are
+numbered per build and are not translated, so a save across two builds that add
+or remove any of them can still load those wrongly. (A save the game cannot vouch
+for at all — no migration from its build — is refused instead.)</li>
+<li>A save is migrated only if it was written by a build that records a build id
+(this feature’s builds and later). An older save has none, so a game refuses
+it. The refusal is a message on the console; the player is not told in the game
+yet.</li>
+<li>The <code>.advm</code> must be generated for the sources being built. The migration
+refers to the blocks of the <code>&lt;to&gt;</code> build; edit the code afterwards and the
+build’s id changes, so no file leads to it.</li>
+<li>The id is a function of the source, not of the compiler: a compiler update that
+lowers the same source differently is not noticed.</li>
+<li>Not carried across yet: nothing of thread/handler positions — since
+2026-11-13 the open UI trees (2.1) and the <code>when</code>-arm units and UI builders
+(2.2) carry through the table too. The save’s other numbers (variables,
+actors, assets, animation <em>indexes</em>) are per-build still (stage 3).</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../testing.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../testing.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
+
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/advc-themes-62298e09.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

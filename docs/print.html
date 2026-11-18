@@ -37,10 +37,10 @@
             const path_to_root = "";
             const default_light_theme = "navy";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-35ff5431.js";
+            window.path_to_searchindex_js = "searchindex-a369f19e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-2265370e.js"></script>
+        <script src="toc-ac15305f.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -403,7 +403,7 @@ func crimeScene
     actor detective, pos 60 340, z 3, walkat officewalk walkDetective,
         pose poseDetective, mouse::over false
         image 0 -36 -156 det_stand_e
-        say::color white, say::pos 320 30
+        talk::color white, talk::pos 320 30
         vel 100
         enable
         inside officewalk depth scaleDetective      // the walk map drives his scale
@@ -1564,7 +1564,7 @@ actor deskPapers, pos 174 156, z 1.5, image 0 0 0 desk_papers, enable
 actor detective, pos 60 340, z 3, walkat officewalk walkDetective,
     pose poseDetective, mouse::over false
     image 0 -36 -156 det_stand_e
-    say::color white, say::pos 320 30
+    talk::color white, talk::pos 320 30
     vel 100
     enable
     inside officewalk depth scaleDetective
@@ -1622,8 +1622,8 @@ hint: use `z 0` up to `z 9` — the integer part of `z` is the render layer, the
 <tr><td><code>scale &lt;number&gt;</code></td><td>Multiply the actor’s rendered size — see below.</td></tr>
 <tr><td><code>inside &lt;map&gt; &lt;rect&gt; &lt;func&gt;</code></td><td>Run <code>&lt;func&gt;</code> every frame the actor stands in a rect — see below.</td></tr>
 <tr><td><code>lipsync &lt;func&gt;</code></td><td>Bind the lip-sync function <code>talk</code> runs per viseme.</td></tr>
-<tr><td><code>say::color &lt;colorName&gt;</code> / <code>say::pos &lt;x&gt; &lt;y&gt;</code></td><td>Where and how this actor’s <code>say</code> captions draw.</td></tr>
-<tr><td><code>say::follow &lt;dx&gt; &lt;dy&gt;</code></td><td>Anchor this actor’s captions to its head: each frame the line’s centre sits <code>(dx, dy)</code> canvas-px from the top edge of the actor’s images (x at the actor’s feet, camera-adjusted), so it follows a walking speaker and a scrolling camera. <code>say::follow 0 -20</code> rides 20 px above the head. <code>say::pos</code> and <code>say::follow</code> replace each other.</td></tr>
+<tr><td><code>talk::color &lt;colorName&gt;</code> / <code>talk::pos &lt;x&gt; &lt;y&gt;</code></td><td>Where and how this actor’s <code>talk</code> captions draw.</td></tr>
+<tr><td><code>talk::follow &lt;dx&gt; &lt;dy&gt;</code></td><td>Anchor this actor’s captions to its head: each frame the line’s centre sits <code>(dx, dy)</code> canvas-px from the top edge of the actor’s images (x at the actor’s feet, camera-adjusted), so it follows a walking speaker and a scrolling camera. <code>say::follow 0 -20</code> rides 20 px above the head. <code>say::pos</code> and <code>say::follow</code> replace each other.</td></tr>
 </tbody>
 </table>
 </div>
@@ -1758,14 +1758,14 @@ values — <code>$1</code> = the solidity of the clicked pixel, <code>$2</code> 
 (see [Reactive UI › Click dispatch(../reactive-ui.md#click-dispatch)) — and
 <code>inside</code> and walk-cycle callbacks receive positional values as documented
 above.</p>
-<h2 id="say--captions"><a class="header" href="#say--captions"><code>say</code> — captions</a></h2>
+<h2 id="talk-text--captions"><a class="header" href="#talk-text--captions"><code>talk "&lt;text&gt;"</code> — captions</a></h2>
 <pre><code class="language-advc">select detective
-say "Frank Malone. Detective." 2s
+talk "Frank Malone. Detective." 2s
 </code></pre>
-<p><code>say "&lt;text&gt;" &lt;duration&gt;</code> draws a caption near the actor (the actor’s
-<code>say::color</code> / <code>say::pos</code> / <code>say::follow</code> decides where it draws) for the
-duration, then removes it. Several actors can speak at once. For spoken lines
-with voice and visemes, use <code>voice</code>/<code>talk</code> —
+<p><code>talk "&lt;text&gt;" &lt;duration&gt;</code> draws a caption near the actor (the actor’s
+<code>talk::color</code> / <code>talk::pos</code> / <code>talk::follow</code> decides where it draws) for the
+duration, then removes it. It does not wait. Several actors can speak at once.
+For spoken lines with a recording and visemes, use <code>talk &lt;voice&gt;</code> —
 <a href="#reference-animations--voice">Animations &amp; voice</a>.</p>
 <h2 id="print-stopall"><a class="header" href="#print-stopall"><code>print</code>, <code>stopall</code></a></h2>
 <p><code>print "&lt;text&gt;"</code> writes to the console (handy in tests). <code>stopall</code> halts every
@@ -1774,7 +1774,7 @@ scripted beat.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="reference-animations--voice"><a class="header" href="#reference-animations--voice">Reference: animations &amp; voice</a></h1>
 <p>Movement on screen is <code>anim</code> clips played with <code>play</code>; speech is <code>voice</code>
-lines played with <code>talk</code> (or written in place with <code>say</code>).</p>
+lines played with <code>talk &lt;voice&gt;</code> (or written in place with <code>talk "&lt;text&gt;"</code>).</p>
 <h2 id="anim--a-frame-by-frame-clip"><a class="header" href="#anim--a-frame-by-frame-clip"><code>anim</code> — a frame-by-frame clip</a></h2>
 <pre><code class="language-advc">anim pirateShout
     duration 1
@@ -1822,19 +1822,21 @@ a <code>when</code> off the end line for the <code>finished</code> signal.</p>
 idiom for applying a pose (a “stand facing south” clip) rather than animating
 it.</p>
 <p>Loops: <code>&lt;loops&gt;</code> counts how many times the whole budgeted sequence repeats.</p>
-<h2 id="say--spoken-text-unvoiced"><a class="header" href="#say--spoken-text-unvoiced"><code>say</code> — spoken text, unvoiced</a></h2>
+<h2 id="talk-text--spoken-text-unvoiced"><a class="header" href="#talk-text--spoken-text-unvoiced"><code>talk "&lt;text&gt;"</code> — spoken text, unvoiced</a></h2>
 <pre><code class="language-advc">select detective
-say::color white, say::pos 320 30     // where this actor's captions draw
-say "What happened here?" 2s
+talk::color white, talk::pos 320 30     // where this actor's captions draw
+talk "What happened here?" 2s
 </code></pre>
-<p><code>say &lt;text&gt; &lt;duration&gt;</code> shows the caption near the selected actor and holds
-it; the actor’s <code>say::color</code> / <code>say::pos</code> sub-commands place and colour it —
-<code>say::pos</code> is a fixed position, while <code>say::follow 0 -20</code> anchors the caption
+<p><code>talk "&lt;text&gt;" &lt;duration&gt;</code> shows the caption near the selected actor and holds
+it; the actor’s <code>talk::color</code> / <code>talk::pos</code> sub-commands place and colour it —
+<code>talk::pos</code> is a fixed position, while <code>talk::follow 0 -20</code> anchors the caption
 to the top of the actor’s images (x at its feet, camera-adjusted) so it
-follows a walking speaker. The setting is captured when <code>say</code> runs, so two
-actors speaking at once keep their own placement.
-<code>wait say …</code> is not a thing — park with <code>wait nothing &lt;duration&gt;</code> if you need
-to hold the script while it shows.</p>
+follows a walking speaker. The setting is captured when the line runs, so two
+actors speaking at once keep their own placement. The caption form does not
+wait and has no <code>finished</code>; park with <code>wait nothing &lt;duration&gt;</code> if you need to
+hold the script while it shows. (The quoted-text form and <code>talk &lt;voice&gt;</code> are
+the same command: a string argument is a caption, a voice name plays a
+recording.)</p>
 <h2 id="voice-and-talk--spoken-lines"><a class="header" href="#voice-and-talk--spoken-lines"><code>voice</code> and <code>talk</code> — spoken lines</a></h2>
 <pre><code class="language-advc">voice FrankTalksTheOfficer
     en room_voices/frank_01 "All right, let's take a look."
@@ -1851,6 +1853,10 @@ then one <code>&lt;culture&gt; &lt;wav&gt; "&lt;text&gt;"</code> child per langu
 plays, and lip-sync runs on the selected actor if it has a
 <code>lipsync &lt;func&gt;</code> binding.</li>
 <li><code>talk</code> produces <code>finished</code> — <code>wait talk …</code> parks until the line is done.</li>
+<li>A line in flight survives a <strong>save and load</strong>: the game restores its subtitle,
+its lip-sync and the recording’s position. If a newer version of the game
+changed the line’s recording or lip-sync, the line ends at the load instead,
+as if it had just finished (see <a href="#reference-save-migration-advc-save-migration">Save migration</a>).</li>
 <li><code>voice</code> bodies may be split per language, and the recording per culture is
 looked up at build time exactly like other sounds (<code>assets/</code> stems checked).</li>
 </ul>
@@ -1859,7 +1865,7 @@ looked up at build time exactly like other sounds (<code>assets/</code> stems ch
 the line’s visemes, <code>$1</code> = the viseme index, driven from the line’s own
 recording at build time (no per-line sync work to do by hand). <code>lip &lt;n&gt;</code> runs
 the bound function manually (<code>$1</code> = n) for scripted mouth movement — during a
-<code>say</code>ed line, for example.</p>
+captioned line, for example.</p>
 <p><em>(the detective/officer functions in the sample <code>crime-scene</code> game show the
 idiom: a <code>lipsync</code> func per character, and the binder on the actor:
 see the tutorial’s <code>actor detective</code> block.)</em></p>
@@ -2617,6 +2623,223 @@ closing the window writes the file.</p>
 packs every asset the game uses into one file next to the executable — the
 deliverable form, ready to zip and share. Behavior is identical to the debug
 build.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="reference-save-migration-advc-save-migration"><a class="header" href="#reference-save-migration-advc-save-migration">Reference: save migration (<code>advc save-migration</code>)</a></h1>
+<p>A save file stores <em>where each thread is parked</em> — a block of a function. When
+you ship a new version of a game, the blocks of an edited function change, so a
+save made by the old version can point into code that no longer exists.
+<code>advc save-migration</code> compares two released versions and writes a file
+proposing, for every saved position of the old version, where it should resume
+in the new one.</p>
+<p>The compiler <strong>reads</strong> these files: a game built with a <code>migrations/</code> folder
+carries the migration inside it, and a save made by an older build is carried
+across when it is loaded (see <a href="#using-the-file">Using the file</a>).</p>
+<h2 id="usage"><a class="header" href="#usage">Usage</a></h2>
+<p>Run it inside the game folder, which must be inside a git repository:</p>
+<pre><code class="language-sh">cd tests/crime-scene
+advc save-migration v1.0 v1.1
+</code></pre>
+<p><code>&lt;from&gt;</code> and <code>&lt;to&gt;</code> are any git commit-ish: a tag (<code>v1.0</code>, <code>crime-scene/v1.0</code>),
+a branch, or a sha. A <code>/</code> in a ref becomes <code>_</code> in file names.</p>
+<p>For each ref the command makes a temporary git worktree that checks out <strong>only
+the game folder</strong>, compiles it with the <strong>current</strong> compiler up to the control
+flow graphs (no LLVM build, no link), and keeps a snapshot under
+<code>target/save-migrations/&lt;ref&gt;/</code>. The worktree is always removed afterwards.</p>
+<p>It then writes <code>migrations/&lt;from&gt;.&lt;to&gt;.advm</code> in the game folder and prints a
+summary:</p>
+<pre><code>wrote migrations/v1.0.v1.1.advm (1 unit(s), 1 proposed row(s), 1 needing a decision, 1 kept from the previous file)
+</code></pre>
+<p>Running the command again is safe: the file is <strong>merged</strong>, not overwritten.
+Only the <code>remap</code> rows are yours — the <code>from</code> line, the sections and their
+comments always come from the fresh diff:</p>
+<ul>
+<li>A row where you <strong>replaced the <code>?</code></strong> (a decision) survives, in the fresh
+proposal’s place; the comment you wrote rides along. A row you added for a
+block the diff proposes none for survives too, in its function’s section (a
+section is added for a function the fresh file has none for).</li>
+<li>A decided row whose block or target no longer exists in the fresh diff
+(the code changed under it, the old ref moved, the function was removed) is
+<strong>commented out</strong> as <code>// &lt;your row&gt; // [GONE] &lt;why&gt;</code> — the block then falls
+back to its default, or the build asks for a row, and you decide again. The
+report counts them: <code>N marked [GONE]</code>.</li>
+<li>A <code>?</code> row you left undecided regenerates with today’s candidates; a
+proposal you deleted comes back. An untouched file is rewritten byte for
+byte.</li>
+</ul>
+<p>What the merge cannot tell: whether a kept decision is still right. If the
+fresh diff has changed underneath it and the target still exists, your row
+stays — read the [GONE] marks and re-run before re-committing the file.</p>
+<h2 id="the-advm-file"><a class="header" href="#the-advm-file">The <code>.advm</code> file</a></h2>
+<p>The file holds only what you may need to decide: the <code>from</code> line naming the two
+builds by their <strong>build id</strong>, and <code>remap</code> rows, each under the section of the function it is about.
+Everything else is a comment for you to read. Example for a game where two lines
+of a dialogue swapped places:</p>
+<pre><code>from 3f2a9c…64 hex chars… -&gt; 8d41b7…64 hex chars…
+
+// main.advf
+// func optWhat
+//    func optWhat
+//        crime::askedWhat = 1   // b0 = a0
+//        wait sequence
+//            talk AskWhat       // b1 = a1
+//  -         talk OffWhat1      // b2
+//  -         talk OffWhat2      // b3
+//  +         talk OffWhat2      // a2
+//  +         talk OffWhat1      // a3
+//            talk What3         // b4 = a4
+//        end                    // b5 = a5
+//        crime::talking = 0     // b6 = a6
+remap b2 to a2 // proposed
+remap b3 to ? // proposed candidates: a2, a4
+</code></pre>
+<ul>
+<li><strong><code>from &lt;build id&gt; -&gt; &lt;build id&gt;</code>.</strong> The two builds, each named by its <strong>build
+id</strong>: a hash of the game’s source (every <code>.advf</code> it reads, with comments and
+blank lines ignored) and of the names of the files in <code>assets/</code>. A save records
+the id of the build that wrote it; this is how the game knows which saves the
+file applies to. No git tag or commit is written in the file (the file <em>name</em>
+keeps the refs you typed). Edit a comment, add a blank line, commit the file or
+anything else in the repository, and the id stays the same; change the game and
+it changes.</li>
+<li><strong>Section header.</strong> The file the function lives in (relative to the game
+folder), then <code>// func &lt;name&gt;</code>. A renamed function reads <code>// func old → new</code>; a
+removed one is tagged <code>// func &lt;name&gt;  [REMOVED]</code>. The rows below a header are
+about that function. (Do not write a <code>// func …</code> line of your own: it would
+start a new section.)</li>
+<li><strong>The diff.</strong> The function’s source, with the block ids on each line. <code>bN</code> is
+block number <code>N</code> of the function in the first ref, <code>aM</code> block number <code>M</code> in the
+second. A removed line (<code>-</code>) shows only its <code>bN</code>, an added line (<code>+</code>) only its
+<code>aM</code>. On an unchanged line, <code>bN = aM</code> is the <strong>default</strong>: where a save parked
+at <code>bN</code> resumes when no row says otherwise. On a line that reads <code>b1,b2 = a1,a2 · a4,a5</code>, the
+defaults of this line’s old blocks are on another line, and <code>a4,a5</code> are the new
+blocks on this one. The ids belong to this one comparison.</li>
+<li><strong>Rows.</strong> <code>remap bN to aM // proposed</code> says “a save parked at old block <code>bN</code>
+should resume at new block <code>aM</code>”, overriding the default for that block.
+<code>remap bN to none</code> means the thread ends there.</li>
+</ul>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Old position</th><th>Written as</th></tr>
+</thead>
+<tbody>
+<tr><td>resumes at its default (unchanged, moved, or <strong>only its literals changed</strong> — a retyped subtitle, another volume or duration)</td><td>nothing</td></tr>
+<tr><td>resumes at a different new block</td><td><code>remap bN to aM // proposed</code></td></tr>
+<tr><td>has no counterpart, the surviving block down its chain is found</td><td><code>remap bN to aM // proposed</code></td></tr>
+<tr><td>has no counterpart, nothing follows</td><td><code>remap bN to none // proposed</code></td></tr>
+<tr><td>ambiguous</td><td><code>remap bN to ? // proposed candidates: …</code> — a live row whose <code>?</code> target must be replaced by hand; until then the file is not valid</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Nothing for you to do means nothing in the file.</strong> Where each function’s
+blocks sit in each build, which functions moved because an earlier one grew,
+which were renamed or removed, and every block’s default are not written: the
+build <strong>recomputes</strong> them from the two builds on the <code>from</code> line. A function
+that only moved, or changed only in literals, has no section; a removed
+function’s threads end, so it has a section (to tell you) but no rows; new
+functions have no old positions and do not appear.</p>
+<h2 id="using-the-file"><a class="header" href="#using-the-file">Using the file</a></h2>
+<p>The file does nothing until a build includes it. The workflow:</p>
+<ol>
+<li>Tag the version you shipped (<code>v1.0</code>) and the one you are about to ship
+(<code>v1.1</code>).</li>
+<li><code>advc save-migration v1.0 v1.1</code> writes <code>migrations/v1.0.v1.1.advm</code>.</li>
+<li>Review it. Every <code>remap … to ?</code> is a position the tool could not decide: pick
+one of the candidates (or <code>none</code>) and replace the <code>?</code>. You may also change any
+other row.</li>
+<li>Commit it and build the game. Committing the file does not change the build,
+so the build of the commit that ships it is the build the file names.
+<strong>The build embeds every <code>migrations/*.advm</code></strong>: it finds the sources of both
+builds of each file (only the game folder), recomputes the same comparison,
+applies your rows, and turns the result into a table from old dispatch ids to
+new ones, so the shipped game carries its own migrations. Each build is found
+by its id: first among the snapshots cached under <code>target/save-migrations/</code>
+(the ones <code>advc save-migration</code> made are reused), and on a fresh clone, where
+there are none, by searching the game folder’s git history for the commit
+that builds to that id. The build therefore needs the repository’s history
+(not a shallow clone), and the first build after a clone takes longer.</li>
+</ol>
+<p>When a save is loaded, the game compares the build id the save was written with
+to its own. A release that only touched comments is the same build, so its older
+saves load with no file at all. If they differ and the game ships a chain of migrations from that build
+to this one (<code>1.0 → 1.1 → 1.2</code> chains), every position the save holds — each
+parked thread, each timer, each saved function reference — is carried across it.
+<strong>Otherwise the load is refused</strong>: a save from a build the game has no migration
+from (or one that does not say which build wrote it) is not loaded wrong; it is not
+loaded at all. The game keeps running exactly as it was, and the reason is printed
+(<code>[load] FAILED, nothing was loaded: …</code>, naming both build ids). In a stdin script, a
+refused <code>load</code> fails the script with exit status 1. Every other failure to load —
+a missing file, a file that is not a save, a truncated one — is the same: nothing
+is loaded, nothing changes.</p>
+<p>The build <strong>fails</strong> when a file cannot be used, listing each problem with its
+line: a <code>?</code> still waiting for a decision, a block number that does not exist, a
+section that does not match the recomputed comparison (the file is stale), an old
+block with no counterpart and no row, a line that does not parse. It only <strong>warns</strong> when no file in <code>migrations/</code> leads
+to the build being compiled (saves from older builds are then refused): the
+usual cause is that the sources changed after the migration was generated — run
+<code>advc save-migration</code> again for the version you are building. Every build has an
+id, whether or not the game folder is a clean git checkout: uncommitted changes
+change the id like any other edit to the sources, and nothing else about git
+does.</p>
+<h2 id="spoken-lines-in-flight"><a class="header" href="#spoken-lines-in-flight">Spoken lines in flight</a></h2>
+<p>A <code>talk &lt;voice&gt;</code> line playing at the moment of a save is not a position to
+remap. The game keeps each line as one unit — its subtitle, its lip-sync, its
+recording and the thread waiting for it all end together — and the save stores
+that unit whole, with the text it was showing. When the new version loads the
+save it <strong>checks</strong> the line against the new build: the same recording (same
+length and sample rate), the same lip-sync animation, the speaking actor still
+there. If it all matches, the line carries on from where it was. If anything
+changed — the recording was replaced or removed, the lip-sync was regenerated —
+the line is <strong>dropped as if it had just finished</strong>: no subtitle, no sound, and
+the story continues past it. A line is never replayed half-changed, and it never
+leaves the game waiting for a recording that is gone.</p>
+<p>So a retyped subtitle (the old text finishes over the old recording) and a
+replaced recording (the line ends at once) both need nothing from this file.
+A re-recorded line with exactly the same length and sample rate is not noticed
+as changed.</p>
+<h2 id="errors"><a class="header" href="#errors">Errors</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Message</th><th>Cause</th></tr>
+</thead>
+<tbody>
+<tr><td><code>not inside a git repository</code></td><td>the current folder is not in a repo</td></tr>
+<tr><td><code>unknown ref v1.0</code></td><td>the ref does not resolve to a commit</td></tr>
+<tr><td>(at build) <code>no commit in the last … of this game folder's history builds to the id …</code></td><td>the file names a build that is not in this repository’s history (a shallow clone, or the id belongs to sources that were never committed)</td></tr>
+<tr><td><code>the game folder … does not exist at v1.0</code></td><td>the folder (or its <code>main.advf</code>) is not in that commit</td></tr>
+<tr><td>a parse/validation error after <code>[advc] save-migration: compiling v1.1 …</code></td><td>that ref no longer compiles with the current compiler; the line names which ref</td></tr>
+<tr><td>(at build) <code>the save migration file(s) in migrations/ cannot be used</code></td><td>a row still says <code>?</code>, or a line/number in a file is wrong; each problem is listed with its line</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="limits"><a class="header" href="#limits">Limits</a></h2>
+<ul>
+<li>The <strong>current</strong> compiler compiles both refs. A grammar change since an old
+tag can make it fail, or lower differently.</li>
+<li>A game’s <code>assets/</code> must be tracked in git at both refs.</li>
+<li>Animation units are skipped: an animation slot saves a frame index, not a
+block position.</li>
+<li><strong>Only the positions are migrated.</strong> The table carries where each parked thread
+is and which function each saved reference points at. The other things a save
+holds by number — variables, actors, assets, animations, strings, items — are
+numbered per build and are not translated, so a save across two builds that add
+or remove any of them can still load those wrongly. (A save the game cannot vouch
+for at all — no migration from its build — is refused instead.)</li>
+<li>A save is migrated only if it was written by a build that records a build id
+(this feature’s builds and later). An older save has none, so a game refuses
+it. The refusal is a message on the console; the player is not told in the game
+yet.</li>
+<li>The <code>.advm</code> must be generated for the sources being built. The migration
+refers to the blocks of the <code>&lt;to&gt;</code> build; edit the code afterwards and the
+build’s id changes, so no file leads to it.</li>
+<li>The id is a function of the source, not of the compiler: a compiler update that
+lowers the same source differently is not noticed.</li>
+<li>Not carried across yet: nothing of thread/handler positions — since
+2026-11-13 the open UI trees (2.1) and the <code>when</code>-arm units and UI builders
+(2.2) carry through the table too. The save’s other numbers (variables,
+actors, assets, animation <em>indexes</em>) are per-build still (stage 3).</li>
+</ul>
 
                     </main>
 

@@ -36,10 +36,10 @@
             const path_to_root = "../";
             const default_light_theme = "navy";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-35ff5431.js";
+            window.path_to_searchindex_js = "../searchindex-a369f19e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-2265370e.js"></script>
+        <script src="../toc-ac15305f.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -195,7 +195,7 @@ actor deskPapers, pos 174 156, z 1.5, image 0 0 0 desk_papers, enable
 actor detective, pos 60 340, z 3, walkat officewalk walkDetective,
     pose poseDetective, mouse::over false
     image 0 -36 -156 det_stand_e
-    say::color white, say::pos 320 30
+    talk::color white, talk::pos 320 30
     vel 100
     enable
     inside officewalk depth scaleDetective
@@ -253,8 +253,8 @@ hint: use `z 0` up to `z 9` — the integer part of `z` is the render layer, the
 <tr><td><code>scale &lt;number&gt;</code></td><td>Multiply the actor’s rendered size — see below.</td></tr>
 <tr><td><code>inside &lt;map&gt; &lt;rect&gt; &lt;func&gt;</code></td><td>Run <code>&lt;func&gt;</code> every frame the actor stands in a rect — see below.</td></tr>
 <tr><td><code>lipsync &lt;func&gt;</code></td><td>Bind the lip-sync function <code>talk</code> runs per viseme.</td></tr>
-<tr><td><code>say::color &lt;colorName&gt;</code> / <code>say::pos &lt;x&gt; &lt;y&gt;</code></td><td>Where and how this actor’s <code>say</code> captions draw.</td></tr>
-<tr><td><code>say::follow &lt;dx&gt; &lt;dy&gt;</code></td><td>Anchor this actor’s captions to its head: each frame the line’s centre sits <code>(dx, dy)</code> canvas-px from the top edge of the actor’s images (x at the actor’s feet, camera-adjusted), so it follows a walking speaker and a scrolling camera. <code>say::follow 0 -20</code> rides 20 px above the head. <code>say::pos</code> and <code>say::follow</code> replace each other.</td></tr>
+<tr><td><code>talk::color &lt;colorName&gt;</code> / <code>talk::pos &lt;x&gt; &lt;y&gt;</code></td><td>Where and how this actor’s <code>talk</code> captions draw.</td></tr>
+<tr><td><code>talk::follow &lt;dx&gt; &lt;dy&gt;</code></td><td>Anchor this actor’s captions to its head: each frame the line’s centre sits <code>(dx, dy)</code> canvas-px from the top edge of the actor’s images (x at the actor’s feet, camera-adjusted), so it follows a walking speaker and a scrolling camera. <code>say::follow 0 -20</code> rides 20 px above the head. <code>say::pos</code> and <code>say::follow</code> replace each other.</td></tr>
 </tbody>
 </table>
 </div>
@@ -389,14 +389,14 @@ values — <code>$1</code> = the solidity of the clicked pixel, <code>$2</code> 
 (see [Reactive UI › Click dispatch(../reactive-ui.md#click-dispatch)) — and
 <code>inside</code> and walk-cycle callbacks receive positional values as documented
 above.</p>
-<h2 id="say--captions"><a class="header" href="#say--captions"><code>say</code> — captions</a></h2>
+<h2 id="talk-text--captions"><a class="header" href="#talk-text--captions"><code>talk "&lt;text&gt;"</code> — captions</a></h2>
 <pre><code class="language-advc">select detective
-say "Frank Malone. Detective." 2s
+talk "Frank Malone. Detective." 2s
 </code></pre>
-<p><code>say "&lt;text&gt;" &lt;duration&gt;</code> draws a caption near the actor (the actor’s
-<code>say::color</code> / <code>say::pos</code> / <code>say::follow</code> decides where it draws) for the
-duration, then removes it. Several actors can speak at once. For spoken lines
-with voice and visemes, use <code>voice</code>/<code>talk</code> —
+<p><code>talk "&lt;text&gt;" &lt;duration&gt;</code> draws a caption near the actor (the actor’s
+<code>talk::color</code> / <code>talk::pos</code> / <code>talk::follow</code> decides where it draws) for the
+duration, then removes it. It does not wait. Several actors can speak at once.
+For spoken lines with a recording and visemes, use <code>talk &lt;voice&gt;</code> —
 <a href="./animations-voice.html">Animations &amp; voice</a>.</p>
 <h2 id="print-stopall"><a class="header" href="#print-stopall"><code>print</code>, <code>stopall</code></a></h2>
 <p><code>print "&lt;text&gt;"</code> writes to the console (handy in tests). <code>stopall</code> halts every
