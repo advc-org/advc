@@ -38,7 +38,7 @@ func crimeScene
 
     actor officer, pos 46 268, z 2
         image 0 -36 -156 officer
-        say::color cyan, say::follow 0 -20
+        talk::color cyan, talk::follow 0 -20
         enable
         mouse::area "image0"
         mouse::click useOfficer
@@ -46,7 +46,7 @@ func crimeScene
 
     actor detective, pos 60 340, z 3, walkat officewalk walkDetective, pose poseDetective, mouse::over false
         image 0 -36 -156 det_stand_e
-        say::color white, say::follow 0 -20
+        talk::color white, talk::follow 0 -20
         vel 100
         enable
         inside officewalk depth scaleDetective
