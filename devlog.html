@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="landing.css">
+<script src="version.js" defer></script>
 </head>
 <body>
 
@@ -27,7 +28,7 @@
       <a href="docs/index.html">Docs</a>
     </nav>
     <div class="nav-cta">
-      <a class="btn btn-sm btn-primary" href="https://github.com/advc-org/advc">GitHub</a>
+      <a class="btn btn-sm btn-primary" href="" data-bind="href={repo}">GitHub</a>
     </div>
   </div>
 </header>
@@ -43,13 +44,13 @@
       <!-- The publish embeds devlog.md here (base64). This copy carries the
            placeholder: the page tries the fetch first and falls back to this
            content when fetch cannot run (file://, no server). -->
-      <script type="text/markdown" data-devlog-md data-enc="base64">IyBkZXZsb2cKCiMjIDIwMjYtMTEtMDUgLSAwLjAuMSDCtyBIZWxsbwoKSGVsbG8sCgpXZSBhcmUgbmV3IGhlcmUuIEFuZCB3ZSB3b3VsZCBsaWtlIHRvIGludHJvZHVjZSBvdXJzZWx2ZXM6CgphZHZjIGlzIGEgY29tcGlsZXIgZm9yIG5hcnJhdGl2ZSBnYW1lczogcG9pbnQgJiBjbGljayBhZHZlbnR1cmVzLCBnYW1lYm9va3MsCnZpc3VhbCBub3ZlbHMuIFlvdSB3cml0ZSBzY2VuZXMsIGRpYWxvZ3VlIGFuZCBVSSBpbiAqKkFEVkwqKiwgb3VyCmluZGVudGF0aW9uLWJhc2VkIGxhbmd1YWdlLCBhbmQgYGFkdmMgLS1yZWxlYXNlYCBoYW5kcyB5b3UgKipvbmUgbmF0aXZlCmV4ZWN1dGFibGUgcGx1cyBvbmUgcGFja2VkIGFzc2V0IGZpbGUqKi4KCkZlZWwgZnJlZSB0byB0cnkgdXM6CgpgYGAKY3VybCAtZnNTTCBodHRwczovL2dpdGh1Yi5jb20vYWR2Yy1vcmcvYWR2Yy9yYXcvbWFzdGVyL2luc3RhbGwuc2ggfCBzaApgYGAK</script>
+      <script type="text/markdown" data-devlog-md data-enc="base64">IyBkZXZsb2cKCiMjIHYwLjAuMiBIaWdobGlnaHRzCgotIFNhdmUgZmlsZXMgbm93IHN1cnZpdmUgbmV3IGJ1aWxkcy4KCiMjIE5ldwoKIyMjIFNhdmUgbWlncmF0aW9uIChhZHZjIHNhdmUtbWlncmF0aW9uIDxmcm9tPiA8dG8+KQoKYHNhdmUtbWlncmF0aW9uYCBnZW5lcmF0ZSBhbiAuYWR2bSBmaWxlLiBUaGVzZSBmaWxlcyBhbGxvdyB0aGUgZGV2ZWxvcGVyIHRvIHNwZWNpZnkgaG93IGhlIHdhbnRzIHRoZSBnYW1lIHNhdmUgc3RhdGUgdG8gcmV0dXJuLCB3aGVuIHRoZSBibG9jayB0aGUgc2F2ZSBmaWxlIHBvaW50cyB0byB3YXMgZGVsZXRlZCBpbiB0aGUgY3VycmVudCB2ZXJzaW9uLgoKYGBgYWR2bQovLyBtYWluLmFkdmYKLy8gZnVuYyBvcHRXaGF0Ci8vICAgIGZ1bmMgb3B0V2hhdAovLyAgICAgICAgY3JpbWU6OmFza2VkV2hhdCA9IDEgICAvLyBiMCA9IGEwCi8vICAgICAgICB3YWl0IHNlcXVlbmNlCi8vICAgICAgICAgICAgdGFsayBBc2tXaGF0ICAgICAgIC8vIGIxID0gYTEKLy8gICAgICAgICAgICB0YWxrIE9mZldoYXQxICAgICAgLy8gYjIgPSBhMgovLyAgLSAgICAgICAgIHRhbGsgT2ZmV2hhdDIgICAgICAvLyBiMwovLyAgICAgICAgICAgIHRhbGsgV2hhdDMgICAgICAgICAvLyBiNCA9IGEzCi8vICAgICAgICBlbmQgICAgICAgICAgICAgICAgICAgIC8vIGI1ID0gYTQKLy8gICAgICAgIGNyaW1lOjp0YWxraW5nID0gMCAgICAgLy8gYjYgPSBhNQpyZW1hcCBiMyB0byBhMyAvLyBwcm9wb3NlZApgYGAKClRoZSByZW1hcCByb3c6IGByZW1hcCBiMyB0byBhM2AgbWVhbnMgYSBzYXZlIHBhcmtlZCBhdCBvbGQgYmxvY2sgYjMgKHRoZSBkZWxldGVkIE9mZldoYXQyIGxpbmUpIHJlc3VtZXMgYXQgbmV3IGJsb2NrIGEzIChXaGF0MywgdGhlIG5leHQgc3Vydml2aW5nIGxpbmUpLgoKIyMjIFZvaWNlIGFuZCBkaWFsb2d1ZQoKLSBgc2F5YCBpcyBmb2xkZWQgaW50byB0aGUgYHRhbGtgIGNvbW1hbmQuCgojIyAyMDI2LTExLTA1IC0gMC4wLjEgwrcgSGVsbG8KCkhlbGxvLAoKV2UgYXJlIG5ldyBoZXJlLiBBbmQgd2Ugd291bGQgbGlrZSB0byBpbnRyb2R1Y2Ugb3Vyc2VsdmVzOgoKYWR2YyBpcyBhIGNvbXBpbGVyIGZvciBuYXJyYXRpdmUgZ2FtZXM6IHBvaW50ICYgY2xpY2sgYWR2ZW50dXJlcywgZ2FtZWJvb2tzLAp2aXN1YWwgbm92ZWxzLiBZb3Ugd3JpdGUgc2NlbmVzLCBkaWFsb2d1ZSBhbmQgVUkgaW4gKipBRFZMKiosIG91cgppbmRlbnRhdGlvbi1iYXNlZCBsYW5ndWFnZSwgYW5kIGBhZHZjIC0tcmVsZWFzZWAgaGFuZHMgeW91ICoqb25lIG5hdGl2ZQpleGVjdXRhYmxlIHBsdXMgb25lIHBhY2tlZCBhc3NldCBmaWxlKiouCgpGZWVsIGZyZWUgdG8gdHJ5IHVzOgoKYGBgCmN1cmwgLWZzU0wgaHR0cHM6Ly9naXRodWIuY29tL2FkdmMtb3JnL2FkdmMvcmF3L21hc3Rlci9pbnN0YWxsLnNoIHwgc2gKYGBgCg==</script>
     </div>
   </section>
 </main>
 
 <footer class="foot">
-  <div class="wrap foot-bottom"><span>© 2026 advc</span><span class="mono">rendered from devlog.md with marked@18.1.3</span></div>
+  <div class="wrap foot-bottom"><span>© <span data-bind="text={year}"></span> advc</span><span class="mono">rendered from devlog.md with marked@18.1.3</span></div>
 </footer>
 
 <!-- marked 18.1.3, pinned by exact version + subresource integrity.

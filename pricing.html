@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="landing.css">
+<script src="version.js" defer></script>
 </head>
 <body>
 
@@ -28,7 +29,7 @@
       <a href="docs/index.html">Docs</a>
     </nav>
     <div class="nav-cta">
-      <a class="btn btn-sm btn-primary" href="https://github.com/advc-org/advc">GitHub</a>
+      <a class="btn btn-sm btn-primary" href="" data-bind="href={repo}">GitHub</a>
     </div>
   </div>
 </header>
@@ -144,7 +145,7 @@
 
 <footer class="foot">
   <div class="wrap foot-bottom">
-    <span>© 2026 advc</span>
+    <span>© <span data-bind="text={year}"></span> advc</span>
     <span class="mono"><a href="eula.html">EULA</a></span>
   </div>
 </footer>

@@ -1,0 +1,12 @@
+{
+  "version": "0.0.2",
+  "tag": "v0.0.2",
+  "year": 2026,
+  "repo": "https://github.com/advc-org/advc",
+  "demos": "https://github.com/advc-org/advc/tree/master/demos",
+  "install": "curl -fsSL https://github.com/advc-org/advc/raw/master/install.sh | sh",
+  "eula": {
+    "version": "1.0",
+    "date": "November 5, 2026"
+  }
+}
